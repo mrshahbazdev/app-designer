@@ -330,7 +330,7 @@ export default function App() {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts }], systemInstruction: { parts: [{ text: systemPrompt }] } }),
     });
-    if (!resp.ok) { if (retries < 2) { await new Promise(r => setTimeout(r, Math.pow(2, retries) * 1500)); return callAI(parts, systemPrompt, retries + 1); } throw new Error(`API ${resp.status}`); }
+    if (!resp.ok) { if (retries < 4) { const delay = Math.pow(2, retries) * 2000 + Math.random() * 1000; await new Promise(r => setTimeout(r, delay)); return callAI(parts, systemPrompt, retries + 1); } throw new Error(`API ${resp.status}`); }
     const d = await resp.json();
     return (d.candidates?.[0]?.content?.parts?.[0]?.text || '').replace(/```(html|markdown)?/g, '').replace(/```/g, '').trim();
   };
@@ -373,17 +373,22 @@ export default function App() {
     for (let i = 0; i < up.length; i++) {
       if (autoGenAbortRef.current) { addToast('Stopped.', 'info'); break; }
       setActivePageIndex(i); setAutoGenProgress({ current: i + 1, total: up.length, currentName: up[i].name });
-      try {
-        const preset = PRESETS.find(p => p.label === up[i].name);
-        let html = await callAI([{ text: `Task: Create "${up[i].name}" screen.\nInstructions: ${preset?.prompt || `Design ${up[i].name} screen.`}` }], buildSystemPrompt(bs, up, up[i].name, !!ls));
-        html = injectLogo(html);
-        up = [...up]; up[i] = { ...up[i], html }; pagesHistory.set(up); setPreviewKey(k => k + 1);
-        addToast(`"${up[i].name}" done (${i + 1}/${up.length})`, 'success');
-      } catch { addToast(`"${up[i].name}" failed`, 'error'); }
-      if (i < up.length - 1) await new Promise(r => setTimeout(r, 1500));
+      let success = false;
+      for (let attempt = 0; attempt < 3 && !success; attempt++) {
+        try {
+          if (attempt > 0) { addToast(`Retrying "${up[i].name}" (${attempt + 1}/3)...`, 'info'); await new Promise(r => setTimeout(r, 3000 * attempt)); }
+          const preset = PRESETS.find(p => p.label === up[i].name);
+          let html = await callAI([{ text: `Task: Create "${up[i].name}" screen.\nInstructions: ${preset?.prompt || `Design ${up[i].name} screen.`}` }], buildSystemPrompt(bs, up, up[i].name, !!ls));
+          html = injectLogo(html);
+          up = [...up]; up[i] = { ...up[i], html }; pagesHistory.set(up); setPreviewKey(k => k + 1);
+          addToast(`"${up[i].name}" done (${i + 1}/${up.length})`, 'success'); success = true;
+        } catch { if (attempt === 2) addToast(`"${up[i].name}" failed after 3 attempts`, 'error'); }
+      }
+      if (i < up.length - 1) await new Promise(r => setTimeout(r, 3000 + Math.random() * 2000));
     }
     setAutoGenRunning(false); setActivePageIndex(0); setPreviewKey(k => k + 1);
-    addToast(`Done! ${up.filter(p => p.html).length}/${up.length} screens ready.`, 'success');
+    const done = up.filter(p => p.html).length; const failed = up.length - done;
+    addToast(`Done! ${done}/${up.length} screens ready.${failed > 0 ? ` ${failed} failed — use "Retry Failed" to regenerate.` : ''}`, failed > 0 ? 'info' : 'success');
   };
 
   // ── Generate All Screens with All Variations ──
@@ -396,17 +401,50 @@ export default function App() {
     for (let i = 0; i < up.length; i++) {
       if (autoGenAbortRef.current) { addToast('Stopped.', 'info'); break; }
       setActivePageIndex(i); setAutoGenProgress({ current: i + 1, total: up.length, currentName: up[i].name });
-      try {
-        const preset = PRESETS.find(p => p.label === up[i].name);
-        let html = await callAI([{ text: `Task: Create "${up[i].name}" screen.\nInstructions: ${preset?.prompt || `Design ${up[i].name} screen.`}` }], buildSystemPrompt(bs, up, up[i].name, !!ls));
-        html = injectLogo(html);
-        up = [...up]; up[i] = { ...up[i], html }; pagesHistory.set(up); setPreviewKey(k => k + 1);
-        addToast(`"${up[i].name}" done (${i + 1}/${up.length})`, 'success');
-      } catch { addToast(`"${up[i].name}" failed`, 'error'); }
-      if (i < up.length - 1) await new Promise(r => setTimeout(r, 1500));
+      let success = false;
+      for (let attempt = 0; attempt < 3 && !success; attempt++) {
+        try {
+          if (attempt > 0) { addToast(`Retrying "${up[i].name}" (${attempt + 1}/3)...`, 'info'); await new Promise(r => setTimeout(r, 3000 * attempt)); }
+          const preset = PRESETS.find(p => p.label === up[i].name);
+          let html = await callAI([{ text: `Task: Create "${up[i].name}" screen.\nInstructions: ${preset?.prompt || `Design ${up[i].name} screen.`}` }], buildSystemPrompt(bs, up, up[i].name, !!ls));
+          html = injectLogo(html);
+          up = [...up]; up[i] = { ...up[i], html }; pagesHistory.set(up); setPreviewKey(k => k + 1);
+          addToast(`"${up[i].name}" done (${i + 1}/${up.length})`, 'success'); success = true;
+        } catch { if (attempt === 2) addToast(`"${up[i].name}" failed after 3 attempts`, 'error'); }
+      }
+      if (i < up.length - 1) await new Promise(r => setTimeout(r, 3000 + Math.random() * 2000));
     }
     setAutoGenRunning(false); setActivePageIndex(0); setPreviewKey(k => k + 1);
-    addToast(`Done! ${up.filter(p => p.html).length}/${up.length} screens with variations ready.`, 'success');
+    const done = up.filter(p => p.html).length; const failed = up.length - done;
+    addToast(`Done! ${done}/${up.length} screens with variations ready.${failed > 0 ? ` ${failed} failed — use "Retry Failed" to regenerate.` : ''}`, failed > 0 ? 'info' : 'success');
+  };
+
+  // ── Retry Failed (empty) Pages Only ──
+  const retryFailedPages = async () => {
+    const failedIndices = pages.map((p, i) => (!p.html ? i : -1)).filter(i => i !== -1);
+    if (failedIndices.length === 0) { addToast('No failed screens to retry!', 'info'); return; }
+    setAutoGenRunning(true); autoGenAbortRef.current = false;
+    setAutoGenProgress({ current: 0, total: failedIndices.length, currentName: pages[failedIndices[0]].name });
+    let up = [...pages]; const bs = { ...brand }; const ls = logoBase64; let retried = 0;
+    for (let idx = 0; idx < failedIndices.length; idx++) {
+      const i = failedIndices[idx];
+      if (autoGenAbortRef.current) { addToast('Stopped.', 'info'); break; }
+      setActivePageIndex(i); setAutoGenProgress({ current: idx + 1, total: failedIndices.length, currentName: up[i].name });
+      let success = false;
+      for (let attempt = 0; attempt < 3 && !success; attempt++) {
+        try {
+          if (attempt > 0) await new Promise(r => setTimeout(r, 4000 * attempt));
+          const preset = PRESETS.find(p => p.label === up[i].name);
+          let html = await callAI([{ text: `Task: Create "${up[i].name}" screen.\nInstructions: ${preset?.prompt || `Design ${up[i].name} screen.`}` }], buildSystemPrompt(bs, up, up[i].name, !!ls));
+          html = injectLogo(html);
+          up = [...up]; up[i] = { ...up[i], html }; pagesHistory.set(up); setPreviewKey(k => k + 1);
+          addToast(`"${up[i].name}" recovered! (${idx + 1}/${failedIndices.length})`, 'success'); success = true; retried++;
+        } catch { if (attempt === 2) addToast(`"${up[i].name}" still failing`, 'error'); }
+      }
+      if (idx < failedIndices.length - 1) await new Promise(r => setTimeout(r, 4000 + Math.random() * 2000));
+    }
+    setAutoGenRunning(false); setActivePageIndex(0); setPreviewKey(k => k + 1);
+    addToast(`Retry done! ${retried}/${failedIndices.length} recovered.`, retried > 0 ? 'success' : 'error');
   };
 
   // ── Regenerate Single Page ──
@@ -431,13 +469,17 @@ export default function App() {
     for (let i = 0; i < up.length; i++) {
       if (autoGenAbortRef.current) break;
       setActivePageIndex(i); setAutoGenProgress({ current: i + 1, total: up.length, currentName: up[i].name });
-      try {
-        const preset = PRESETS.find(p => p.label === up[i].name);
-        let html = await callAI([{ text: `Task: Create "${up[i].name}" screen.\nInstructions: ${preset?.prompt || `Design ${up[i].name} screen.`}` }], buildSystemPrompt(bs, up, up[i].name, !!logoBase64));
-        html = injectLogo(html);
-        up = [...up]; up[i] = { ...up[i], html }; pagesHistory.set(up); setPreviewKey(k => k + 1);
-      } catch {}
-      if (i < up.length - 1) await new Promise(r => setTimeout(r, 1500));
+      let success = false;
+      for (let attempt = 0; attempt < 3 && !success; attempt++) {
+        try {
+          if (attempt > 0) await new Promise(r => setTimeout(r, 3000 * attempt));
+          const preset = PRESETS.find(p => p.label === up[i].name);
+          let html = await callAI([{ text: `Task: Create "${up[i].name}" screen.\nInstructions: ${preset?.prompt || `Design ${up[i].name} screen.`}` }], buildSystemPrompt(bs, up, up[i].name, !!logoBase64));
+          html = injectLogo(html);
+          up = [...up]; up[i] = { ...up[i], html }; pagesHistory.set(up); setPreviewKey(k => k + 1); success = true;
+        } catch {}
+      }
+      if (i < up.length - 1) await new Promise(r => setTimeout(r, 3000 + Math.random() * 2000));
     }
     setAutoGenRunning(false); addToast('Batch regenerate complete!', 'success');
   };
@@ -649,6 +691,7 @@ export default function App() {
               {['Inter','Plus Jakarta Sans','Outfit','Montserrat','DM Sans','Space Grotesk','Poppins'].map(f => <option key={f} value={f}>{f}</option>)}
             </select>
           </div>
+          {pages.some(p => !p.html) && <button onClick={retryFailedPages} disabled={autoGenRunning} className="ml-auto px-3 py-1 rounded text-[9px] font-bold flex items-center gap-1 disabled:opacity-30 text-red-400 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20"><RefreshCw size={10} /> Retry Failed ({pages.filter(p => !p.html).length})</button>}
           <button onClick={batchRegenerate} disabled={autoGenRunning || designedCount === 0} className="ml-auto px-3 py-1 rounded text-[9px] font-bold flex items-center gap-1 disabled:opacity-30 text-amber-400 bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20"><RotateCw size={10} /> Batch Regen All</button>
         </div>
       )}
