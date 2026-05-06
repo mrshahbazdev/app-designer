@@ -117,6 +117,21 @@ const SUGGESTED_SETS = [
   { name: '💬 Chat Experience', desc: 'Inbox + chat in both themes', pages: ['Secure Inbox','Hub Inbox Chrome','Chat Light','Chat Dark Hub','Groups'] },
   { name: '🛡️ Security Screens', desc: 'Auth, lock, device approval', pages: ['Sign In','Session Locked','Securing Device','Account & Device','Edge States'] },
   { name: '🌙 Dark Hub Complete', desc: 'All Hub dark theme screens', pages: ['Hub Inbox Chrome','Chat Dark Hub','Groups','Account & Device','Edge States'] },
+  { name: '🛒 E-Commerce App', desc: 'Full shopping experience with cart & checkout', pages: ['Home Feed','Product Detail','Categories','Cart','Checkout','Order Confirmation','My Orders','Wishlist','Search Results','Profile'] },
+  { name: '🍔 Food Delivery App', desc: 'Restaurant ordering & delivery tracking', pages: ['Home','Restaurant List','Restaurant Detail','Menu','Cart','Checkout','Order Tracking','Delivery Status','Reviews','Profile'] },
+  { name: '📚 Education / LMS App', desc: 'Course learning platform screens', pages: ['Dashboard','Course List','Course Detail','Lesson Player','Quiz','Progress','Certificates','Notes','Discussion','Profile'] },
+  { name: '💪 Fitness / Health App', desc: 'Workout tracking & health dashboard', pages: ['Dashboard','Workout Plan','Exercise Detail','Timer','Progress Stats','Nutrition','Meal Log','Activity Feed','Goals','Profile'] },
+  { name: '🏦 Banking / Fintech App', desc: 'Digital banking with transfers & cards', pages: ['Dashboard','Accounts','Transfer Money','Transaction History','Cards','Pay Bills','Savings Goals','Notifications','KYC Verification','Settings'] },
+  { name: '🎵 Music / Podcast App', desc: 'Audio streaming experience', pages: ['Home','Search','Now Playing','Playlist','Library','Artist Page','Album Detail','Podcast Episode','Queue','Settings'] },
+  { name: '✈️ Travel / Booking App', desc: 'Trip planning & hotel booking', pages: ['Home','Search Flights','Flight Results','Hotel List','Hotel Detail','Booking Summary','Payment','Boarding Pass','Trip Itinerary','Profile'] },
+  { name: '📸 Social Media App', desc: 'Photo/video sharing social network', pages: ['Feed','Profile','Stories','Create Post','Explore','Notifications','Messages','Comments','Live Stream','Settings'] },
+  { name: '🏥 Healthcare App', desc: 'Doctor appointments & health records', pages: ['Home','Find Doctor','Doctor Profile','Book Appointment','Appointments','Medical Records','Prescriptions','Lab Results','Telemedicine','Profile'] },
+  { name: '🚗 Ride Sharing App', desc: 'Book rides & track drivers', pages: ['Home Map','Set Destination','Choose Ride','Driver Matching','Trip Active','Trip Complete','Rate Driver','Ride History','Payments','Profile'] },
+  { name: '📋 Task / Project App', desc: 'Team productivity & project management', pages: ['Dashboard','Projects','Board View','Task Detail','Calendar','Team Members','Chat','Files','Activity Log','Settings'] },
+  { name: '🏠 Real Estate App', desc: 'Property listings & home search', pages: ['Home','Search','Map View','Property Detail','Gallery','Schedule Tour','Saved Properties','Agent Profile','Mortgage Calculator','Messages'] },
+  { name: '🎮 Gaming App', desc: 'Game launcher & social gaming', pages: ['Home','Game Store','Game Detail','Library','Achievements','Friends','Leaderboard','Live Events','Settings','Profile'] },
+  { name: '📰 News / Blog App', desc: 'Content reading & discovery', pages: ['Home Feed','Article Detail','Categories','Bookmarks','Search','Trending','Author Profile','Comments','Notifications','Settings'] },
+  { name: '💼 Job / Recruitment App', desc: 'Job search & application tracking', pages: ['Home','Job Search','Job Detail','Apply','My Applications','Resume Builder','Company Profile','Saved Jobs','Notifications','Profile'] },
 ];
 
 const THEME_PRESETS = [
@@ -533,6 +548,34 @@ export default function App() {
     setPreviewKey(k => k + 1); setShowImport(false); setImportHtml(''); addToast('HTML imported!', 'success');
   };
 
+  const importPrototypeFile = (e) => {
+    const f = e.target.files?.[0]; if (!f) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const html = reader.result;
+      try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const iframes = doc.querySelectorAll('iframe[srcdoc]');
+        const labels = doc.querySelectorAll('.l');
+        if (iframes.length > 0) {
+          const imported = [];
+          iframes.forEach((iframe, i) => {
+            const name = labels[i]?.textContent?.trim() || `Screen ${i + 1}`;
+            const srcdoc = iframe.getAttribute('srcdoc') || '';
+            imported.push({ id: (Date.now() + i).toString(), name, html: srcdoc });
+          });
+          pagesHistory.set(imported); setActivePageIndex(0); setPreviewKey(k => k + 1);
+          setShowImport(false); addToast(`Imported ${imported.length} screens from prototype!`, 'success');
+        } else {
+          const upd = [...pages]; upd[activePageIndex] = { ...upd[activePageIndex], html: injectLogo(html) }; pagesHistory.set(upd);
+          setPreviewKey(k => k + 1); setShowImport(false); addToast('HTML imported to current screen!', 'success');
+        }
+      } catch { addToast('Could not parse file.', 'error'); }
+    };
+    reader.readAsText(f);
+  };
+
   const importColorPalette = (e) => {
     const f = e.target.files?.[0]; if (!f) return;
     const r = new FileReader(); r.onloadend = async () => {
@@ -928,13 +971,12 @@ export default function App() {
             <div className="flex items-center justify-between mb-5"><h2 className="text-lg font-black text-white flex items-center gap-2"><Import size={18} style={{ color: brand.primary }} /> Import</h2><button onClick={() => setShowImport(false)} className="text-slate-500 hover:text-white"><X size={16} /></button></div>
 
             <div className="space-y-4">
-              <div className="p-4 rounded-xl bg-white/5 border border-white/5">
-                <h3 className="text-xs font-bold text-white mb-2 flex items-center gap-1.5"><Link size={12} style={{ color: brand.primary }} /> Import Style from URL</h3>
-                <p className="text-[9px] text-slate-500 mb-2">Paste any website URL - AI will match its design style</p>
-                <div className="flex gap-2">
-                  <input value={importUrl} onChange={e => setImportUrl(e.target.value)} className="flex-1 bg-white/5 border border-white/5 rounded-lg px-3 py-2 text-xs text-white outline-none" placeholder="https://example.com" />
-                  <button onClick={importFromUrl} disabled={isLoading || !importUrl.trim()} className="px-4 py-2 rounded-lg text-xs font-bold text-white disabled:opacity-30" style={{ background: brand.primary }}>Import</button>
-                </div>
+              <div className="p-4 rounded-xl bg-white/5 border border-amber-500/20">
+                <h3 className="text-xs font-bold text-white mb-2 flex items-center gap-1.5"><Upload size={12} style={{ color: brand.primary }} /> Import Prototype File</h3>
+                <p className="text-[9px] text-slate-500 mb-2">Upload a previously exported prototype HTML — all screens will be restored</p>
+                <label className="px-4 py-2 rounded-lg text-xs font-bold text-white cursor-pointer inline-flex items-center gap-2" style={{ background: brand.primary }}>
+                  <input type="file" className="hidden" accept=".html,.htm" onChange={importPrototypeFile} /> <FolderOpen size={12} /> Choose HTML File
+                </label>
               </div>
 
               <div className="p-4 rounded-xl bg-white/5 border border-white/5">
@@ -942,6 +984,15 @@ export default function App() {
                 <p className="text-[9px] text-slate-500 mb-2">Paste HTML code directly into the current screen</p>
                 <textarea value={importHtml} onChange={e => setImportHtml(e.target.value)} className="w-full bg-white/5 border border-white/5 rounded-lg px-3 py-2 text-xs text-white outline-none h-24 font-mono resize-none" placeholder="<html>..." />
                 <button onClick={importHtmlCode} disabled={!importHtml.trim()} className="mt-2 px-4 py-2 rounded-lg text-xs font-bold text-white disabled:opacity-30" style={{ background: brand.primary }}>Import HTML</button>
+              </div>
+
+              <div className="p-4 rounded-xl bg-white/5 border border-white/5">
+                <h3 className="text-xs font-bold text-white mb-2 flex items-center gap-1.5"><Link size={12} style={{ color: brand.primary }} /> Import Style from URL</h3>
+                <p className="text-[9px] text-slate-500 mb-2">Paste any website URL - AI will match its design style</p>
+                <div className="flex gap-2">
+                  <input value={importUrl} onChange={e => setImportUrl(e.target.value)} className="flex-1 bg-white/5 border border-white/5 rounded-lg px-3 py-2 text-xs text-white outline-none" placeholder="https://example.com" />
+                  <button onClick={importFromUrl} disabled={isLoading || !importUrl.trim()} className="px-4 py-2 rounded-lg text-xs font-bold text-white disabled:opacity-30" style={{ background: brand.primary }}>Import</button>
+                </div>
               </div>
 
               <div className="p-4 rounded-xl bg-white/5 border border-white/5">
@@ -961,9 +1012,10 @@ export default function App() {
         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-8 backdrop-blur-xl"><div className="absolute inset-0 bg-black/80" onClick={() => setShowSuggestions(false)} />
           <div className="w-[520px] bg-[#0d0d12] border border-white/10 rounded-2xl p-6 relative z-10 max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4"><h2 className="text-lg font-black text-white flex items-center gap-2"><Lightbulb size={18} style={{ color: brand.primary }} /> App Templates</h2><button onClick={() => setShowSuggestions(false)} className="text-slate-500 hover:text-white"><X size={16} /></button></div>
+            <p className="text-[9px] text-slate-500 mb-3">{SUGGESTED_SETS.length} templates — click to load all screens, then auto-generate</p>
             <div className="space-y-2.5">{SUGGESTED_SETS.map((s, i) => (
-              <button key={i} onClick={() => addSuggestedSet(s)} className="w-full p-3.5 rounded-xl bg-white/5 border border-white/5 hover:border-white/15 text-left">
-                <div className="flex items-center justify-between mb-1"><h3 className="text-sm font-bold text-white">{s.name}</h3><span className="text-[9px] font-bold px-2 py-0.5 rounded" style={{ color: brand.primary, background: brand.primary + '15' }}>{s.pages.length}</span></div>
+              <button key={i} onClick={() => addSuggestedSet(s)} className="w-full p-3.5 rounded-xl bg-white/5 border border-white/5 hover:border-white/15 text-left transition-colors">
+                <div className="flex items-center justify-between mb-1"><h3 className="text-sm font-bold text-white">{s.name}</h3><span className="text-[9px] font-bold px-2 py-0.5 rounded" style={{ color: brand.primary, background: brand.primary + '15' }}>{s.pages.length} screens</span></div>
                 <p className="text-[9px] text-slate-500 mb-1.5">{s.desc}</p>
                 <div className="flex flex-wrap gap-1">{s.pages.slice(0,8).map(p => <span key={p} className="px-1.5 py-0.5 bg-white/5 rounded text-[7px] text-slate-400 font-bold">{p}</span>)}{s.pages.length > 8 && <span className="px-1.5 py-0.5 bg-white/5 rounded text-[7px] text-slate-500">+{s.pages.length-8}</span>}</div>
               </button>))}
