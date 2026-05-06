@@ -329,13 +329,18 @@ export default function App() {
   // ── Core AI Generate ──
   const callAI = async (parts, systemPrompt, retries = 0) => {
     const key = userApiKey || getApiKey();
-    if (!key) { setShowApiKeyModal(true); throw new Error('NO_KEY'); }
-    const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${DEFAULT_MODEL}:generateContent?key=${key}`, {
+    const url = key
+      ? `https://generativelanguage.googleapis.com/v1beta/models/${DEFAULT_MODEL}:generateContent?key=${key}`
+      : `https://generativelanguage.googleapis.com/v1beta/models/${DEFAULT_MODEL}:generateContent`;
+    const resp = await fetch(url, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts }], systemInstruction: { parts: [{ text: systemPrompt }] } }),
     }).catch(err => { throw new Error(`NETWORK_ERROR: ${err.message}`); });
     if (!resp.ok) {
-      if (resp.status === 400 || resp.status === 403) throw new Error('INVALID_KEY');
+      if (resp.status === 400 || resp.status === 403) {
+        if (key) throw new Error('INVALID_KEY');
+        throw new Error('AUTH_FAILED');
+      }
       if (retries < 4) { const delay = Math.pow(2, retries) * 2000 + Math.random() * 1000; await new Promise(r => setTimeout(r, delay)); return callAI(parts, systemPrompt, retries + 1); }
       throw new Error(`API ${resp.status}`);
     }
@@ -357,9 +362,9 @@ export default function App() {
       const s = ((Date.now() - t0) / 1000).toFixed(1); setGenStats(p => ({ count: p.count + 1, lastTime: parseFloat(s) }));
       addToast(`"${currentPage.name}" generated in ${s}s`, 'success');
     } catch (err) {
-      if (err.message === 'NO_KEY') { addToast('Please enter your Gemini API key first.', 'error'); }
-      else if (err.message === 'INVALID_KEY') { addToast('Invalid API key. Check your key at aistudio.google.com', 'error'); setShowApiKeyModal(true); }
-      else if (err.message?.startsWith('NETWORK_ERROR')) { addToast('Network error — Gemini Canvas blocks external API calls. Run this app locally or in CodeSandbox.', 'error'); }
+      if (err.message === 'INVALID_KEY') { addToast('Invalid API key. Check your key at aistudio.google.com', 'error'); setShowApiKeyModal(true); }
+      else if (err.message === 'AUTH_FAILED') { addToast('API authentication failed. Add your Gemini API key in Settings.', 'error'); setShowApiKeyModal(true); }
+      else if (err.message?.startsWith('NETWORK_ERROR')) { addToast('Network error — check your connection or try refreshing Canvas.', 'error'); }
       else { if (retryCount < 3) { addToast(`Retrying (${retryCount + 1}/3)...`, 'info'); setTimeout(() => generatePage(retryCount + 1), 2000); return; } addToast('Generation failed.', 'error'); }
     }
     finally { setIsLoading(false); }
@@ -688,7 +693,7 @@ export default function App() {
           <button onClick={copyCode} className={`px-3 py-1 rounded text-[9px] font-bold flex items-center gap-1 ${copied ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/5 text-slate-400'}`}>
             {copied ? <Check size={10} /> : <Copy size={10} />} {copied ? 'Copied!' : 'Copy'}
           </button>
-          {!userApiKey && <button onClick={() => setShowApiKeyModal(true)} className="px-2 py-1 rounded text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1"><AlertCircle size={10} /> API Key</button>}
+          {!userApiKey && <button onClick={() => setShowApiKeyModal(true)} className="px-2 py-1 rounded text-[9px] font-bold bg-white/5 text-slate-400 border border-white/5 flex items-center gap-1 hover:bg-white/10" title="Optional: Add API key for non-Canvas environments"><Cpu size={10} /> API Key</button>}
           <button onClick={() => setShowSettings(true)} className="p-1.5 rounded hover:bg-white/5 text-slate-500"><Settings size={14} /></button>
         </div>
       </header>
@@ -1050,12 +1055,15 @@ export default function App() {
       {showApiKeyModal && (
         <div className="fixed inset-0 z-[1001] flex items-center justify-center p-8 backdrop-blur-xl"><div className="absolute inset-0 bg-black/80" onClick={() => setShowApiKeyModal(false)} />
           <div className="w-[420px] bg-[#0d0d12] border border-white/10 rounded-2xl p-6 relative z-10">
-            <div className="flex items-center justify-between mb-4"><h2 className="text-lg font-black text-white flex items-center gap-2"><Cpu size={18} className="text-yellow-400" /> API Key Required</h2><button onClick={() => setShowApiKeyModal(false)} className="text-slate-500 hover:text-white"><X size={16} /></button></div>
-            <p className="text-xs text-slate-400 mb-4">Screen generation requires a Gemini API key. Get one for free:</p>
+            <div className="flex items-center justify-between mb-4"><h2 className="text-lg font-black text-white flex items-center gap-2"><Cpu size={18} className="text-blue-400" /> Gemini API Key</h2><button onClick={() => setShowApiKeyModal(false)} className="text-slate-500 hover:text-white"><X size={16} /></button></div>
+            <p className="text-xs text-slate-400 mb-2">In <strong className="text-white">Gemini Canvas</strong>, this is optional — Canvas uses its own API access.</p>
+            <p className="text-xs text-slate-400 mb-4">For <strong className="text-white">CodeSandbox / StackBlitz / local</strong>, get a free key:</p>
             <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" className="block w-full text-center py-2 mb-4 rounded-lg bg-blue-600/20 border border-blue-500/30 text-blue-300 text-xs font-bold hover:bg-blue-600/30">Open Google AI Studio &rarr;</a>
-            <input type="password" value={userApiKey} onChange={e => setUserApiKey(e.target.value)} placeholder="Paste your API key here..." className="w-full bg-white/5 border border-white/5 rounded-lg p-3 text-white text-sm outline-none font-mono mb-3" />
-            <p className="text-[9px] text-amber-400/80 mb-4 flex items-center gap-1"><AlertCircle size={10} /> Note: Gemini Canvas (gemini.google.com) blocks external API calls. Use CodeSandbox, StackBlitz, or local dev instead.</p>
-            <button onClick={() => { if (!userApiKey.trim()) { addToast('Please enter a key', 'error'); return; } try { localStorage.setItem('v2ui_gemini_key', userApiKey); } catch {} setShowApiKeyModal(false); addToast('API key saved!', 'success'); }} className="w-full py-2.5 rounded-lg text-white font-bold text-xs" style={{ background: brand.primary }}>Save & Continue</button>
+            <input type="password" value={userApiKey} onChange={e => setUserApiKey(e.target.value)} placeholder="Paste your API key here (optional in Canvas)..." className="w-full bg-white/5 border border-white/5 rounded-lg p-3 text-white text-sm outline-none font-mono mb-3" />
+            <div className="flex gap-2">
+              <button onClick={() => setShowApiKeyModal(false)} className="flex-1 py-2.5 rounded-lg text-slate-400 font-bold text-xs bg-white/5 border border-white/5">Skip (Canvas)</button>
+              <button onClick={() => { if (!userApiKey.trim()) { addToast('Please enter a key', 'error'); return; } try { localStorage.setItem('v2ui_gemini_key', userApiKey); } catch {} setShowApiKeyModal(false); addToast('API key saved!', 'success'); }} className="flex-1 py-2.5 rounded-lg text-white font-bold text-xs" style={{ background: brand.primary }}>Save Key</button>
+            </div>
           </div>
         </div>
       )}
