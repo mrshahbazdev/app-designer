@@ -32,94 +32,104 @@ const DEFAULT_MODEL = "gemini-2.5-flash-preview-09-2025";
 const apiKey = "";
 // ───────────────────────────────────────────────────────────────────
 
-// ─── 55 PRESETS ────────────────────────────────────────────────────
+
+// ─── TRENDUP SECURE MESSAGING PRESETS (11 screens × 3-4 variations) ───
 const PRESETS = [
-  { id: 'splash', emoji: '🚀', label: 'Splash Screen', cat: 'core', prompt: 'Premium splash/loading screen with animated app logo centered, gradient background with brand colors, circular progress indicator at bottom, version number.' },
-  { id: 'onboarding1', emoji: '👋', label: 'Onboarding Intro', cat: 'core', prompt: '3-step mobile onboarding with illustration on top half, title + subtitle text, dot indicators, Skip and Next buttons. Step 1: Welcome to app concept.' },
-  { id: 'onboarding2', emoji: '📱', label: 'Onboarding Features', cat: 'core', prompt: 'Onboarding step 2 showing key app features with icons grid, brief descriptions, animated transitions feel, Continue button.' },
-  { id: 'login', emoji: '🔑', label: 'Login', cat: 'core', prompt: 'Login screen with app logo at top, email and password fields with icons, "Forgot Password?" link, Login button with gradient, "OR" divider, social auth buttons (Google, Apple, Facebook), "Don\'t have account? Sign Up" at bottom.' },
-  { id: 'register', emoji: '📝', label: 'Register', cat: 'core', prompt: 'Registration screen with full name, email, phone, password fields, terms checkbox, "Create Account" gradient button, social signup options, "Already have account? Login" link.' },
-  { id: 'forgotpass', emoji: '🔒', label: 'Forgot Password', cat: 'core', prompt: 'Forgot password screen with lock icon illustration, instruction text, email input field, "Send Reset Link" button, "Back to Login" link.' },
-  { id: 'otp', emoji: '🔢', label: 'OTP Verification', cat: 'core', prompt: 'OTP verification screen with 6-digit code input boxes, timer countdown, "Resend Code" link, phone number display with mask, Verify button.' },
-  { id: 'settings', emoji: '⚙️', label: 'Settings', cat: 'core', prompt: 'Settings screen with grouped sections: Account, Privacy, Notifications toggles, Appearance (dark mode), Security, About, Logout button in red.' },
-  { id: 'homefeed', emoji: '🏠', label: 'Home Feed', cat: 'social', prompt: 'Social home feed with stories row at top, post cards with user avatar/name/timestamp, post text, image, like/comment/share/bookmark action bar, floating compose FAB.' },
-  { id: 'foryou', emoji: '🔥', label: 'For You Feed', cat: 'social', prompt: 'Algorithmic "For You" feed with trending badges, recommended posts, category chips (Trending, Latest, Popular).' },
-  { id: 'following', emoji: '👥', label: 'Following Feed', cat: 'social', prompt: 'Following-only feed showing posts from followed accounts, chronological order, pull-to-refresh.' },
-  { id: 'profile', emoji: '👤', label: 'My Profile', cat: 'social', prompt: 'User profile with cover photo, avatar, display name, @username, bio, stats row (Posts, Followers, Following), Edit Profile button, tabs (Posts, Media, Likes).' },
-  { id: 'otherprofile', emoji: '🧑', label: 'User Profile', cat: 'social', prompt: 'Other user profile with Follow button, message icon, cover photo, avatar, bio, mutual followers, stats, content tabs.' },
-  { id: 'editprofile', emoji: '✏️', label: 'Edit Profile', cat: 'social', prompt: 'Edit profile with camera on avatar/cover, fields: Display Name, Username, Bio (char count), Website, Location. Save button.' },
-  { id: 'chatlist', emoji: '💬', label: 'Chat List', cat: 'social', prompt: 'Messaging with search bar, conversation list, avatars, last message preview, timestamps, unread badges, online indicators.' },
-  { id: 'chatroom', emoji: '🗨️', label: 'Chat Room', cat: 'social', prompt: 'Chat with message bubbles (sent=right, received=left), timestamps, ticks, typing dots, input bar with attachment/emoji/camera/mic/send.' },
-  { id: 'discover', emoji: '🔍', label: 'Discover', cat: 'social', prompt: 'Discover with search bar, trending hashtags, "Suggested for You" user cards, trending topics, category grid.' },
-  { id: 'findpeople', emoji: '🔎', label: 'Find People', cat: 'social', prompt: 'Find people with search, contact sync, suggested users with Follow button, "Invite Friends" option.' },
-  { id: 'notifications', emoji: '🔔', label: 'Notifications', cat: 'social', prompt: 'Notifications with tabs (All, Mentions, Likes, Follows), avatar, action text, timestamp, grouped by Today/Week/Earlier, unread dot.' },
-  { id: 'stories', emoji: '📸', label: 'Story Viewer', cat: 'social', prompt: 'Full-screen story viewer with progress bars, user info at top, reply input at bottom, share and like buttons.' },
-  { id: 'createpost', emoji: '📝', label: 'Create Post', cat: 'social', prompt: 'Create post with avatar, text area, media attachment bar (Photo, Video, GIF, Poll, Location), character count, Post button.' },
-  { id: 'comments', emoji: '💭', label: 'Comments', cat: 'social', prompt: 'Comments thread with nested replies, user avatar/name/timestamp, like button, reply action, input bar at bottom.' },
-  { id: 'liveforum', emoji: '📡', label: 'Live Forum', cat: 'social', prompt: 'Live forum with LIVE badge, topic title, real-time messages, participant count, pinned message, reaction emojis.' },
-  { id: 'wallet', emoji: '💰', label: 'Crypto Wallet', cat: 'crypto', prompt: 'Crypto wallet with total balance card, 24h change, Send/Receive/Swap/Buy buttons, token list with icons, amounts, sparklines.' },
-  { id: 'walletdetail', emoji: '📋', label: 'Token Detail', cat: 'crypto', prompt: 'Token detail with price chart (1H,1D,1W,1M,1Y tabs), current price, 24h stats, Buy/Sell buttons, transaction history.' },
-  { id: 'sendcrypto', emoji: '📤', label: 'Send Crypto', cat: 'crypto', prompt: 'Send crypto with recipient address (paste + QR), token selector, amount input with MAX, network fee, Review button.' },
-  { id: 'receivecrypto', emoji: '📥', label: 'Receive Crypto', cat: 'crypto', prompt: 'Receive crypto with large QR code, wallet address with copy, token/network selector, Share Address button.' },
-  { id: 'swap', emoji: '🔄', label: 'Swap Tokens', cat: 'crypto', prompt: 'Token swap with From/To selectors, amounts, swap arrow, exchange rate, slippage setting, price impact, Swap button.' },
-  { id: 'market', emoji: '📊', label: 'Market Overview', cat: 'crypto', prompt: 'Market dashboard with search, sort options, top gainers/losers scroll, coin list with rank, icon, price, 24h change, mini chart.' },
-  { id: 'trading', emoji: '📈', label: 'Trading', cat: 'crypto', prompt: 'Trading with candlestick chart, timeframe tabs, Buy/Sell toggle, order type, price/amount inputs, order book depth, Place Order.' },
-  { id: 'orderbook', emoji: '📕', label: 'Order Book', cat: 'crypto', prompt: 'Order book with bid/ask columns, volume bars, spread indicator, last trade price, depth chart.' },
-  { id: 'portfolio', emoji: '🥧', label: 'Portfolio', cat: 'crypto', prompt: 'Portfolio with donut chart, total value, 24h P&L, asset list with allocation %, performance.' },
-  { id: 'nft', emoji: '🖼️', label: 'NFT Gallery', cat: 'crypto', prompt: 'NFT gallery masonry grid, each with name, collection, price in ETH/SOL, creator avatar, filter tabs.' },
-  { id: 'nftdetail', emoji: '🎨', label: 'NFT Detail', cat: 'crypto', prompt: 'NFT detail with large image, name, collection, owner/creator, price, Bid/Buy buttons, Properties, Activity tabs.' },
-  { id: 'voting', emoji: '🗳️', label: 'Voting/Governance', cat: 'crypto', prompt: 'DAO governance with proposals, status badges, Yes/No vote bars, time remaining, voting power, Vote button.' },
-  { id: 'staking', emoji: '🔒', label: 'Staking', cat: 'crypto', prompt: 'Staking with APY, total staked, rewards with claim, Stake/Unstake, amount input, lock periods, validators.' },
-  { id: 'defi', emoji: '🏦', label: 'DeFi Dashboard', cat: 'crypto', prompt: 'DeFi dashboard with TVL, yield farming pools, liquidity pools, Supply/Borrow tabs, health factor.' },
-  { id: 'txhistory', emoji: '📜', label: 'Transaction History', cat: 'crypto', prompt: 'Transaction history with filter chips, items with type icon, amount, USD value, status badge, date.' },
-  { id: 'cryptonews', emoji: '📰', label: 'Crypto News', cat: 'crypto', prompt: 'News feed with featured article banner, news list with thumbnails, category tabs: All, Bitcoin, DeFi, NFT.' },
-  { id: 'karma', emoji: '⭐', label: 'Karma/XP', cat: 'gamify', prompt: 'Gamification with level badge, XP bar, karma points, streak, achievement badges grid, daily tasks with rewards.' },
-  { id: 'leaderboard', emoji: '🏆', label: 'Leaderboard', cat: 'gamify', prompt: 'Leaderboard with top 3 podium, rank list with avatar/name/XP/level. Tabs: Daily, Weekly, All Time.' },
-  { id: 'rewards', emoji: '🎁', label: 'Rewards Store', cat: 'gamify', prompt: 'Rewards store with points balance, redeemable items: NFTs, merch, premium features. Image, title, cost, Redeem.' },
-  { id: 'dailytasks', emoji: '✅', label: 'Daily Tasks', cat: 'gamify', prompt: 'Daily tasks with reset timer, task list with icon, description, XP reward, progress, claim button.' },
-  { id: 'achievements', emoji: '🏅', label: 'Achievements', cat: 'gamify', prompt: 'Achievements grid with badges, name, progress, rarity (Common/Rare/Epic/Legendary), locked badges grayed.' },
-  { id: 'referral', emoji: '🤝', label: 'Referral Program', cat: 'gamify', prompt: 'Referral with code/link, copy and share, rewards earned, tier system, referred users list.' },
-  { id: 'shop', emoji: '🛍️', label: 'Shop/Store', cat: 'ecommerce', prompt: 'Shop with search, category chips, featured banner, product grid with image, name, price, rating, Add to Cart.' },
-  { id: 'productdetail', emoji: '📦', label: 'Product Detail', cat: 'ecommerce', prompt: 'Product detail with image carousel, name, price, rating, size/color selectors, quantity, Add to Cart, Buy Now.' },
-  { id: 'cart', emoji: '🛒', label: 'Shopping Cart', cat: 'ecommerce', prompt: 'Cart with item list (thumbnail, name, price, quantity controls, remove), promo code, price breakdown, Checkout.' },
-  { id: 'checkout', emoji: '💳', label: 'Checkout', cat: 'ecommerce', prompt: 'Checkout with steps (Address > Payment > Review), shipping address, payment methods, order summary, Place Order.' },
-  { id: 'orders', emoji: '📋', label: 'My Orders', cat: 'ecommerce', prompt: 'Orders with tabs (Active, Completed, Cancelled), order cards with date, ID, thumbnails, status, Track/Reorder.' },
-  { id: 'videofeed', emoji: '🎬', label: 'Video Feed', cat: 'media', prompt: 'TikTok-style fullscreen video with user info overlay, action column (like, comment, share, bookmark, sound).' },
-  { id: 'livevideo', emoji: '🔴', label: 'Live Stream', cat: 'media', prompt: 'Live stream with video, LIVE badge, viewer count, floating chat, reactions, gift button, comment input.' },
-  { id: 'podcast', emoji: '🎙️', label: 'Podcast/Spaces', cat: 'media', prompt: 'Audio spaces with host avatar, co-hosts row, listeners grid, hand raise, mute, leave, topic title.' },
-  { id: 'musicplayer', emoji: '🎵', label: 'Music Player', cat: 'media', prompt: 'Music player with album art, song title, artist, progress bar, play/skip controls, volume, like, lyrics.' },
-  { id: 'gallery', emoji: '🖼️', label: 'Photo Gallery', cat: 'media', prompt: 'Photo gallery grid (1x1 and 2x1 tiles), select mode, album tabs, upload FAB, action bar for selected.' },
+  // ════════ 1. LANDING ════════
+  { id: 'landing-v1', emoji: '🚀', label: 'Landing V1 — Centered', cat: 'onboard', prompt: 'TrendUp secure messaging landing screen. Centered layout: large "TrendUp" logo at center, "PRIVATE BY DESIGN" tagline below in small uppercase tracking-widest text, two stacked outline buttons "New account" and "Existing account" with rounded borders. Subtle crosshatch/geometric pattern background. Clean, minimal, trust-focused. Red accent (#dc2626) for highlights. Status bar at top with 9:41 time.' },
+  { id: 'landing-v2', emoji: '🚀', label: 'Landing V2 — Hero Image', cat: 'onboard', prompt: 'TrendUp landing with large hero illustration at top showing encrypted shield/lock graphic, "TrendUp" logo below, tagline "End-to-end encrypted messaging" in muted text, "Get Started" primary red button and "I have an account" text link below. Gradient from dark navy to brand bg. Status bar at top.' },
+  { id: 'landing-v3', emoji: '🚀', label: 'Landing V3 — Split Screen', cat: 'onboard', prompt: 'TrendUp landing split screen: top 60% dark gradient with large shield icon animation placeholder and "TrendUp" text, bottom 40% white card with rounded top corners containing "Private by Design" heading, brief description "Your messages are encrypted and can self-destruct", two buttons side by side "Sign Up" (filled red) and "Sign In" (outline). Status bar at top.' },
+  { id: 'landing-v4', emoji: '🚀', label: 'Landing V4 — Glassmorphism', cat: 'onboard', prompt: 'TrendUp landing with full-screen dark gradient background, floating glassmorphism card in center with blur backdrop, "TrendUp" logo with glow effect, "PRIVATE BY DESIGN" tagline, animated dots/particles in background, "Create Account" red gradient button and "Already have an account? Sign in" link. Premium feel.' },
+
+  // ════════ 2. SIGN IN ════════
+  { id: 'signin-v1', emoji: '🔑', label: 'Sign In V1 — Stacked Cards', cat: 'onboard', prompt: 'TrendUp sign-in screen with two stacked method cards. Card 1: "Username · password" badge, Handle input field, Password input field, "Register" outline button and "Sign in" filled red button side by side. Card 2: "Wallet" badge in teal/green, "Use browser wallet" teal gradient button and "Paste address" outline button side by side, wallet address fallback input, "Create challenge → sign" button. Logo at top, "PRIVATE BY DESIGN" tagline. Pattern background.' },
+  { id: 'signin-v2', emoji: '🔑', label: 'Sign In V2 — Tab Switch', cat: 'onboard', prompt: 'TrendUp sign-in with tab switcher at top: "Password" tab and "Wallet" tab. Password tab active shows: Handle input with user icon, Password input with lock icon, "Forgot password?" link, "Sign In" red button, "New here? Register" link. Wallet tab shows: large wallet icon, "Connect Wallet" teal button, OR divider, paste address input. Logo centered above tabs. Clean minimal layout.' },
+  { id: 'signin-v3', emoji: '🔑', label: 'Sign In V3 — Full Screen Dark', cat: 'onboard', prompt: 'TrendUp sign-in full dark theme. Large "TrendUp" text at top left, "Sign in to your secure vault" subtitle. Username field with @ prefix styling, Password field with show/hide toggle, "Sign In" wide red gradient button. Divider "OR CONNECT WALLET". Browser wallet button with MetaMask-style icon, Paste address option. "No account? Create one" at bottom. Dark charcoal background with subtle grid.' },
+  { id: 'signin-v4', emoji: '🔑', label: 'Sign In V4 — Biometric', cat: 'onboard', prompt: 'TrendUp sign-in with biometric option. Center: large fingerprint icon with pulsing ring animation placeholder, "Unlock with Biometrics" text. Below: "Or sign in with" section, Handle + Password fields compact, Sign In button. At bottom: "Connect Wallet" alternate option as text link. Minimal, security-focused feel. Dark background.' },
+
+  // ════════ 3. SESSION LOCKED ════════
+  { id: 'locked-v1', emoji: '🔐', label: 'Locked V1 — Minimal', cat: 'onboard', prompt: 'TrendUp session locked screen. Minimal centered layout: "TrendUp" logo, "PRIVATE BY DESIGN" tagline, "Session locked" heading in bold, "Enter password to unlock Hub messages on this device." in muted text, single password input field with lock icon, "Unlock" red button. Pattern/crosshatch background. Very clean and focused.' },
+  { id: 'locked-v2', emoji: '🔐', label: 'Locked V2 — Shield Lock', cat: 'onboard', prompt: 'TrendUp session locked with large shield+lock icon centered, glowing red accent ring around it, "Your session has expired" heading, "Messages are still encrypted on device" reassurance text in muted, password input field, "Unlock Vault" red gradient button, "Sign out" text link at bottom. Dark gradient background.' },
+  { id: 'locked-v3', emoji: '🔐', label: 'Locked V3 — PIN Code', cat: 'onboard', prompt: 'TrendUp session locked with PIN entry style: "TrendUp" logo at top, lock icon, "Enter your PIN" heading, 6 circular PIN dots (filled/empty), numeric keypad grid (1-9, 0) with backspace, "Forgot PIN? Use password" text link, "Sign out" at bottom. Dark surface card on dark bg. Clean security feel.' },
+  { id: 'locked-v4', emoji: '🔐', label: 'Locked V4 — Timer Expired', cat: 'onboard', prompt: 'TrendUp session locked showing timer context: "Session timed out" with countdown that reached 00:00, clock icon with red X, "For your security, sessions auto-lock after inactivity" explanation, password field, "Unlock" button, "Change auto-lock duration" settings link. Bottom: last active time shown. Professional security UX.' },
+
+  // ════════ 4. SECURING DEVICE ════════
+  { id: 'securing-v1', emoji: '🛡️', label: 'Securing V1 — Progress Steps', cat: 'onboard', prompt: 'TrendUp securing device screen. "TrendUp" logo at top, "PRIVATE BY DESIGN" tagline, "Securing your device" heading, "This may take a few moments." text, animated progress bar (60% filled in red), three feature rows below: 1) Shield icon + "Encryption" + "Keys generated locally", 2) Clock icon + "Ephemeral controls" + "Timers available after setup", 3) Eye icon + "Minimal metadata" + "Policy-owned retention". Each row has icon, title, subtitle. Pattern bg.' },
+  { id: 'securing-v2', emoji: '🛡️', label: 'Securing V2 — Circular Progress', cat: 'onboard', prompt: 'TrendUp securing device with large circular progress ring centered (75% fill, red gradient), percentage in center "75%", "Setting up encryption..." text below ring, step indicators: checkmark "Key generation" (done), spinner "Device binding" (in progress), gray "Sync ready" (pending). "TrendUp" logo subtle at top. Dark background with glow around progress ring.' },
+  { id: 'securing-v3', emoji: '🛡️', label: 'Securing V3 — Animated Steps', cat: 'onboard', prompt: 'TrendUp securing device with vertical stepper/timeline: Step 1 "Generating encryption keys" with green check, Step 2 "Binding to device" with spinning loader, Step 3 "Configuring timers" grayed out, Step 4 "Ready to message" grayed out. Each step has icon + title + subtitle description. Progress bar at bottom. "Almost there..." encouraging text. Dark card on dark bg.' },
+
+  // ════════ 5. SECURE INBOX ════════
+  { id: 'inbox-v1', emoji: '💬', label: 'Inbox V1 — Classic List', cat: 'inbox', prompt: 'TrendUp secure inbox/conversation list. Header: "Secure conversations" title with compose/edit icon button. Thread list: each row has circular avatar with initial letter (colored backgrounds), name + participant count (e.g. "Amy +3"), subtitle with preview text and timestamp, trailing chevron, optional unread count badge in red. Three threads shown: "Amy +3" (group, active/highlighted), "stevej" (1 unread badge), "Family" (Dirky: photo). Bottom tab bar: Messages (active, red), Contacts, Settings icons with labels.' },
+  { id: 'inbox-v2', emoji: '💬', label: 'Inbox V2 — Hub Dark', cat: 'inbox', prompt: 'TrendUp inbox dark Hub theme. Top toolbar: "New" button (lime accent), unified search bar "Search name, @handle, or paste wallet", kebab menu "⋮". Tab strip: "Inbox" active, "Groups" tab. Thread list dark theme: avatar circles, names bold white, preview text muted gray, timestamps right-aligned, unread count badges in lime (#dff352). Charcoal canvas (#181818) with panel (#242424) surfaces. Border color #404040.' },
+  { id: 'inbox-v3', emoji: '💬', label: 'Inbox V3 — Card Style', cat: 'inbox', prompt: 'TrendUp inbox with card-based thread layout instead of flat list. Each conversation is a rounded card with slight elevation/shadow, avatar left, name + preview in middle, timestamp + unread badge right, subtle timer icon if ephemeral. Search bar at top with filter chips: "All", "Unread", "Groups", "Encrypted". Floating red FAB at bottom right for new message. Light theme with clean spacing.' },
+  { id: 'inbox-v4', emoji: '💬', label: 'Inbox V4 — Swipe Actions', cat: 'inbox', prompt: 'TrendUp inbox showing swipe action hints. Normal thread list but one thread partially swiped left revealing action buttons: red "Delete", amber "Mute", blue "Archive". Header with search icon and "New" button. Each thread shows avatar, name, last message preview, time, encryption lock icon, optional timer badge showing remaining time (e.g. "2d left"). Bottom navigation tabs. Light theme.' },
+
+  // ════════ 6. CHAT LIGHT ════════
+  { id: 'chat-light-v1', emoji: '💭', label: 'Chat Light V1 — Full Featured', cat: 'chat', prompt: 'TrendUp active chat screen light theme. Chat header: "‹ Inbox" back, "stevej" title centered, "i" info button. Message bubbles: incoming (left, with small avatar "S", white/light bg) and outgoing (right, gray bg #e2e8f0). Each message has burn timer countdown below in red (e.g. "*4d 23h 50m 26s"), timestamp. Toolbar: timer button showing "1d · off" with clock icon, camera, gallery, voice, attach buttons. Composer bar: sparkle/AI button, text input "Auto-removes after 1 day — type below…", Send button red. Pattern background.' },
+  { id: 'chat-light-v2', emoji: '💭', label: 'Chat Light V2 — Minimal Clean', cat: 'chat', prompt: 'TrendUp chat light minimal variant. Clean white background. Bubbles: outgoing right-aligned with subtle brand tint, incoming left with avatar. Timer shown as small pill badge on each message (e.g. "🔥 4d 23h"). Simple composer: just text input and send button. Header: back arrow, username, online dot indicator, info icon. No toolbar clutter — attachments via + button that expands. Day separator "Today" between messages.' },
+  { id: 'chat-light-v3', emoji: '💭', label: 'Chat Light V3 — Timer Panel Open', cat: 'chat', prompt: 'TrendUp chat with timer panel expanded/visible. Chat messages in background slightly dimmed. Foreground: timer panel overlay or bottom sheet with two sections. Section 1 "Lifetime" with scrollable button row: Off, 10s, 1m, 5m, 10m, 1h, 6h, 12h, 1d (selected/highlighted), 1w, 2w, 4w, 6mo, 1y. Section 2 "Burn after open": Off (selected), 1m, 3m, 1h, 1d. Header: "Timers · next outgoing message". Light theme with red accent on selected options.' },
+  { id: 'chat-light-v4', emoji: '💭', label: 'Chat Light V4 — Conversation Info', cat: 'chat', prompt: 'TrendUp conversation info sheet (shown when tapping "i" in chat header). Card/bottom sheet showing: user avatar large, username "stevej", encryption status "E2EE active" with green badge. Info rows: "Lifetime (next send): 1 day", "Burn after open: Off", "Markdown: On · sanitized subset". Danger zone at bottom: red "Clear all messages in this thread…" button. Light theme, clean card layout.' },
+
+  // ════════ 7. CHAT DARK ════════
+  { id: 'chat-dark-v1', emoji: '🌙', label: 'Chat Dark V1 — Hub Production', cat: 'chat', prompt: 'TrendUp chat dark Hub production theme matching /hub/chats. Charcoal canvas (#181818) background, panel (#242424) surfaces. Chat header: "‹ Inbox" back, "stevej" title, info button. Lime accent (#dff352) for active elements. Message bubbles: incoming with dark panel bg, outgoing slightly lighter. Timer countdown in lime text below each message. Composer: dark input with border #404040, lime-tinted Send button. Toolbar: timer "1d", attach button. Minimal chrome.' },
+  { id: 'chat-dark-v2', emoji: '🌙', label: 'Chat Dark V2 — Midnight Blue', cat: 'chat', prompt: 'TrendUp chat dark variant with midnight blue theme. Deep navy (#0A0A1A) background, indigo (#6366F1) accents. Message bubbles: outgoing indigo-tinted, incoming dark surface. Timer badges with purple glow. Composer with gradient border on focus. Header with blur backdrop effect. Modern, premium dark feel. Encryption lock icon in header.' },
+  { id: 'chat-dark-v3', emoji: '🌙', label: 'Chat Dark V3 — AMOLED Black', cat: 'chat', prompt: 'TrendUp chat AMOLED pure black theme. Background pure #000000, surfaces #111111, borders #222222. Red accent (#dc2626) for primary actions. Messages: outgoing dark red-tinted bg, incoming #111 bg. Timer text in red. Send button red. Minimal UI chrome, maximum contrast. Great for OLED screens. Header transparent with subtle bottom border.' },
+  { id: 'chat-dark-v4', emoji: '🌙', label: 'Chat Dark V4 — Markdown Bubbles', cat: 'chat', prompt: 'TrendUp chat dark theme showcasing markdown rendering in bubbles. Show messages with: one bubble with **bold** and *italic* formatted text, one with a code block, one with a bullet list. Each has timer countdown. Dark theme (#181818 bg). Bubble styling supports rich text with proper typography. Header shows markdown toggle indicator. Composer with markdown formatting hint.' },
+
+  // ════════ 8. HUB INBOX CHROME ════════
+  { id: 'hubchrome-v1', emoji: '🔍', label: 'Hub Chrome V1 — Search & New', cat: 'inbox', prompt: 'TrendUp Hub inbox toolbar dark theme. Top: "New" button (lime bg #dff352 with dark text), unified search bar "Search name, @handle, or paste wallet" with magnifying glass icon, kebab "⋮" menu button. Below: Tab strip "Inbox" | "Groups". Thread list with dark rows. This focuses on the chrome/toolbar area. Charcoal canvas (#181818), lime accent (#dff352). Show the full inbox with these interactive toolbar elements prominent.' },
+  { id: 'hubchrome-v2', emoji: '🔍', label: 'Hub Chrome V2 — Kebab Menu Open', cat: 'inbox', prompt: 'TrendUp Hub inbox with the ⋮ overflow menu opened. Menu dropdown/popover showing options: "Mute all notifications", "Mark all as read", "Archived threads", "Clear search", "Settings". Dark theme popup with sharp borders #404040, items with hover states. Behind: dimmed inbox list. Menu has subtle shadow. Lime accent for selected/hover state.' },
+  { id: 'hubchrome-v3', emoji: '🔍', label: 'Hub Chrome V3 — New DM Expanded', cat: 'inbox', prompt: 'TrendUp Hub "Start / open DM" expanded panel. After clicking "New" button, a panel/dropdown appears with: search input "Find by @handle or paste wallet", recent contacts list with avatars and names, "Paste wallet address" section with input field and QR scan option, "Start conversation" button. Dark theme with lime accents. Shows the full flow of starting a new DM.' },
+  { id: 'hubchrome-v4', emoji: '🔍', label: 'Hub Chrome V4 — Thread Row Menu', cat: 'inbox', prompt: 'TrendUp Hub thread row with ⋮ context menu open. A single thread row has its kebab menu expanded showing: "Mute", "Archive", "Delete thread", "Block user", "View profile". Dark popover menu positioned near the thread row. Rest of inbox visible but slightly dimmed. Shows conversation-level actions. Red text for destructive actions (Delete, Block).' },
+
+  // ════════ 9. GROUPS ════════
+  { id: 'groups-v1', emoji: '👥', label: 'Groups V1 — Shapes Overview', cat: 'groups', prompt: 'TrendUp Groups tab screen dark theme. Tab strip: "Inbox" and "Groups" (active, lime underline). "Groups on TrendUp" heading bold. Intro text: "We mix ideas people like from modern messengers, photo-first social, and open conversation — expressed in our own layouts and names." "Pick a shape" label. Three shape cards stacked: 1) "House line" — "Broadcast-style updates with threaded replies — official voice + discussion.", 2) "Circle" — "Small trusted lists for photos and voice notes — tight groups.", 3) "Squad room" — "Fast file + voice + pin stack — topic headers and search." Three CTA buttons at bottom: "Create House line" (primary lime), "Create Circle" (outline), "Create Squad" (outline). Legal note at bottom. Dark charcoal theme.' },
+  { id: 'groups-v2', emoji: '👥', label: 'Groups V2 — Card Grid', cat: 'groups', prompt: 'TrendUp Groups variant with visual card grid layout. Each group shape is a large card with icon illustration at top, shape name bold, description below, member count "0 members", "Create" button on each card. Cards arranged in a 1-column scrollable layout with generous spacing. Header with "Groups" title and search. Dark theme with each card having subtle unique accent color (lime for House, teal for Circle, amber for Squad).' },
+  { id: 'groups-v3', emoji: '👥', label: 'Groups V3 — Active Groups List', cat: 'groups', prompt: 'TrendUp Groups with existing groups list. Top: "Your Groups" section showing 2-3 active groups with group avatar, name, member count, last message preview, unread badge. Below: divider, then "Create New Group" section with the 3 shape options as compact buttons with icons. Bottom: "Discover Groups" section with suggested/public groups. Dark theme, lime accents for active states.' },
+  { id: 'groups-v4', emoji: '👥', label: 'Groups V4 — Create Group Flow', cat: 'groups', prompt: 'TrendUp create group flow screen. Step-by-step: "Choose group shape" with 3 options highlighted, selected shape "Circle" has check mark. Below: "Group name" input field, "Description" textarea, "Add members" section with search bar and selected member chips/tags. Privacy toggle: "Private" or "Public". "Create Group" red/lime button at bottom. Dark theme with clear visual hierarchy.' },
+
+  // ════════ 10. ACCOUNT & DEVICE ════════
+  { id: 'account-v1', emoji: '⚙️', label: 'Account V1 — Settings Panel', cat: 'settings', prompt: 'TrendUp Account & device settings panel dark theme. Collapsible section with "Account & device ▾" header. Settings rows with toggle switches: 1) "Sounds" ON — "Receive ping + send click when tab is visible", 2) "Mute chat" UNMUTED — "Receive ping only for @stevej", 3) "Secure Mode" OFF (amber warning) — "Blocks copy & context menu; locks thread if tab loses focus." Green status: "E2EE keys ready on this device." "Approve a new device" section with 8-char code input and "Approve" button. Hint text at bottom. Charcoal canvas dark theme.' },
+  { id: 'account-v2', emoji: '⚙️', label: 'Account V2 — Grouped Sections', cat: 'settings', prompt: 'TrendUp Account settings with grouped card sections. Card 1 "Privacy & Security": Secure Mode toggle, E2EE status with green dot, Auto-lock timer dropdown (5m, 15m, 30m, 1h). Card 2 "Notifications": Sounds toggle, Mute toggle, Notification preview toggle. Card 3 "Devices": Current device info, "Approve new device" with code input, "Revoke all other sessions" red button. Card 4 "Account": Username display, "Change password", "Delete account" red. Dark theme, each card with surface (#242424) bg.' },
+  { id: 'account-v3', emoji: '⚙️', label: 'Account V3 — Profile & Security', cat: 'settings', prompt: 'TrendUp Account with profile section at top: avatar circle with camera edit overlay, display name, @handle, "Connected wallet" showing truncated address with copy icon. Below: security settings list style with chevron navigation: "Encryption keys" → "Device management" → "Auto-lock" → "Notification preferences" → "Secure Mode" → "Blocked users" → "About TrendUp". Sign out button at bottom in red. Dark theme, clean list layout.' },
+  { id: 'account-v4', emoji: '⚙️', label: 'Account V4 — Device Approval', cat: 'settings', prompt: 'TrendUp device approval focused screen. Large device icon at top, "Approve a New Device" heading, explanation: "Paste the code from another browser. Requires secure session so a stolen cookie alone cannot add devices." Large 8-character code input field with monospace font, clear button. "Approve Device" red button. Below: "Active devices" list showing device name, browser, last active time, "Revoke" button for each. Dark charcoal theme.' },
+
+  // ════════ 11. EDGE STATES ════════
+  { id: 'edge-v1', emoji: '⚠️', label: 'Edge V1 — Signed Out', cat: 'edge', prompt: 'TrendUp Hub edge state: signed out / unauthorized. Dark theme. Amber/yellow warning banner at top: "Sign in to load and send direct messages" bold, "Threads sync from the server after you authenticate. You can still explore the full UI here." description, "Sign in" button. Below: dimmed/disabled toolbar with "New" button (grayed out), search bar, kebab menu. Empty thread area. Note: "New disabled when unauthorized". Shows what users see before authentication.' },
+  { id: 'edge-v2', emoji: '⚠️', label: 'Edge V2 — Empty Inbox', cat: 'edge', prompt: 'TrendUp Hub edge state: authenticated but zero threads. Dark theme. Active toolbar at top: "New" button (lime), search bar, kebab menu. Large empty state illustration in center: messaging/chat bubble icon outline, "No conversations yet" heading, "Start a new DM with the New button above, or search for a @handle or wallet address." description. Subtle animation placeholder. Clean, encouraging empty state.' },
+  { id: 'edge-v3', emoji: '⚠️', label: 'Edge V3 — Connection Error', cat: 'edge', prompt: 'TrendUp connection error state. Dark theme. Red warning icon at top center, "Connection lost" heading, "Unable to reach TrendUp servers. Your messages are safe and encrypted on device." reassurance text, "Retry" red button, "Work offline" outline button. Last sync timestamp shown: "Last synced: 2 minutes ago". Subtle pulse animation on retry button. Professional error handling UX.' },
+  { id: 'edge-v4', emoji: '⚠️', label: 'Edge V4 — Filter No Results', cat: 'edge', prompt: 'TrendUp inbox with search/filter active but no results. Dark theme. Search bar active with query text "@unknownuser", filter chips active. Empty area below with search icon, "No conversations found" heading, "Try a different search term or start a new conversation" text, "Clear search" button and "Start new DM" button side by side. Shows the no-results UX path clearly.' },
 ];
 
 const PRESET_CATEGORIES = [
   { id: 'all', label: 'All', icon: LayoutGrid },
-  { id: 'core', label: 'Core', icon: Layers },
-  { id: 'social', label: 'Social', icon: Users },
-  { id: 'crypto', label: 'Crypto', icon: TrendingUp },
-  { id: 'gamify', label: 'Gamify', icon: Trophy },
-  { id: 'ecommerce', label: 'Shop', icon: ShoppingCart },
-  { id: 'media', label: 'Media', icon: Film },
+  { id: 'onboard', label: 'Onboarding', icon: LogIn },
+  { id: 'inbox', label: 'Inbox', icon: Layers },
+  { id: 'chat', label: 'Chat', icon: MessageSquare },
+  { id: 'groups', label: 'Groups', icon: Users },
+  { id: 'settings', label: 'Settings', icon: Settings },
+  { id: 'edge', label: 'Edge States', icon: AlertCircle },
 ];
 
 const SUGGESTED_SETS = [
-  { name: '🚀 TrendUp Complete', desc: 'Full social crypto app', pages: ['Splash Screen','Login','Home Feed','For You Feed','Discover','Chat List','Chat Room','My Profile','Notifications','Crypto Wallet','Market Overview','Trading','NFT Gallery','Voting','Karma XP','Live Forum','Settings'] },
-  { name: '💰 Crypto Trading', desc: 'Wallet, trading, portfolio', pages: ['Splash Screen','Login','Crypto Wallet','Token Detail','Send Crypto','Receive Crypto','Swap Tokens','Market Overview','Trading','Order Book','Portfolio','Transaction History','Settings'] },
-  { name: '📱 Social Media', desc: 'Instagram/Twitter style', pages: ['Splash Screen','Onboarding Intro','Login','Register','Home Feed','Discover','Create Post','My Profile','Edit Profile','Chat List','Chat Room','Notifications','Story Viewer','Comments','Settings'] },
-  { name: '🎮 GameFi', desc: 'Gamified crypto with rewards', pages: ['Splash Screen','Login','Home Feed','Crypto Wallet','Karma XP','Leaderboard','Daily Tasks','Achievements','Rewards Store','Referral Program','NFT Gallery','Settings'] },
-  { name: '🛍️ Crypto E-Commerce', desc: 'Shop with crypto payments', pages: ['Splash Screen','Login','Shop Store','Product Detail','Shopping Cart','Checkout','My Orders','Crypto Wallet','My Profile','Settings'] },
+  { name: '🔐 TrendUp Full App', desc: 'All 11 screens — complete secure messaging app', pages: ['Landing','Sign In','Session Locked','Securing Device','Secure Inbox','Chat Light','Chat Dark Hub','Hub Inbox Chrome','Groups','Account & Device','Edge States'] },
+  { name: '📱 Onboarding Flow', desc: 'Landing to first message', pages: ['Landing','Sign In','Securing Device','Session Locked','Secure Inbox'] },
+  { name: '💬 Chat Experience', desc: 'Inbox + chat in both themes', pages: ['Secure Inbox','Hub Inbox Chrome','Chat Light','Chat Dark Hub','Groups'] },
+  { name: '🛡️ Security Screens', desc: 'Auth, lock, device approval', pages: ['Sign In','Session Locked','Securing Device','Account & Device','Edge States'] },
+  { name: '🌙 Dark Hub Complete', desc: 'All Hub dark theme screens', pages: ['Hub Inbox Chrome','Chat Dark Hub','Groups','Account & Device','Edge States'] },
 ];
 
 const THEME_PRESETS = [
-  { id: 'trendup', name: 'TrendUp Dark', primary: '#22C55E', bg: '#0F1419', surface: '#1A1F2E', text: '#E5E7EB', font: 'Inter' },
+  { id: 'trendup-light', name: 'TrendUp Light', primary: '#dc2626', bg: '#FFFFFF', surface: '#F1F5F9', text: '#0F172A', font: 'Inter' },
+  { id: 'trendup-dark', name: 'TrendUp Hub Dark', primary: '#dff352', bg: '#181818', surface: '#242424', text: '#F1F5F9', font: 'Inter' },
+  { id: 'trendup-red', name: 'TrendUp Red Accent', primary: '#dc2626', bg: '#0F172A', surface: '#1E293B', text: '#F8FAFC', font: 'Inter' },
   { id: 'midnight', name: 'Midnight Blue', primary: '#6366F1', bg: '#0A0A1A', surface: '#12122B', text: '#E0E7FF', font: 'Inter' },
-  { id: 'sunset', name: 'Sunset', primary: '#F97316', bg: '#1A0A00', surface: '#2D1800', text: '#FFF7ED', font: 'Plus Jakarta Sans' },
   { id: 'ocean', name: 'Ocean', primary: '#0EA5E9', bg: '#0A1628', surface: '#0F2340', text: '#E0F2FE', font: 'DM Sans' },
-  { id: 'rose', name: 'Rose Gold', primary: '#F43F5E', bg: '#1A0A0F', surface: '#2D1219', text: '#FFE4E6', font: 'Outfit' },
   { id: 'neon', name: 'Neon Green', primary: '#10B981', bg: '#020C07', surface: '#041F14', text: '#D1FAE5', font: 'Space Grotesk' },
   { id: 'light', name: 'Clean White', primary: '#6366F1', bg: '#FFFFFF', surface: '#F3F4F6', text: '#1F2937', font: 'Inter' },
-  { id: 'gold', name: 'Crypto Gold', primary: '#FBBF24', bg: '#0F0D08', surface: '#1F1B0E', text: '#FEF3C7', font: 'Montserrat' },
+  { id: 'charcoal-lime', name: 'Charcoal Lime', primary: '#dff352', bg: '#0F0F0F', surface: '#1A1A1A', text: '#E5E7EB', font: 'Inter' },
   { id: 'purple', name: 'Deep Purple', primary: '#A855F7', bg: '#0D0515', surface: '#1A0E2E', text: '#F3E8FF', font: 'Outfit' },
-  { id: 'coral', name: 'Coral Red', primary: '#EF4444', bg: '#150505', surface: '#2B0E0E', text: '#FEE2E2', font: 'DM Sans' },
+  { id: 'amoled', name: 'AMOLED Black', primary: '#dc2626', bg: '#000000', surface: '#111111', text: '#FFFFFF', font: 'Inter' },
 ];
 
 const DEVICES = [
@@ -142,12 +152,12 @@ function buildSystemPrompt(brand, allPages, currentPageName, hasLogo, extraConte
   const referenceCode = masterPage?.html ? `\nMASTER REFERENCE (Follow EXACT style):\n${masterPage.html.substring(0, 2500)}` : '';
   const existingPages = allPages.map(p => p.name).join(', ');
   const defaultTabs = [
-    { icon: 'fa-house', label: 'Home' }, { icon: 'fa-compass', label: 'Discover' },
-    { icon: 'fa-wallet', label: 'Wallet' }, { icon: 'fa-comment', label: 'Chat' }, { icon: 'fa-user', label: 'Profile' },
+    { icon: 'fa-comment', label: 'Messages' }, { icon: 'fa-users', label: 'Groups' },
+    { icon: 'fa-address-book', label: 'Contacts' }, { icon: 'fa-gear', label: 'Settings' },
   ];
 
-  return `You are a World-Class Mobile App UI/UX Designer.
-Generate a COMPLETE production-ready HTML for "${currentPageName}" mobile screen.
+  return `You are a World-Class Mobile App UI/UX Designer specializing in secure messaging apps.
+Generate a COMPLETE production-ready HTML for "${currentPageName}" mobile screen for TrendUp — a private, end-to-end encrypted messaging platform with wallet integration, ephemeral timers, and secure device binding.
 ${extraContext || ''}
 ===== MANDATORY LAYOUT (EVERY SCREEN MUST FOLLOW) =====
 
@@ -176,7 +186,10 @@ Highlight tab matching "${currentPageName}" as active (color: ${brand.primary}).
 ===== END LAYOUT =====
 
 RULES:
-- App: ${brand.name}, Accent: ${brand.primary}, BG: ${brand.bg || '#0F1419'}, Surface: ${brand.surface || '#1A1F2E'}, Text: ${brand.text || '#E5E7EB'}, Font: ${brand.font || 'Inter'}
+- App: ${brand.name} (TrendUp Secure Messaging), Accent: ${brand.primary}, BG: ${brand.bg || '#0F1419'}, Surface: ${brand.surface || '#1A1F2E'}, Text: ${brand.text || '#E5E7EB'}, Font: ${brand.font || 'Inter'}
+- Design tokens: Light lane uses red accent (#dc2626), Dark Hub lane uses charcoal (#181818) + lime (#dff352)
+- Security-focused UI: E2EE badges, timer countdowns, lock icons, encryption status indicators
+- Features: Wallet connect (browser wallet + paste address), ephemeral timers (lifetime + burn-after-read), markdown bubbles, device approval
 - Dark theme, rounded corners, soft shadows, glassmorphism
 - Pages: ${existingPages}
 ${hasLogo ? '- Logo via {{APP_LOGO}} placeholder in header.' : ''}
@@ -220,12 +233,12 @@ function ToastContainer({ toasts }) {
 export default function App() {
   const [brand, setBrand] = useState(() => {
     try { const s = localStorage.getItem('v2ui_brand_v5'); if (s) return JSON.parse(s); } catch {}
-    return { name: 'TrendUp', logo: '', primary: '#22C55E', bg: '#0F1419', surface: '#1A1F2E', text: '#E5E7EB', font: 'Inter' };
+    return { name: 'TrendUp', logo: '', primary: '#dc2626', bg: '#0F172A', surface: '#1E293B', text: '#F8FAFC', font: 'Inter' };
   });
 
   const pagesHistory = useHistory(() => {
     try { const s = localStorage.getItem('v2ui_pages_v5'); if (s) return JSON.parse(s); } catch {}
-    return [{ id: '1', name: 'Home Feed', html: '' }];
+    return [{ id: '1', name: 'Landing', html: '' }];
   });
   const pages = typeof pagesHistory.value === 'function' ? pagesHistory.value() : pagesHistory.value;
 
@@ -563,7 +576,7 @@ export default function App() {
             {logoBase64 ? <img src={logoBase64} alt="" className="w-5 h-5 object-contain" /> : <Smartphone size={16} className="text-white" />}
           </div>
           <div>
-            <span className="text-white font-black tracking-tight text-sm">V2UI <span style={{ color: brand.primary }}>Studio</span></span>
+            <span className="text-white font-black tracking-tight text-sm">TrendUp <span style={{ color: brand.primary }}>Designer</span></span>
             <span className="ml-2 px-1.5 py-0.5 rounded text-[7px] font-black border uppercase tracking-widest" style={{ color: brand.primary, borderColor: brand.primary + '30', background: brand.primary + '10' }}>Pro</span>
           </div>
         </div>
@@ -797,7 +810,7 @@ export default function App() {
             <h2 className="text-lg font-black text-white mb-4 flex items-center gap-2"><Plus size={18} style={{ color: brand.primary }} /> New Screen</h2>
             <input autoFocus type="text" value={newPageName} onChange={e => setNewPageName(e.target.value)} className="w-full bg-white/5 border border-white/5 rounded-lg p-3 text-white text-sm outline-none mb-3" placeholder="Screen name..." />
             <div className="flex flex-wrap gap-1 mb-4">
-              {['Home Feed','Profile','Wallet','Chat','Settings','Discover','Notifications','Market','Trading','NFT Gallery','Voting','Staking','Login','Register'].map(n => (
+              {['Landing','Sign In','Session Locked','Securing Device','Secure Inbox','Chat Light','Chat Dark Hub','Hub Inbox Chrome','Groups','Account & Device','Edge States'].map(n => (
                 <button key={n} type="button" onClick={() => setNewPageName(n)} className="px-2 py-0.5 bg-white/5 rounded text-[8px] font-bold text-slate-500 hover:text-white">{n}</button>))}
             </div>
             <div className="flex gap-2">
