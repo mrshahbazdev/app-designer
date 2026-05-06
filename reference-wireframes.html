@@ -1,0 +1,3089 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Internal UX–engineering handoff: TrendUp Hub DM — wallet paste/connect, unified search, Account &amp; device, groups, timers."
+    />
+    <meta name="theme-color" content="#0f172a" />
+    <title>TrendUp Secure Messaging — UI specification & wireframes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Works when opened as file:// (no dependency on ../assets) -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23dc2626'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='white' font-family='system-ui' font-size='14' font-weight='700'%3ET%3C/text%3E%3C/svg%3E"
+    />
+    <style>
+      :root {
+        --accent: #dc2626;
+        --accent-soft: rgba(220, 38, 38, 0.12);
+        --ink: #0f172a;
+        --muted: #64748b;
+        --line: #e2e8f0;
+        --surface: #ffffff;
+        --surface-dim: #f1f5f9;
+        --bubble-out: #e2e8f0;
+        --shadow: 0 4px 24px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+        --shadow-lg: 0 24px 48px rgba(15, 23, 42, 0.08);
+        --radius: 14px;
+        --radius-sm: 10px;
+        --font: "Inter", ui-sans-serif, system-ui, sans-serif;
+        --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+        --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cpath fill='none' stroke='%23e2e8f0' stroke-width='0.5' d='M0 50h100M50 0v100M10 10l80 80M90 10L10 90'/%3E%3C/svg%3E");
+        /* Production Hub lane (tailwind dm.*) */
+        --dm-canvas: #181818;
+        --dm-panel: #242424;
+        --dm-border: #404040;
+        --dm-lime: #dff352;
+        --dm-muted: #9ca3af;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: var(--font);
+        font-size: 15px;
+        line-height: 1.55;
+        color: var(--ink);
+        background-color: #e8ecf1;
+        background-image:
+          radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 255, 255, 0.55), transparent),
+          linear-gradient(180deg, #eef2f6 0%, #f4f6f9 45%, #ebeff4 100%);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .skip-link {
+        position: absolute;
+        left: -9999px;
+        top: 12px;
+        z-index: 9999;
+        padding: 10px 16px;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.85rem;
+        border-radius: var(--radius-sm);
+      }
+      .skip-link:focus {
+        left: 12px;
+      }
+
+      /* ——— Document chrome (not app UI) ——— */
+      .doc-header {
+        background: linear-gradient(155deg, #1e293b 0%, #0f172a 42%, #0c1222 100%);
+        color: #f8fafc;
+        padding: 32px 22px 36px;
+        position: relative;
+        overflow: hidden;
+      }
+      .doc-header::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(circle at 20% 30%, rgba(220, 38, 38, 0.15), transparent 45%),
+          radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.06), transparent 40%);
+        pointer-events: none;
+      }
+      .doc-header-inner {
+        position: relative;
+        z-index: 1;
+        max-width: 960px;
+        margin: 0 auto;
+      }
+      .doc-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 28px;
+        margin-bottom: 18px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid rgba(248, 250, 252, 0.12);
+        font-size: 0.78rem;
+        font-variant-numeric: tabular-nums;
+      }
+      .doc-meta dl {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 24px;
+        margin: 0;
+      }
+      .doc-meta div {
+        display: flex;
+        gap: 8px;
+        align-items: baseline;
+      }
+      .doc-meta dt {
+        margin: 0;
+        font-weight: 600;
+        color: rgba(248, 250, 252, 0.45);
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .doc-meta dd {
+        margin: 0;
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: #e2e8f0;
+      }
+
+      .doc-badge {
+        display: inline-block;
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 5px 10px;
+        border-radius: 999px;
+        background: rgba(220, 38, 38, 0.35);
+        border: 1px solid rgba(248, 250, 252, 0.15);
+        margin-bottom: 14px;
+      }
+      .doc-header h1 {
+        margin: 0 0 10px;
+        font-size: clamp(1.35rem, 3vw, 1.85rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.2;
+      }
+      .doc-header .doc-lead {
+        margin: 0 0 22px;
+        opacity: 0.88;
+        max-width: 72ch;
+        font-size: 0.95rem;
+      }
+      .view-panel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-top: 8px;
+      }
+      @media (max-width: 720px) {
+        .view-panel {
+          grid-template-columns: 1fr;
+        }
+      }
+      .view-card {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: var(--radius-sm);
+        padding: 14px 16px;
+        font-size: 0.82rem;
+      }
+      .view-card strong {
+        display: block;
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        opacity: 0.75;
+        margin-bottom: 8px;
+      }
+      .view-card code {
+        display: block;
+        font-size: 0.78rem;
+        word-break: break-all;
+        background: rgba(0, 0, 0, 0.35);
+        padding: 8px 10px;
+        border-radius: 6px;
+        margin-top: 6px;
+        color: #a5f3fc;
+        font-family: var(--font-mono);
+      }
+
+      .wrap {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 36px 22px 120px;
+      }
+
+      .exec-summary {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 22px 26px 26px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow);
+      }
+      .exec-summary h2 {
+        margin: 0 0 18px;
+        font-size: 0.68rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--muted);
+      }
+      .exec-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+      @media (max-width: 820px) {
+        .exec-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .exec-point {
+        margin: 0;
+        padding: 16px 18px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--line);
+        background: linear-gradient(180deg, #fafbfc 0%, var(--surface) 100%);
+      }
+      .exec-point-num {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        color: var(--accent);
+        margin-bottom: 8px;
+      }
+      .exec-point p {
+        margin: 0;
+        color: var(--ink);
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+
+      .doc-control-wrap {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 0;
+        margin-bottom: 28px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+      .doc-control-wrap caption {
+        padding: 14px 20px;
+        font-size: 0.68rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        text-align: left;
+        border-bottom: 1px solid var(--line);
+      }
+      .doc-control {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.82rem;
+      }
+      .doc-control th,
+      .doc-control td {
+        padding: 12px 20px;
+        text-align: left;
+        border-bottom: 1px solid var(--line);
+      }
+      .doc-control th {
+        width: 26%;
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        background: #fafbfc;
+      }
+      .doc-control tr:last-child th,
+      .doc-control tr:last-child td {
+        border-bottom: none;
+      }
+      .doc-control tbody tr {
+        transition: background 0.12s ease;
+      }
+      .doc-control tbody tr:hover {
+        background: rgba(241, 245, 249, 0.65);
+      }
+      .doc-control td {
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+      }
+
+      .toc {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 22px 26px;
+        margin-bottom: 40px;
+        box-shadow: var(--shadow);
+      }
+      .toc h2 {
+        margin: 0 0 18px;
+        font-size: 0.68rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--muted);
+      }
+      .toc ol {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 8px 20px;
+      }
+      .toc li {
+        margin: 0;
+      }
+      .toc a {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: var(--radius-sm);
+        color: var(--ink);
+        font-weight: 500;
+        font-size: 0.88rem;
+        text-decoration: none;
+        border: 1px solid transparent;
+        transition: background 0.15s ease, border-color 0.15s ease;
+      }
+      .toc a::before {
+        content: attr(data-num);
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--muted);
+        min-width: 1.5rem;
+      }
+      .toc a:hover {
+        background: #f8fafc;
+        border-color: var(--line);
+      }
+      .toc a:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .section {
+        margin-bottom: 56px;
+        scroll-margin-top: 28px;
+      }
+      .section > h2 {
+        margin: 0 0 12px;
+        font-size: 1.22rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #0c1222;
+      }
+      .section > h2::before {
+        content: "";
+        width: 4px;
+        height: 1.15em;
+        border-radius: 3px;
+        background: linear-gradient(180deg, var(--accent) 0%, #b91c1c 100%);
+        flex-shrink: 0;
+      }
+      .note {
+        margin: 0 0 18px;
+        color: var(--muted);
+        font-size: 0.9rem;
+        max-width: 78ch;
+        line-height: 1.55;
+      }
+
+      .ref-callout {
+        background: var(--surface);
+        border-left: 4px solid var(--accent);
+        padding: 16px 20px;
+        margin-bottom: 28px;
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        box-shadow: var(--shadow);
+        font-size: 0.9rem;
+        line-height: 1.55;
+        max-width: 78ch;
+      }
+      .ref-callout a {
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 28px;
+        align-items: start;
+      }
+
+      .screen-label {
+        font-size: 0.72rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+
+      /* Phone frame */
+      .device {
+        max-width: 390px;
+        margin: 0 auto;
+        background: var(--surface);
+        border-radius: 28px;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+        overflow: hidden;
+      }
+
+      .device-dark {
+        background: var(--dm-canvas);
+        border-color: var(--dm-border);
+        color: #f1f5f9;
+      }
+
+      .status-bar {
+        display: grid;
+        grid-template-columns: minmax(56px, 1fr) minmax(0, auto) minmax(56px, 1fr);
+        align-items: center;
+        gap: 8px;
+        min-height: 38px;
+        padding: 8px 14px 10px;
+        background: linear-gradient(180deg, #f1f5f9 0%, #ffffff 100%);
+        border-bottom: 1px solid var(--line);
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--muted);
+      }
+      .status-time {
+        justify-self: start;
+        margin: 0;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        font-variant-numeric: tabular-nums;
+        color: var(--ink);
+        opacity: 0.85;
+      }
+      .status-label {
+        justify-self: center;
+        margin: 0;
+        max-width: 72%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        color: var(--muted);
+      }
+      .status-trail {
+        justify-self: end;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .status-signal {
+        display: flex;
+        gap: 2px;
+        align-items: flex-end;
+        height: 11px;
+      }
+      .status-signal span {
+        width: 3px;
+        border-radius: 1px;
+        background: currentColor;
+      }
+      .status-signal span:nth-child(1) {
+        height: 4px;
+        opacity: 0.35;
+      }
+      .status-signal span:nth-child(2) {
+        height: 6px;
+        opacity: 0.45;
+      }
+      .status-signal span:nth-child(3) {
+        height: 8px;
+        opacity: 0.55;
+      }
+      .status-signal span:nth-child(4) {
+        height: 10px;
+        opacity: 0.65;
+      }
+      .status-battery {
+        width: 23px;
+        height: 11px;
+        border-radius: 2px;
+        border: 1px solid currentColor;
+        opacity: 0.45;
+        position: relative;
+      }
+      .status-battery::before {
+        content: "";
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        right: 4px;
+        bottom: 2px;
+        border-radius: 1px;
+        background: currentColor;
+        opacity: 0.55;
+      }
+      .status-battery::after {
+        content: "";
+        position: absolute;
+        right: -3px;
+        top: 3px;
+        width: 2px;
+        height: 5px;
+        border-radius: 0 1px 1px 0;
+        background: currentColor;
+        opacity: 0.45;
+      }
+      .device-dark .status-bar {
+        background: linear-gradient(180deg, #1f1f1f 0%, var(--dm-panel) 100%);
+        border-color: var(--dm-border);
+        color: var(--dm-muted);
+      }
+      .device-dark .status-time {
+        color: #e2e8f0;
+        opacity: 0.9;
+      }
+      .device-dark .status-label {
+        color: var(--dm-muted);
+      }
+
+      .pattern-bg {
+        background-color: #fff;
+        background-image: var(--pattern);
+        background-size: 100px 100px;
+      }
+      .landing-hero {
+        background-color: #fafbfc;
+        background-image:
+          radial-gradient(ellipse 130% 90% at 50% -15%, rgba(220, 38, 38, 0.07), transparent 52%),
+          radial-gradient(ellipse 80% 50% at 80% 100%, rgba(15, 23, 42, 0.04), transparent 45%),
+          var(--pattern);
+        background-size: auto, auto, 100px 100px;
+      }
+
+      .logo-box {
+        display: inline-block;
+        padding: 12px 28px;
+        border-radius: var(--radius-sm);
+        background: var(--accent);
+        color: #fff;
+        font-weight: 800;
+        font-size: 1.28rem;
+        letter-spacing: -0.03em;
+      }
+      .tagline {
+        margin: 10px 0 0;
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 0.2em;
+        color: var(--accent);
+      }
+
+      .landing-inner {
+        padding: 44px 26px 52px;
+        text-align: center;
+        min-height: 460px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .btn-stack {
+        width: 100%;
+        max-width: 280px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: auto;
+      }
+      .btn-outline {
+        display: block;
+        padding: 14px 20px;
+        border-radius: var(--radius-sm);
+        border: 1px solid rgba(226, 232, 240, 0.95);
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 0.94rem;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+      }
+
+      .login-inner {
+        padding: 32px 22px 40px;
+        min-height: 420px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .field-row {
+        width: 100%;
+        max-width: 300px;
+        display: flex;
+        gap: 12px;
+        margin-top: 28px;
+      }
+      .field-row input {
+        flex: 1;
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        font-size: 1rem;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      }
+      .toggle-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.62rem;
+        font-weight: 800;
+        color: var(--accent);
+      }
+      .toggle {
+        width: 46px;
+        height: 26px;
+        border-radius: 999px;
+        background: #cbd5e1;
+        position: relative;
+      }
+      .toggle::after {
+        content: "";
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #fff;
+        top: 2px;
+        left: 2px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+      }
+
+      .login-inner--auth {
+        align-items: stretch;
+        max-width: 100%;
+        min-height: 560px;
+      }
+      .login-inner--auth .logo-box,
+      .login-inner--auth .tagline {
+        align-self: center;
+      }
+      .login-method-card {
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
+        padding: 16px 18px 18px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--line);
+        background: #fff;
+        box-shadow: var(--shadow);
+      }
+      .login-method-card + .login-method-card {
+        margin-top: 14px;
+      }
+      .login-method-badge {
+        display: inline-block;
+        font-size: 0.58rem;
+        font-weight: 800;
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 12px;
+      }
+      .login-method-badge--wallet {
+        color: #0f766e;
+      }
+      .login-method-hint {
+        margin: 0 0 10px;
+        font-size: 0.72rem;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+      .login-label {
+        display: block;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 6px;
+      }
+      .login-field {
+        width: 100%;
+        padding: 12px 14px;
+        margin-bottom: 12px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        font-size: 0.92rem;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      }
+      .login-field.mono {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+      }
+      .login-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 4px;
+      }
+      .btn-outline--sm {
+        padding: 10px 16px;
+        font-size: 0.82rem;
+        flex: 1;
+        min-width: 120px;
+        text-align: center;
+      }
+      .btn-signin {
+        flex: 1;
+        min-width: 120px;
+        padding: 10px 16px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--accent);
+        background: var(--accent);
+        color: #fff;
+        font-weight: 800;
+        font-size: 0.82rem;
+        text-align: center;
+      }
+      .login-foot {
+        margin: 18px auto 0;
+        max-width: 320px;
+        font-size: 0.72rem;
+        line-height: 1.5;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .locked-inner {
+        padding: 40px 24px;
+        text-align: center;
+        min-height: 380px;
+      }
+      .locked-inner h3 {
+        margin: 20px 0 8px;
+        color: var(--accent);
+        font-size: 1.1rem;
+      }
+      .locked-inner input {
+        width: 100%;
+        max-width: 280px;
+        margin-top: 24px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+      }
+
+      .secure-progress {
+        padding: 24px 20px 32px;
+      }
+      .secure-progress h3 {
+        margin: 0 0 6px;
+        color: var(--accent);
+        font-size: 1rem;
+      }
+      .secure-progress > p {
+        margin: 0 0 16px;
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+      .prog-bar {
+        height: 4px;
+        background: var(--line);
+        border-radius: 999px;
+        margin-bottom: 24px;
+        position: relative;
+      }
+      .prog-bar::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 62%;
+        background: linear-gradient(90deg, #b91c1c 0%, var(--accent) 45%, #f87171 100%);
+        border-radius: 999px;
+        box-shadow: 0 0 12px rgba(220, 38, 38, 0.35);
+      }
+      .feat-row {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        margin-bottom: 16px;
+        font-size: 0.84rem;
+      }
+      .feat-ico {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        background: linear-gradient(145deg, #ffffff, #f1f5f9);
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent);
+      }
+
+      .nav-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--line);
+      }
+      .nav-bar h3 {
+        margin: 0;
+        font-size: 1.02rem;
+        font-weight: 800;
+      }
+      .thread-list {
+        background: #fff;
+      }
+
+      .icon-btn {
+        width: 42px;
+        height: 42px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+      }
+
+      .thread {
+        display: flex;
+        gap: 12px;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--line);
+        align-items: flex-start;
+        transition: background 0.12s ease;
+      }
+      .thread--active {
+        background: linear-gradient(90deg, rgba(220, 38, 38, 0.06), transparent);
+        border-left: 3px solid var(--accent);
+        padding-left: 13px;
+      }
+      .avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: linear-gradient(145deg, #fecaca, #f87171);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: rgba(127, 29, 29, 0.85);
+        box-shadow: 0 2px 8px rgba(248, 113, 113, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+      }
+      .avatar.g2 {
+        background: linear-gradient(145deg, #bbf7d0, #4ade80);
+        color: rgba(21, 128, 61, 0.9);
+        box-shadow: 0 2px 8px rgba(74, 222, 128, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+      }
+      .avatar.g3 {
+        background: linear-gradient(145deg, #c7d2fe, #818cf8);
+        color: rgba(67, 56, 202, 0.88);
+        box-shadow: 0 2px 8px rgba(129, 140, 248, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+      }
+      .thread-main {
+        flex: 1;
+        min-width: 0;
+      }
+      .thread-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .thread-top strong {
+        font-size: 0.94rem;
+        font-weight: 700;
+      }
+      .thread-meta {
+        font-size: 0.74rem;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+      .thread-tail {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .chev {
+        color: #cbd5e1;
+        font-size: 1.15rem;
+        font-weight: 300;
+      }
+      .badge {
+        min-width: 22px;
+        height: 22px;
+        padding: 0 7px;
+        border-radius: 999px;
+        background: var(--ink);
+        color: #fff;
+        font-size: 0.68rem;
+        font-weight: 800;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .tab-bar {
+        display: flex;
+        border-top: 1px solid var(--line);
+        padding: 10px 8px 14px;
+        justify-content: space-around;
+        font-size: 0.62rem;
+        font-weight: 800;
+        color: var(--muted);
+        background: linear-gradient(180deg, #fafbfc, #fff);
+      }
+      .tab-bar .tab {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        min-width: 64px;
+        cursor: default;
+      }
+      .tab-bar .tab-ico {
+        width: 22px;
+        height: 22px;
+        opacity: 0.42;
+      }
+      .tab-bar .tab.on {
+        color: var(--accent);
+      }
+      .tab-bar .tab.on .tab-ico {
+        opacity: 1;
+        color: var(--accent);
+      }
+
+      .chat-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+        background: #fff;
+      }
+      .device-dark .chat-head {
+        background: var(--dm-panel);
+        border-color: var(--dm-border);
+      }
+      .chat-head .back {
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 0.86rem;
+      }
+      .device-dark .chat-head .back {
+        color: var(--dm-lime);
+      }
+      .chat-head .title {
+        flex: 1;
+        text-align: center;
+        font-weight: 800;
+        font-size: 0.94rem;
+      }
+      .info-dot {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 2px solid var(--accent);
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 0.76rem;
+      }
+      .device-dark .info-dot {
+        border-color: var(--dm-lime);
+        color: var(--dm-lime);
+      }
+
+      .chat-scroll {
+        padding: 16px;
+        min-height: 280px;
+      }
+      .device-dark .chat-scroll {
+        background: var(--dm-canvas);
+      }
+
+      .day-rule {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 6px 0 18px;
+        color: var(--muted);
+        font-size: 0.72rem;
+        font-weight: 700;
+      }
+      .device-dark .day-rule {
+        color: var(--dm-muted);
+      }
+      .day-rule::before,
+      .day-rule::after {
+        content: "";
+        flex: 1;
+        border-top: 1px dashed var(--line);
+      }
+      .device-dark .day-rule::before,
+      .device-dark .day-rule::after {
+        border-color: var(--dm-border);
+      }
+
+      .msg-row {
+        margin-bottom: 14px;
+      }
+      .msg-row.out {
+        display: flex;
+        justify-content: flex-end;
+      }
+      .msg-row.in {
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+      }
+      .bubble {
+        max-width: 84%;
+        padding: 11px 15px;
+        font-size: 0.9rem;
+        line-height: 1.45;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      }
+      .msg-row.in .bubble {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 18px 18px 18px 5px;
+      }
+      .device-dark .msg-row.in .bubble {
+        background: var(--dm-panel);
+        border-color: var(--dm-border);
+        color: #e2e8f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      }
+      .msg-row.out .bubble {
+        background: linear-gradient(180deg, #eef2f7 0%, var(--bubble-out) 100%);
+        border-radius: 18px 18px 5px 18px;
+      }
+      .device-dark .msg-row.out .bubble {
+        background: linear-gradient(180deg, #404040 0%, #2e2e2e 100%);
+        color: #f1f5f9;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .bubble-md strong {
+        font-weight: 800;
+      }
+      .bubble-md em {
+        font-style: italic;
+        color: var(--muted);
+      }
+      .ava-sm {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: #fff;
+        font-size: 0.76rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .device-dark .ava-sm {
+        background: transparent;
+        border: 2px solid var(--dm-lime);
+        color: var(--dm-lime);
+      }
+      .msg-foot {
+        font-size: 0.66rem;
+        color: var(--muted);
+        margin-top: 6px;
+        text-align: right;
+      }
+      .msg-row.in .msg-foot {
+        text-align: left;
+        padding-left: 42px;
+      }
+      .burn {
+        color: var(--accent);
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+      }
+      .device-dark .burn {
+        color: var(--dm-lime);
+      }
+      .msg-swipe-hint {
+        font-size: 0.62rem;
+        color: #cbd5e1;
+        font-style: italic;
+        text-align: right;
+        margin-top: 2px;
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 8px;
+        padding: 10px 12px;
+        background: #fff;
+        border-top: 1px solid var(--line);
+        overflow-x: auto;
+      }
+      .device-dark .toolbar {
+        background: var(--dm-panel);
+        border-color: var(--dm-border);
+      }
+      .tool {
+        flex-shrink: 0;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .device-dark .tool {
+        background: transparent;
+        border: 1px solid var(--dm-lime);
+        color: var(--dm-lime);
+      }
+      .tool.timer-wide {
+        width: auto;
+        padding: 0 14px;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        gap: 6px;
+      }
+
+      .composer-bar {
+        display: flex;
+        gap: 8px;
+        padding: 12px;
+        background: var(--accent);
+        align-items: stretch;
+      }
+      .device-dark .composer-bar {
+        background: #111;
+        border-top: 1px solid var(--dm-border);
+      }
+      .composer-bar .spark {
+        width: 44px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .composer-bar input {
+        flex: 1;
+        border-radius: var(--radius-sm);
+        border: none;
+        padding: 12px 14px;
+        font-size: 0.88rem;
+      }
+      .composer-bar .send {
+        padding: 0 18px;
+        border-radius: var(--radius-sm);
+        border: 2px solid #fff;
+        background: transparent;
+        color: #fff;
+        font-weight: 800;
+        font-size: 0.88rem;
+      }
+      .device-dark .composer-bar .send {
+        border-color: var(--dm-lime);
+        color: var(--dm-lime);
+      }
+
+      details.popover summary {
+        list-style: none;
+        cursor: pointer;
+      }
+      details.popover summary::-webkit-details-marker {
+        display: none;
+      }
+      .timer-panel {
+        position: absolute;
+        bottom: calc(100% + 10px);
+        left: 0;
+        width: min(292px, 88vw);
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
+        z-index: 20;
+        overflow: hidden;
+      }
+      .device-dark .timer-panel {
+        background: #1a1a1a;
+        border-color: var(--dm-border);
+      }
+      .timer-panel > header {
+        padding: 11px 14px;
+        font-size: 0.62rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        border-bottom: 1px solid var(--line);
+      }
+      .device-dark .timer-panel > header {
+        color: var(--dm-muted);
+        border-color: var(--dm-border);
+      }
+      .timer-split-section h4 {
+        margin: 0;
+        padding: 10px 14px;
+        font-size: 0.58rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--muted);
+        background: #f8fafc;
+        border-bottom: 1px solid var(--line);
+      }
+      .device-dark .timer-split-section h4 {
+        background: #222;
+        color: var(--dm-muted);
+        border-color: var(--dm-border);
+      }
+      .timer-split-section .hint {
+        display: block;
+        margin-top: 5px;
+        font-weight: 500;
+        text-transform: none;
+        letter-spacing: 0;
+        line-height: 1.35;
+        color: #94a3b8;
+      }
+      .timer-scroll {
+        max-height: 200px;
+        overflow-y: auto;
+      }
+      .timer-panel button {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 11px 14px;
+        border: none;
+        border-bottom: 1px solid var(--line);
+        background: none;
+        font-family: inherit;
+        font-size: 0.86rem;
+        text-align: left;
+        cursor: default;
+      }
+      .device-dark .timer-panel button {
+        border-color: var(--dm-border);
+        color: #e2e8f0;
+      }
+      .timer-panel button.on {
+        background: var(--accent-soft);
+        font-weight: 700;
+        color: var(--accent);
+      }
+      .device-dark .timer-panel button.on {
+        background: rgba(223, 243, 82, 0.12);
+        color: var(--dm-lime);
+      }
+      .timer-panel small {
+        color: var(--muted);
+        font-size: 0.74rem;
+      }
+      details.popover-anchor {
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      .info-sheet {
+        margin-top: 18px;
+        padding: 18px 20px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        font-size: 0.88rem;
+      }
+      .info-sheet h4 {
+        margin: 0 0 14px;
+        font-size: 0.72rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--muted);
+      }
+      .info-sheet dl {
+        margin: 0;
+        display: grid;
+        gap: 12px;
+      }
+      .info-sheet dt {
+        font-size: 0.68rem;
+        color: var(--muted);
+        font-weight: 800;
+      }
+      .info-sheet dd {
+        margin: 2px 0 0;
+        font-weight: 600;
+      }
+      .danger {
+        margin-top: 16px;
+        padding-top: 14px;
+        border-top: 1px dashed var(--line);
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 0.84rem;
+      }
+
+      .matrix {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.82rem;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+        margin-top: 12px;
+      }
+      .matrix th,
+      .matrix td {
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+      }
+      .matrix th {
+        background: #f8fafc;
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+      }
+
+      .tokens {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 12px;
+      }
+      .token {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        padding: 12px 14px;
+        font-size: 0.82rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 12px;
+      }
+      .token b {
+        flex: 1 1 100%;
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--muted);
+        margin: 0;
+      }
+      .token-swatch {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35), 0 2px 6px rgba(15, 23, 42, 0.08);
+        flex-shrink: 0;
+      }
+      .token code {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+      }
+
+      .kbd {
+        font-family: var(--font-mono);
+        font-size: 0.82em;
+        background: #f1f5f9;
+        padding: 2px 8px;
+        border-radius: 5px;
+        border: 1px solid #e2e8f0;
+      }
+
+      a:not(.toc a):not(.btn-outline) {
+        color: var(--accent);
+        font-weight: 600;
+        text-underline-offset: 3px;
+      }
+      a:not(.toc a):not(.btn-outline):hover {
+        color: #b91c1c;
+      }
+
+      .doc-footer {
+        margin-top: 56px;
+        padding-top: 28px;
+        border-top: 1px solid var(--line);
+        font-size: 0.82rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .doc-footer .confidential {
+        margin-top: 12px;
+        font-size: 0.72rem;
+        color: #94a3b8;
+      }
+
+      /* ——— Hub /hub/chats parity (dm.*) ——— */
+      .hub-shell {
+        background: var(--dm-panel);
+        color: #e2e8f0;
+      }
+      .hub-tab-strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 28px;
+        padding: 0 16px;
+        border-bottom: 1px solid var(--dm-border);
+        background: var(--dm-canvas);
+      }
+      .hub-tab {
+        margin: 0;
+        padding: 12px 2px 10px;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--dm-muted);
+        border: none;
+        border-bottom: 3px solid transparent;
+        background: none;
+        cursor: default;
+        margin-bottom: -1px;
+      }
+      .hub-tab.on {
+        color: var(--dm-lime);
+        border-bottom-color: var(--dm-lime);
+      }
+      .hub-toolbar-block {
+        padding: 10px 12px 12px;
+        border-bottom: 1px solid var(--dm-border);
+        background: var(--dm-panel);
+      }
+      .hub-toolbar-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .hub-new {
+        flex-shrink: 0;
+        padding: 9px 12px;
+        border-radius: 6px;
+        border: none;
+        background: var(--dm-lime);
+        color: #171717;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: default;
+      }
+      .hub-search-wrap {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+      }
+      .hub-search-wrap .glass {
+        pointer-events: none;
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 13px;
+        color: var(--dm-muted);
+      }
+      .hub-search-input {
+        width: 100%;
+        padding: 10px 12px 10px 30px;
+        border-radius: 6px;
+        border: 1px solid var(--dm-border);
+        background: var(--dm-canvas);
+        color: #f5f5f5;
+        font-size: 12px;
+        outline: none;
+      }
+      .hub-kebab {
+        flex-shrink: 0;
+        padding: 9px 11px;
+        border-radius: 12px;
+        border: 1px solid var(--dm-border);
+        background: rgba(0, 0, 0, 0.25);
+        color: #94a3b8;
+        font-size: 16px;
+        line-height: 1;
+        cursor: default;
+      }
+      .hub-menu-anchor {
+        position: relative;
+        flex-shrink: 0;
+      }
+      .hub-dropdown {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 8px);
+        z-index: 30;
+        min-width: 220px;
+        padding: 6px 0;
+        border-radius: 14px;
+        border: 1px solid var(--dm-border);
+        background: rgba(10, 12, 18, 0.98);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+      }
+      .hub-dropdown button {
+        display: block;
+        width: 100%;
+        padding: 10px 14px;
+        border: none;
+        background: none;
+        text-align: left;
+        font-family: inherit;
+        font-size: 12px;
+        color: #e2e8f0;
+        cursor: default;
+      }
+      .hub-dropdown button:hover {
+        background: rgba(223, 243, 82, 0.08);
+      }
+      .hub-dropdown button.danger {
+        color: #fecaca;
+      }
+      .hub-dropdown button.danger:hover {
+        background: rgba(239, 68, 68, 0.12);
+      }
+      .hub-dropdown button:disabled {
+        opacity: 0.38;
+      }
+      .hub-new-panel {
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        border: 1px solid var(--dm-border);
+        background: rgba(0, 0, 0, 0.3);
+      }
+      .hub-new-panel > .hub-panel-label {
+        display: block;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #64748b;
+        margin-bottom: 10px;
+      }
+      .hub-new-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+      .hub-handle-input {
+        flex: 1;
+        min-width: 140px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--dm-border);
+        background: rgba(0, 0, 0, 0.25);
+        color: #f1f5f9;
+        font-size: 12px;
+      }
+      .hub-open-btn {
+        padding: 10px 16px;
+        border-radius: 12px;
+        border: 1px solid rgba(223, 243, 82, 0.35);
+        background: rgba(223, 243, 82, 0.14);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 800;
+        cursor: default;
+      }
+      .hub-thread-row {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px 42px 12px 14px;
+        border-bottom: 1px solid var(--dm-border);
+        border-left: 3px solid var(--dm-lime);
+        background: rgba(223, 243, 82, 0.06);
+      }
+      .hub-thread-row .mini-av {
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        background: #475569;
+        border: 1px solid var(--dm-border);
+        flex-shrink: 0;
+      }
+      .hub-thread-kebab {
+        position: absolute;
+        right: 8px;
+        top: 10px;
+        padding: 4px 8px;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        background: rgba(0, 0, 0, 0.35);
+        color: #94a3b8;
+        font-size: 14px;
+        cursor: default;
+      }
+      .hub-row-dropdown {
+        position: absolute;
+        right: 8px;
+        top: 38px;
+        z-index: 25;
+        min-width: 210px;
+        padding: 6px 0;
+        border-radius: 14px;
+        border: 1px solid var(--dm-border);
+        background: rgba(10, 12, 18, 0.98);
+        box-shadow: 0 14px 36px rgba(0, 0, 0, 0.4);
+      }
+      .hub-row-dropdown button {
+        display: block;
+        width: 100%;
+        padding: 10px 14px;
+        border: none;
+        background: none;
+        text-align: left;
+        font-family: inherit;
+        font-size: 12px;
+        color: #e2e8f0;
+        cursor: default;
+      }
+      .hub-row-dropdown button:hover {
+        background: rgba(223, 243, 82, 0.08);
+      }
+      .hub-row-dropdown button.danger {
+        color: #fecaca;
+      }
+      .hub-row-dropdown button.danger:hover {
+        background: rgba(239, 68, 68, 0.12);
+      }
+      .hub-chat-bar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--dm-border);
+        background: #2a2a2a;
+      }
+      .hub-chat-bar .peer {
+        font-weight: 800;
+        font-size: 15px;
+        color: #fff;
+      }
+      .hub-chat-bar .sub {
+        font-size: 9px;
+        color: #64748b;
+        margin-top: 4px;
+      }
+      .hub-chat-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .hub-pill {
+        padding: 5px 8px;
+        border-radius: 4px;
+        border: 1px solid rgba(223, 243, 82, 0.35);
+        background: rgba(223, 243, 82, 0.12);
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--dm-lime);
+      }
+      .groups-intro {
+        padding: 4px 16px 12px;
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.55;
+        color: #94a3b8;
+      }
+      .groups-intro strong {
+        color: #e2e8f0;
+      }
+      .groups-title {
+        margin: 0;
+        padding: 16px 16px 0;
+        font-size: 15px;
+        font-weight: 800;
+        color: #fff;
+      }
+      .groups-pick {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px 0;
+        border-top: 1px solid var(--dm-border);
+        margin-top: 12px;
+      }
+      .groups-pick b {
+        font-size: 13px;
+        color: #fff;
+      }
+      .groups-pick span {
+        font-size: 10px;
+        color: #64748b;
+      }
+      .shape-grid {
+        display: grid;
+        gap: 10px;
+        padding: 12px 14px 8px;
+      }
+      .shape-card {
+        border-radius: 16px;
+        border: 1px solid var(--dm-border);
+        background: rgba(0, 0, 0, 0.25);
+        padding: 14px;
+        text-align: left;
+      }
+      .shape-card b {
+        display: block;
+        font-size: 13px;
+        color: #fff;
+        margin-bottom: 8px;
+      }
+      .shape-card small {
+        font-size: 11px;
+        color: #64748b;
+        line-height: 1.45;
+      }
+      .shape-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 8px 14px 16px;
+      }
+      .shape-actions button {
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 800;
+        cursor: default;
+        border: 1px solid var(--dm-border);
+        background: rgba(0, 0, 0, 0.2);
+        color: #e2e8f0;
+      }
+      .shape-actions button.primary {
+        border-color: rgba(223, 243, 82, 0.35);
+        background: rgba(223, 243, 82, 0.1);
+        color: #fff;
+      }
+      .groups-legal {
+        margin: 0;
+        padding: 8px 16px 18px;
+        font-size: 10px;
+        line-height: 1.5;
+        color: #64748b;
+      }
+      .groups-legal strong {
+        color: #cbd5e1;
+      }
+
+      /* Account & device (Hub settings) */
+      .acct-details {
+        border-top: 1px solid var(--dm-border);
+        background: rgba(0, 0, 0, 0.22);
+      }
+      .acct-summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 16px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #64748b;
+        cursor: default;
+        list-style: none;
+      }
+      .acct-summary::-webkit-details-marker {
+        display: none;
+      }
+      .acct-summary span.chev {
+        transition: transform 0.15s ease;
+        font-size: 10px;
+        opacity: 0.8;
+      }
+      details.acct-details[open] .acct-summary span.chev {
+        transform: rotate(180deg);
+      }
+      .acct-body {
+        padding: 0 12px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .acct-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--dm-border);
+        background: rgba(0, 0, 0, 0.15);
+      }
+      .acct-row .acct-label strong {
+        display: block;
+        font-size: 11px;
+        font-weight: 800;
+        color: #e2e8f0;
+      }
+      .acct-row .acct-label span.desc {
+        display: block;
+        margin-top: 4px;
+        font-size: 10px;
+        line-height: 1.35;
+        color: #64748b;
+      }
+      .acct-toggle {
+        flex-shrink: 0;
+        padding: 8px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--dm-border);
+        font-size: 11px;
+        font-weight: 800;
+        background: rgba(0, 0, 0, 0.25);
+        color: #e2e8f0;
+        cursor: default;
+      }
+      .acct-toggle.on {
+        border-color: rgba(223, 243, 82, 0.35);
+        background: rgba(223, 243, 82, 0.1);
+        color: #fff;
+      }
+      .acct-toggle.warn {
+        border-color: rgba(245, 158, 11, 0.35);
+        background: rgba(245, 158, 11, 0.1);
+        color: #fde68a;
+      }
+      .acct-status-ok {
+        margin: 0 4px;
+        font-size: 11px;
+        color: rgba(52, 211, 153, 0.9);
+      }
+      .acct-device-block {
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--dm-border);
+        background: rgba(0, 0, 0, 0.15);
+      }
+      .acct-device-block strong {
+        display: block;
+        font-size: 11px;
+        font-weight: 800;
+        color: #e2e8f0;
+      }
+      .acct-device-block p {
+        margin: 6px 0 0;
+        font-size: 10px;
+        line-height: 1.45;
+        color: #64748b;
+      }
+      .acct-device-row {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+      .acct-code-input {
+        flex: 1;
+        min-width: 140px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--dm-border);
+        background: rgba(0, 0, 0, 0.3);
+        color: #f1f5f9;
+        font-family: var(--font-mono);
+        font-size: 11px;
+      }
+      .acct-approve-btn {
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: 1px solid rgba(223, 243, 82, 0.35);
+        background: rgba(223, 243, 82, 0.14);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 800;
+        cursor: default;
+      }
+      .acct-hint {
+        margin: 8px 4px 0;
+        font-size: 10px;
+        line-height: 1.45;
+        color: #64748b;
+      }
+
+      .hub-auth-banner {
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(245, 158, 11, 0.35);
+        background: rgba(245, 158, 11, 0.09);
+      }
+      .hub-auth-banner strong {
+        display: block;
+        font-size: 13px;
+        font-weight: 800;
+        color: rgb(254 243 199);
+      }
+      .hub-auth-banner p {
+        margin: 8px 0 0;
+        font-size: 11px;
+        line-height: 1.45;
+        color: #94a3b8;
+      }
+      .hub-auth-cta {
+        margin-top: 12px;
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 12px;
+        border: 1px solid rgba(223, 243, 82, 0.35);
+        background: rgba(223, 243, 82, 0.12);
+        font-size: 11px;
+        font-weight: 800;
+        color: #fff;
+      }
+      .hub-toolbar-dim {
+        opacity: 0.48;
+        pointer-events: none;
+        filter: grayscale(0.2);
+      }
+      .hub-empty-state {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 36px 22px;
+        text-align: center;
+        font-size: 12px;
+        line-height: 1.5;
+        color: #64748b;
+        min-height: 168px;
+        background: var(--dm-canvas);
+      }
+      .hub-empty-state strong {
+        color: #cbd5e1;
+      }
+      .hub-edge-note {
+        margin: 0;
+        padding: 10px 14px;
+        font-size: 10px;
+        color: #64748b;
+        border-top: 1px solid var(--dm-border);
+        background: rgba(0, 0, 0, 0.15);
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+        .doc-header {
+          background: #1e293b !important;
+          print-color-adjust: exact;
+          -webkit-print-color-adjust: exact;
+        }
+        .skip-link {
+          display: none;
+        }
+        .login-method-card,
+        .device,
+        .exec-summary,
+        .exec-grid,
+        .exec-point,
+        .toc,
+        .doc-control-wrap {
+          break-inside: avoid;
+        }
+        #hub-edge-states .device,
+        .hub-dropdown,
+        .hub-auth-banner {
+          break-inside: avoid;
+        }
+        .toc a {
+          border: none;
+          padding: 4px 0;
+        }
+      }
+
+      .concept-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      @media (max-width: 720px) {
+        .concept-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .concept-card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 18px 20px;
+      }
+      .concept-card h3 {
+        margin: 0 0 10px;
+        font-size: 1rem;
+      }
+      .concept-card p {
+        margin: 0;
+        font-size: 0.86rem;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to specification</a>
+    <header class="doc-header">
+      <div class="doc-header-inner">
+        <span class="doc-badge">Internal handoff · HTML specification</span>
+        <nav class="doc-meta" aria-label="Document control">
+          <dl>
+            <div>
+              <dt>Document</dt>
+              <dd>TU-HUB-DM-UX-001</dd>
+            </div>
+            <div>
+              <dt>Version</dt>
+              <dd>1.9</dd>
+            </div>
+            <div>
+              <dt>Status</dt>
+              <dd>Draft · engineering review</dd>
+            </div>
+            <div>
+              <dt>Updated</dt>
+              <dd>2026-05-06</dd>
+            </div>
+          </dl>
+        </nav>
+        <h1>TrendUp secure messaging — complete UI wireframe pack</h1>
+        <p class="doc-lead">
+          Single file for design ↔ engineering: onboarding, inbox, chat, dual timers (lifetime + burn-after-read), composer, recall
+          hint, conversation info, markdown sample, <strong>production dark lane</strong> (matches <span class="kbd">dm.*</span> in
+          Tailwind). TrendUp product only — industry references are cited, not copied.
+        </p>
+        <div class="view-panel">
+          <div class="view-card">
+            <strong>Run dev server</strong>
+            From repo root: <code style="background: transparent; padding: 0; color: inherit">npm run dev</code>
+            <code>http://localhost:3000/mockups/trendup-secure-dm-handoff/</code>
+            <span style="opacity: 0.75; font-size: 0.78rem">Trailing slash optional; rewrites in <span class="kbd">next.config.ts</span>.</span>
+          </div>
+          <div class="view-card">
+            <strong>Open file directly</strong>
+            <code>public/mockups/trendup-secure-dm-handoff/index.html</code>
+            <span style="opacity: 0.75; font-size: 0.78rem">Repo-relative path from project root. Favicon is inline — works offline. Fonts load if network allows.</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <main id="main">
+      <section class="exec-summary" aria-labelledby="exec-heading">
+        <h2 id="exec-heading">Executive summary</h2>
+        <div class="exec-grid">
+          <article class="exec-point">
+            <span class="exec-point-num">01 · Semantics</span>
+            <p>
+              Defines <strong>two timer axes</strong> (lifetime + burn-after-read), full lifetime option list aligned to code
+              (<span class="kbd">EP_ORDER</span>), and a separate burn block for future API work.
+            </p>
+          </article>
+          <article class="exec-point">
+            <span class="exec-point-num">02 · Deliverables</span>
+            <p>
+              Ships <strong>extended wireframes</strong>: onboarding, <strong>sign-in</strong> (username + wallet), <strong>Hub inbox</strong> with unified search / start DM,
+              <strong>Groups</strong>, <strong>Account &amp; device</strong>, edge states, chat lanes, timers — for QA, eng breakdown, PDF export.
+            </p>
+          </article>
+          <article class="exec-point">
+            <span class="exec-point-num">03 · Lanes</span>
+            <p>
+              <strong>Light lane</strong> = marketing / mobile-reference aesthetic; <strong>Dark lane</strong> = production Hub Chat
+              (<span class="kbd">/hub/chats</span>) parity using <span class="kbd">dm.*</span> tokens.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <div class="doc-control-wrap">
+        <table class="doc-control">
+          <caption>Document control</caption>
+          <tbody>
+            <tr>
+              <th scope="row">Repository path</th>
+              <td>public/mockups/trendup-secure-dm-handoff/index.html</td>
+            </tr>
+            <tr>
+              <th scope="row">Primary consumer</th>
+              <td>Product design · front-end · mobile parity</td>
+            </tr>
+            <tr>
+              <th scope="row">Canonical app route</th>
+              <td>/hub/chats (authenticated Hub DM)</td>
+            </tr>
+            <tr>
+              <th scope="row">Related implementation</th>
+              <td>HubChatsExperience.tsx · hub/login (password + wallet challenge) · tailwind dm.* · EP_ORDER</td>
+            </tr>
+            <tr>
+              <th scope="row">Screen inventory</th>
+              <td>§1–7 onboarding &amp; chat lanes · §8–11 Hub chrome, groups, account, edge states · §12–13 matrix &amp; checklist</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <nav class="toc" aria-label="Table of contents">
+        <h2>Contents</h2>
+        <ol>
+          <li><a href="#product" data-num="01">Timer semantics</a></li>
+          <li><a href="#tokens" data-num="02">Tokens &amp; typography</a></li>
+          <li><a href="#landing" data-num="03">Landing</a></li>
+          <li><a href="#login" data-num="04">Sign in · username &amp; wallet</a></li>
+          <li><a href="#locked" data-num="05">Session locked</a></li>
+          <li><a href="#securing" data-num="06">Securing device</a></li>
+          <li><a href="#inbox" data-num="07">Inbox list</a></li>
+          <li><a href="#chat-light" data-num="08">Chat — light lane</a></li>
+          <li><a href="#chat-dark" data-num="09">Chat — production dark lane</a></li>
+          <li><a href="#hub-inbox-chrome" data-num="10">Hub inbox · search · menus</a></li>
+          <li><a href="#hub-groups" data-num="11">Groups lane</a></li>
+          <li><a href="#hub-account-device" data-num="12">Account &amp; device</a></li>
+          <li><a href="#hub-edge-states" data-num="13">Hub edge states</a></li>
+          <li><a href="#matrix" data-num="14">Logic matrix</a></li>
+          <li><a href="#checklist" data-num="15">Implementation checklist</a></li>
+        </ol>
+      </nav>
+
+      <section class="section" id="product">
+        <h2>Timer semantics</h2>
+        <p class="note">
+          Model <strong>lifetime</strong> (delete after window from send, read or unread) and <strong>burn-after-read</strong> (visible
+          only for a window after open) as separate inputs. Effective removal time is the earliest policy event. Educational patterns:
+          <a href="https://teaz.me/privacy/the-new-wickr/" rel="noopener noreferrer">teaz.me — third-party overview</a> (not an
+          endorsement).
+        </p>
+        <div class="concept-grid">
+          <div class="concept-card">
+            <h3>Lifetime / expiration</h3>
+            <p>Server + client enforce deletion after the chosen interval from send time, independent of read state (subject to product policy).</p>
+          </div>
+          <div class="concept-card">
+            <h3>Burn after open</h3>
+            <p>After the recipient opens the message, it remains visible only for the burn window; then it is removed on their side and yours when synced.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="tokens">
+        <h2>Design tokens</h2>
+        <p class="note">Light lane below uses red accent for security affordances. Production Hub chat uses charcoal + lime (<span class="kbd">dm.*</span>) — see dark device.</p>
+        <div class="tokens">
+          <div class="token">
+            <b>Accent (light)</b><span class="token-swatch" style="background: #dc2626"></span><code>#dc2626</code>
+          </div>
+          <div class="token">
+            <b>Ink</b><span class="token-swatch" style="background: #0f172a"></span><code>#0f172a</code>
+          </div>
+          <div class="token">
+            <b>Muted</b><span class="token-swatch" style="background: #64748b"></span><code>#64748b</code>
+          </div>
+          <div class="token">
+            <b>Line</b><span class="token-swatch" style="background: #e2e8f0"></span><code>#e2e8f0</code>
+          </div>
+          <div class="token">
+            <b>dm.canvas</b><span class="token-swatch" style="background: #181818"></span><code>#181818</code>
+          </div>
+          <div class="token">
+            <b>dm.lime</b><span class="token-swatch" style="background: #dff352"></span><code>#dff352</code>
+          </div>
+          <div class="token">
+            <b>Font</b><span class="token-swatch" style="background: linear-gradient(145deg, #f8fafc, #e2e8f0); font-size: 0.62rem; font-weight: 800; display: flex; align-items: center; justify-content: center; color: #64748b">Aa</span><span style="font-weight: 600">Inter + system fallback</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="landing">
+        <h2>1. Landing</h2>
+        <p class="note">
+          Centered lockup; dual CTAs. <strong>Existing account</strong> resolves to sign-in where users choose <strong>username + password</strong> or <strong>wallet challenge</strong> (see <a href="#login">§2</a>) — same session family as web <span class="kbd">/hub/login</span>.
+        </p>
+        <div class="gallery">
+          <div>
+            <div class="screen-label">Mobile · marketing lane</div>
+            <div class="device">
+              <div class="status-bar">
+                <time class="status-time" datetime="2026-05-06T09:41">9:41</time>
+                <span class="status-label">TrendUp Hub</span>
+                <div class="status-trail" aria-hidden="true">
+                  <span class="status-signal"><span></span><span></span><span></span><span></span></span>
+                  <span class="status-battery"></span>
+                </div>
+              </div>
+              <div class="pattern-bg landing-inner landing-hero">
+                <div class="logo-box">TrendUp</div>
+                <p class="tagline">PRIVATE BY DESIGN</p>
+                <div class="btn-stack">
+                  <span class="btn-outline">New account</span>
+                  <span class="btn-outline">Existing account</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="login">
+        <h2>2. Sign in — username &amp; wallet</h2>
+        <p class="note">
+          Mirrors production Hub auth at <span class="kbd">/hub/login</span>: <strong>handle + password</strong> (register / sign in), <strong>wallet address → challenge → signature</strong> for a secure session cookie, plus OAuth / email magic link on web. Mobile wire stacks the same paths in one scroll — both identity surfaces stay discoverable.
+        </p>
+        <div class="device">
+          <div class="status-bar">
+            <time class="status-time" datetime="2026-05-06T09:41">9:41</time>
+            <span class="status-label">Sign in</span>
+            <div class="status-trail" aria-hidden="true">
+              <span class="status-signal"><span></span><span></span><span></span><span></span></span>
+              <span class="status-battery"></span>
+            </div>
+          </div>
+          <div class="pattern-bg login-inner login-inner--auth">
+            <div class="logo-box">TrendUp</div>
+            <p class="tagline">PRIVATE BY DESIGN</p>
+
+            <div class="login-method-card">
+              <span class="login-method-badge">Username · password</span>
+              <label class="login-label" for="wire-handle">Handle</label>
+              <input id="wire-handle" class="login-field" readonly autocomplete="off" placeholder="demo" aria-label="Handle" />
+              <label class="login-label" for="wire-pass">Password</label>
+              <input id="wire-pass" class="login-field" type="password" readonly placeholder="••••••••••••" aria-label="Password" />
+              <div class="login-actions">
+                <span class="btn-outline btn-outline--sm">Register</span>
+                <span class="btn-signin">Sign in</span>
+              </div>
+            </div>
+
+            <div class="login-method-card">
+              <span class="login-method-badge login-method-badge--wallet">Wallet</span>
+              <p class="login-method-hint">
+                <strong style="color: var(--ink)">Do not make users type hex.</strong> Production Hub login uses <strong>Use browser wallet</strong> (injected <span class="kbd">eth_requestAccounts</span>) and
+                <strong>Paste address</strong> before manual editing.
+              </p>
+              <div class="login-actions" style="margin-bottom: 12px">
+                <span class="btn-signin" style="flex: 1; border-color: #0f766e; background: linear-gradient(180deg, #14b8a6, #0d9488); font-size: 0.78rem">Use browser wallet</span>
+                <span class="btn-outline btn-outline--sm" style="flex: 1">Paste address</span>
+              </div>
+              <label class="login-label" for="wire-addr">Wallet address (fallback)</label>
+              <input id="wire-addr" class="login-field mono" readonly placeholder="0x… filled automatically or pasted" aria-label="Wallet address" />
+              <span class="btn-outline btn-outline--sm" style="display: block; text-align: center; margin-top: 10px">Create challenge → sign</span>
+            </div>
+
+            <p class="login-foot">
+              OAuth &amp; magic link remain on web hub login. Auto-login / erase-device controls stay under product policy — optional row below these cards.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="locked">
+        <h2>3. Session locked</h2>
+        <p class="note">Shown when secure session timed out or vault locked — minimal chrome, single unlock field.</p>
+        <div class="device">
+          <div class="status-bar">
+            <time class="status-time" datetime="2026-05-06T09:41">9:41</time>
+            <span class="status-label">Locked</span>
+            <div class="status-trail" aria-hidden="true">
+              <span class="status-signal"><span></span><span></span><span></span><span></span></span>
+              <span class="status-battery"></span>
+            </div>
+          </div>
+          <div class="pattern-bg locked-inner">
+            <div class="logo-box">TrendUp</div>
+            <p class="tagline">PRIVATE BY DESIGN</p>
+            <h3>Session locked</h3>
+            <p style="margin: 0; font-size: 0.84rem; color: var(--muted); max-width: 260px">Enter password to unlock Hub messages on this device.</p>
+            <input type="password" readonly placeholder="Password" aria-label="Unlock" />
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="securing">
+        <h2>4. Securing device</h2>
+        <p class="note">First-run or key derivation wait state — pairs with progress + trust messaging (copy from legal/product).</p>
+        <div class="device">
+          <div class="status-bar">
+            <time class="status-time" datetime="2026-05-06T09:41">9:41</time>
+            <span class="status-label">Setup</span>
+            <div class="status-trail" aria-hidden="true">
+              <span class="status-signal"><span></span><span></span><span></span><span></span></span>
+              <span class="status-battery"></span>
+            </div>
+          </div>
+          <div class="pattern-bg secure-progress">
+            <div style="text-align: center; margin-bottom: 12px">
+              <div class="logo-box" style="font-size: 1rem">TrendUp</div>
+              <p class="tagline">PRIVATE BY DESIGN</p>
+            </div>
+            <h3>Securing your device</h3>
+            <p>This may take a few moments.</p>
+            <div class="prog-bar"></div>
+            <div class="feat-row">
+              <div class="feat-ico" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 4v6c0 5-3 9.5-9 11-6-1.5-9-6-9-11V7l9-4Z"/></svg>
+              </div>
+              <div><strong>Encryption</strong><br /><span style="color: var(--muted); font-size: 0.8rem">Keys generated locally</span></div>
+            </div>
+            <div class="feat-row">
+              <div class="feat-ico" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="14" r="7"/><path d="M12 11v3l2 1M9 3h6M12 3v2"/></svg>
+              </div>
+              <div><strong>Ephemeral controls</strong><br /><span style="color: var(--muted); font-size: 0.8rem">Timers available after setup</span></div>
+            </div>
+            <div class="feat-row">
+              <div class="feat-ico" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+              </div>
+              <div><strong>Minimal metadata</strong><br /><span style="color: var(--muted); font-size: 0.8rem">Policy-owned retention</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="inbox">
+        <h2>5. Secure inbox</h2>
+        <p class="note">
+          Rows: avatar, title + subtitle, trailing chevron + optional unread badge. Bottom tabs = generic app chrome. For <strong>Hub parity</strong> (New, unified search, ⋮ menus, Groups tab) see <a href="#hub-inbox-chrome">§8–9</a>. The bottom
+          <strong>Settings</strong> tab here is <em>illustrative mobile chrome</em> only — production Hub settings are under
+          <a href="#hub-account-device">§10 Account &amp; device</a>.
+        </p>
+        <div class="device">
+          <div class="status-bar">
+            <time class="status-time" datetime="2026-05-06T09:41">9:41</time>
+            <span class="status-label">Messages</span>
+            <div class="status-trail" aria-hidden="true">
+              <span class="status-signal"><span></span><span></span><span></span><span></span></span>
+              <span class="status-battery"></span>
+            </div>
+          </div>
+          <div class="nav-bar">
+            <h3>Secure conversations</h3>
+            <div class="icon-btn" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </div>
+          </div>
+          <div class="thread-list">
+            <div class="thread thread--active">
+              <div class="avatar" aria-hidden="true">A</div>
+              <div class="thread-main">
+                <div class="thread-top">
+                  <strong>Amy +3</strong>
+                </div>
+                <div class="thread-meta">Amy, Francis, Matt · Group</div>
+              </div>
+              <div class="thread-tail"><span class="chev">›</span></div>
+            </div>
+            <div class="thread">
+              <div class="avatar g2" aria-hidden="true">S</div>
+              <div class="thread-main">
+                <div class="thread-top"><strong>stevej</strong></div>
+                <div class="thread-meta">Encrypted message · Today 2:02 PM</div>
+              </div>
+              <div class="thread-tail"><span class="badge">1</span><span class="chev">›</span></div>
+            </div>
+            <div class="thread">
+              <div class="avatar g3" aria-hidden="true">F</div>
+              <div class="thread-main">
+                <div class="thread-top"><strong>Family</strong></div>
+                <div class="thread-meta">Dirky: photo · 6:43 PM</div>
+              </div>
+              <div class="thread-tail"><span class="chev">›</span></div>
+            </div>
+          </div>
+          <div class="tab-bar">
+            <span class="tab on">
+              <svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M21 15a4 4 0 01-4 4H7l-4 4V7a4 4 0 014-4h10a4 4 0 014 4v8z" />
+              </svg>
+              Messages
+            </span>
+            <span class="tab">
+              <svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+              </svg>
+              Contacts
+            </span>
+            <span class="tab">
+              <svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+              </svg>
+              Settings
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="chat-light">
+        <h2>6. Active chat — light reference lane</h2>
+        <p class="note">
+          Timer panel lists <strong>full lifetime set</strong> aligned with <span class="kbd">EP_ORDER</span> in code. Burn row is a
+          separate scroll block. Tap <strong>i</strong> → conversation sheet (card below). Markdown bubble example included.
+        </p>
+        <div class="gallery">
+          <div>
+            <div class="screen-label">Chat + dual timers + composer</div>
+            <div class="device">
+              <div class="status-bar">
+                <time class="status-time" datetime="2026-05-06T09:41">9:41</time>
+                <span class="status-label">Conversation</span>
+                <div class="status-trail" aria-hidden="true">
+                  <span class="status-signal"><span></span><span></span><span></span><span></span></span>
+                  <span class="status-battery"></span>
+                </div>
+              </div>
+              <div class="pattern-bg">
+                <div class="chat-head">
+                  <span class="back">‹ Inbox</span>
+                  <span class="title">stevej</span>
+                  <div class="info-dot">i</div>
+                </div>
+                <div class="chat-scroll">
+                  <div class="day-rule">Today</div>
+                  <div class="msg-row in">
+                    <div class="ava-sm">S</div>
+                    <div>
+                      <div class="bubble">Sup dude?</div>
+                      <div class="msg-foot"><span class="burn">*4d 23h 50m 26s</span> · 4:57 PM</div>
+                    </div>
+                  </div>
+                  <div class="msg-row out">
+                    <div>
+                      <div class="bubble">Hey — testing timers.</div>
+                      <div class="msg-foot">4:38 PM · <span class="burn">*0d 23h 59m 10s</span></div>
+                      <div class="msg-swipe-hint">Long-press / actions · Recall</div>
+                    </div>
+                  </div>
+                  <div class="msg-row in">
+                    <div class="ava-sm">S</div>
+                    <div>
+                      <div class="bubble bubble-md"><strong>Bold</strong> and <em>italic</em> — Markdown when enabled.</div>
+                      <div class="msg-foot"><span class="burn">*2d 11h 02m 01s</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="toolbar">
+                  <details class="popover popover-anchor">
+                    <summary class="tool timer-wide">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="14" r="7" /><path stroke-linecap="round" d="M12 11v3l2 1" /><path stroke-linecap="round" d="M9 3h6M12 3v2" />
+                      </svg>
+                      1d · off
+                    </summary>
+                    <div class="timer-panel">
+                      <header>Timers · next outgoing message</header>
+                      <div class="timer-split-section">
+                        <h4>Lifetime <span class="hint">Matches EP_ORDER in HubChatsExperience.tsx</span></h4>
+                        <div class="timer-scroll">
+                          <button type="button">Off <small>Off</small></button>
+                          <button type="button">10 seconds <small>10s</small></button>
+                          <button type="button">1 minute <small>1m</small></button>
+                          <button type="button">5 minutes <small>5m</small></button>
+                          <button type="button">10 minutes <small>10m</small></button>
+                          <button type="button">1 hour <small>1h</small></button>
+                          <button type="button">6 hours <small>6h</small></button>
+                          <button type="button">12 hours <small>12h</small></button>
+                          <button type="button" class="on">1 day <small>1d</small></button>
+                          <button type="button">1 week <small>1w</small></button>
+                          <button type="button">2 weeks <small>2w</small></button>
+                          <button type="button">4 weeks <small>4w</small></button>
+                          <button type="button">6 months <small>6mo</small></button>
+                          <button type="button">1 year <small>1y</small></button>
+                        </div>
+                      </div>
+                      <div class="timer-split-section">
+                        <h4>Burn after open <span class="hint">Separate product field — wire when API exists</span></h4>
+                        <div class="timer-scroll">
+                          <button type="button" class="on">Off <small>Off</small></button>
+                          <button type="button">1 minute <small>1m</small></button>
+                          <button type="button">3 minutes <small>3m</small></button>
+                          <button type="button">1 hour <small>1h</small></button>
+                          <button type="button">1 day <small>1d</small></button>
+                        </div>
+                      </div>
+                    </div>
+                  </details>
+                  <button type="button" class="tool" aria-label="Camera"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3"/></svg></button>
+                  <button type="button" class="tool" aria-label="Gallery"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="5" width="8" height="8" rx="1"/><rect x="13" y="9" width="8" height="10" rx="1"/></svg></button>
+                  <button type="button" class="tool" aria-label="Voice"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 14a3 3 0 003-3V7a3 3 0 10-6 0v4a3 3 0 003 3z"/><path d="M19 11a7 7 0 01-14 0M12 18v3"/></svg></button>
+                  <button type="button" class="tool" aria-label="Attach"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 11l-9 9a5 5 0 01-7-7l9-9a3 3 0 014 4l-9 9a1 1 0 01-1.5-1.5l8-8"/></svg></button>
+                </div>
+                <div class="composer-bar">
+                  <button type="button" class="spark" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/></svg></button>
+                  <input readonly placeholder="Auto-removes after 1 day — type below…" />
+                  <button type="button" class="send">Send</button>
+                </div>
+              </div>
+            </div>
+            <div class="info-sheet">
+              <h4>Conversation info (header “i”)</h4>
+              <dl>
+                <dt>Lifetime (next send)</dt>
+                <dd>1 day</dd>
+                <dt>Burn after open</dt>
+                <dd>Off</dd>
+                <dt>Markdown</dt>
+                <dd>On · sanitized subset</dd>
+              </dl>
+              <div class="danger">Clear all messages in this thread…</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="chat-dark">
+        <h2>7. Production lane — dark Hub (dm theme)</h2>
+        <p class="note">Matches live <code>/hub/chats</code> direction: charcoal canvas, lime accents, same structure as above.</p>
+        <div class="device device-dark">
+          <div class="status-bar">
+            <time class="status-time" datetime="2026-05-06T09:41">9:41</time>
+            <span class="status-label">Hub Chats · dm.*</span>
+            <div class="status-trail" aria-hidden="true">
+              <span class="status-signal"><span></span><span></span><span></span><span></span></span>
+              <span class="status-battery"></span>
+            </div>
+          </div>
+          <div class="chat-head">
+            <span class="back">‹ Inbox</span>
+            <span class="title">stevej</span>
+            <div class="info-dot">i</div>
+          </div>
+          <div class="chat-scroll" style="min-height: 260px">
+            <div class="day-rule">Today</div>
+            <div class="msg-row in">
+              <div class="ava-sm">S</div>
+              <div>
+                <div class="bubble">Ship checklist is green — DM timers unchanged.</div>
+                <div class="msg-foot"><span class="burn">*4d 22h 18m 02s</span> · 4:12 PM</div>
+              </div>
+            </div>
+            <div class="msg-row out">
+              <div>
+                <div class="bubble">Same layout — dark tokens · /hub/chats</div>
+                <div class="msg-foot"><span class="burn">*0d 23h 59m 10s</span> · 4:38 PM</div>
+              </div>
+            </div>
+          </div>
+          <div class="toolbar">
+            <div class="tool timer-wide">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="14" r="7"/><path stroke-linecap="round" d="M12 11v3l2 1"/></svg>
+              1d
+            </div>
+            <button type="button" class="tool" aria-label="Attach"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11l-9 9a5 5 0 01-7-7l9-9a3 3 0 014 4l-9 9a1 1 0 01-1.5-1.5l8-8"/></svg></button>
+          </div>
+          <div class="composer-bar">
+            <input readonly placeholder="Auto-removes after 1 day — type below…" style="background: var(--dm-panel); color: #f1f5f9; border: 1px solid var(--dm-border)" />
+            <button type="button" class="send">Send</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="hub-inbox-chrome">
+        <h2>8. Hub inbox — search, New, overflow menus</h2>
+        <p class="note">
+          Production shell lives in <span class="kbd">HubChatsExperience.tsx</span> (<span class="kbd">/hub/chats</span>). Each phone isolates one surface for annotation; the live Hub uses a
+          <strong>split pane</strong> on large screens (list + conversation). <strong>New</strong> toggles start-chat; the inbox search field is a
+          <strong>single control</strong> for <strong>@username</strong>, <strong>$prefixed id</strong>, or <strong>pasted wallet</strong> — users should not re-type long hex:
+          provide a <strong>Paste</strong> control in the field (empty state) and the same next to &quot;Open&quot; in start-chat. Normalize whitespace in queries.
+          Match threads by handle today (<span class="kbd">filteredThreads</span>); extend when directory returns wallet↔peer mappings.
+          State: <span class="kbd">threadSearch</span>. <strong>⋮</strong> menus → <span class="kbd">inboxMenuOpen</span>, <span class="kbd">threadRowMenuId</span>, <span class="kbd">chatHeaderMenuOpen</span>.
+        </p>
+        <p class="ref-callout">
+          <strong>Reference imagery:</strong> Screenshots, workshop photos, or competitor boards you shared in chat are not stored in this repo. Keep canonical visuals in Figma or design Drive and link them from your doc index — this file is the engineering-facing wire spec only.
+        </p>
+        <div class="gallery">
+          <div>
+            <div class="screen-label">Inbox ⋮ menu (open)</div>
+            <div class="device device-dark">
+              <div class="status-bar">
+                <time class="status-time" datetime="2026-05-06T09:41">9:41</time>
+                <span class="status-label">Secure messages</span>
+                <div class="status-trail" aria-hidden="true">
+                  <span class="status-signal"><span></span><span></span><span></span><span></span></span>
+                  <span class="status-battery"></span>
+                </div>
+              </div>
+              <div class="hub-shell">
+                <div class="hub-tab-strip">
+                  <button type="button" class="hub-tab on">Inbox</button>
+                  <button type="button" class="hub-tab">Groups</button>
+                </div>
+                <div class="hub-toolbar-block">
+                  <div class="hub-toolbar-row">
+                    <button type="button" class="hub-new">New</button>
+                    <div class="hub-search-wrap">
+                      <span class="glass" aria-hidden="true">⌕</span>
+                      <input class="hub-search-input" readonly placeholder="Search name, @handle, or paste wallet" value="" aria-label="Search by handle or wallet" />
+                    </div>
+                    <div class="hub-menu-anchor">
+                      <button type="button" class="hub-kebab" aria-label="Inbox menu">⋮</button>
+                      <div class="hub-dropdown" role="presentation">
+                        <button type="button">New message…</button>
+                        <button type="button" disabled>Clear search</button>
+                        <button type="button" disabled>Restore hidden chats</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p style="margin: 0; padding: 16px; font-size: 11px; color: #64748b; text-align: center">Thread list scrolls here — see row mock →</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="screen-label">Start / open DM (New expanded)</div>
+            <div class="device device-dark">
+              <div class="status-bar">
+                <time class="status-time" datetime="2026-05-06T09:41">9:41</time>
+                <span class="status-label">Secure messages</span>
+                <div class="status-trail" aria-hidden="true">
+                  <span class="status-signal"><span></span><span></span><span></span><span></span></span>
+                  <span class="status-battery"></span>
+                </div>
+              </div>
+              <div class="hub-shell">
+                <div class="hub-tab-strip">
+                  <button type="button" class="hub-tab on">Inbox</button>
+                  <button type="button" class="hub-tab">Groups</button>
+                </div>
+                <div class="hub-toolbar-block">
+                  <div class="hub-toolbar-row">
+                    <button type="button" class="hub-new">New</button>
+                    <div class="hub-search-wrap">
+                      <span class="glass" aria-hidden="true">⌕</span>
+                      <input class="hub-search-input" readonly placeholder="Search name, @handle, or paste wallet" value="" aria-label="Search by handle or wallet" />
+                    </div>
+                    <button type="button" class="hub-kebab" aria-label="Inbox menu">⋮</button>
+                  </div>
+                  <div class="hub-new-panel">
+                    <span class="hub-panel-label">Start or open a DM</span>
+                    <div class="hub-new-row">
+                      <input class="hub-handle-input" readonly value="" placeholder="@handle or 0x wallet…" aria-label="Peer handle or wallet" />
+                      <span class="hub-open-btn">Open</span>
+                    </div>
+                    <p style="margin: 10px 0 0; font-size: 10px; color: #64748b">
+                      Same resolver idea as inbox search — Enter / Open · <span class="kbd">openOrCreateThread()</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="screen-label">Thread row ⋮</div>
+            <div class="device device-dark">
+              <div class="status-bar">
+                <time class="status-time" datetime="2026-05-06T09:41">9:41</time>
+                <span class="status-label">Secure messages</span>
+                <div class="status-trail" aria-hidden="true">
+                  <span class="status-signal"><span></span><span></span><span></span><span></span></span>
+                  <span class="status-battery"></span>
+                </div>
+              </div>
+              <div class="hub-shell">
+                <div class="hub-toolbar-block" style="border-bottom: none">
+                  <div class="hub-toolbar-row">
+                    <button type="button" class="hub-new">New</button>
+                    <div class="hub-search-wrap">
+                      <span class="glass" aria-hidden="true">⌕</span>
+                      <input class="hub-search-input" readonly placeholder="Search name, @handle, or paste wallet" value="" aria-label="Search by handle or wallet" />
+                    </div>
+                    <button type="button" class="hub-kebab">⋮</button>
+                  </div>
+                </div>
+                <div class="hub-thread-row">
+                  <div class="mini-av" aria-hidden="true"></div>
+                  <div style="min-width: 0; flex: 1">
+                    <div style="display: flex; justify-content: space-between; gap: 8px">
+                      <strong style="font-size: 13px; color: #fff">stevej</strong>
+                      <span style="font-size: 10px; color: #64748b; flex-shrink: 0">2:02 PM</span>
+                    </div>
+                    <div style="font-size: 11px; color: #64748b; margin-top: 4px">Encrypted message</div>
+                  </div>
+                  <button type="button" class="hub-thread-kebab" aria-label="Thread actions">⋮</button>
+                  <div class="hub-row-dropdown" role="presentation">
+                    <button type="button">Mute notifications</button>
+                    <button type="button" class="danger">Remove from inbox</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="screen-label">Conversation header · Verify + ⋮</div>
+            <div class="device device-dark">
+              <div class="status-bar">
+                <time class="status-time" datetime="2026-05-06T09:41">9:41</time>
+                <span class="status-label">Hub Chats</span>
+                <div class="status-trail" aria-hidden="true">
+                  <span class="status-signal"><span></span><span></span><span></span><span></span></span>
+                  <span class="status-battery"></span>
+                </div>
+              </div>
+              <div class="hub-chat-bar">
+                <div>
+                  <div class="peer">stevej</div>
+                  <div class="sub">Your TZ · Device sync line</div>
+                </div>
+                <div class="hub-chat-actions">
+                  <span class="hub-pill">Verify</span>
+                  <div class="hub-menu-anchor">
+                    <button type="button" class="hub-kebab" aria-label="Chat menu">⋮</button>
+                    <div class="hub-dropdown" role="presentation">
+                      <button type="button">Safety number…</button>
+                      <button type="button">Mute notifications</button>
+                      <button type="button" class="danger">Remove from inbox</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="min-height: 140px; background: var(--dm-canvas)"></div>
+            </div>
+          </div>
+        </div>
+        <table class="matrix" style="margin-top: 12px">
+          <thead>
+            <tr>
+              <th>Affordance</th>
+              <th>Code / state (short)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Inbox ⋮</td>
+              <td><span class="kbd">inboxMenuOpen</span> · New message…, Clear search, Restore hidden chats</td>
+            </tr>
+            <tr>
+              <td>New → panel</td>
+              <td><span class="kbd">newChatOpen</span> · <span class="kbd">peerHandle</span> + Open · <span class="kbd">openOrCreateThread()</span></td>
+            </tr>
+            <tr>
+              <td>Unified search</td>
+              <td>
+                <span class="kbd">threadSearch</span> · <span class="kbd">filteredThreads</span> (today: handle substring; target: + wallet match when directory supports it)
+              </td>
+            </tr>
+            <tr>
+              <td>Row ⋮</td>
+              <td><span class="kbd">threadRowMenuId</span> · Mute · Remove from inbox (local hide)</td>
+            </tr>
+            <tr>
+              <td>Header ⋮</td>
+              <td><span class="kbd">chatHeaderMenuOpen</span> · Safety number · Mute · Remove</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="hub-groups">
+        <h2>9. Groups lane (product vocabulary)</h2>
+        <p class="note">
+          Second tab next to Inbox — educates stakeholders on group <em>shapes</em> without cloning another product’s UI. Creation buttons are mock until backend hooks land (dev shows a toast). Copy aligns with the in-app Groups panel.
+        </p>
+        <div class="gallery">
+          <div>
+            <div class="screen-label">Groups tab · shapes + CTAs</div>
+            <div class="device device-dark">
+              <div class="status-bar">
+                <time class="status-time" datetime="2026-05-06T09:41">9:41</time>
+                <span class="status-label">Secure messages</span>
+                <div class="status-trail" aria-hidden="true">
+                  <span class="status-signal"><span></span><span></span><span></span><span></span></span>
+                  <span class="status-battery"></span>
+                </div>
+              </div>
+              <div class="hub-shell">
+                <div class="hub-tab-strip">
+                  <button type="button" class="hub-tab">Inbox</button>
+                  <button type="button" class="hub-tab on">Groups</button>
+                </div>
+                <h3 class="groups-title">Groups on TrendUp</h3>
+                <p class="groups-intro">
+                  We mix ideas people like from <strong>modern messengers</strong>, <strong>photo-first social</strong>, and <strong>open conversation</strong> — expressed in
+                  <strong>our own layouts and names</strong>, not a copy of any single product.
+                </p>
+                <div class="groups-pick">
+                  <b>Pick a shape</b>
+                  <span>Tap a card</span>
+                </div>
+                <div class="shape-grid">
+                  <div class="shape-card">
+                    <b>House line</b>
+                    <small>Broadcast-style updates with threaded replies — official voice + discussion.</small>
+                  </div>
+                  <div class="shape-card">
+                    <b>Circle</b>
+                    <small>Small trusted lists for photos and voice notes — tight groups without copying another app’s name.</small>
+                  </div>
+                  <div class="shape-card">
+                    <b>Squad room</b>
+                    <small>Fast file + voice + pin stack — topic headers and search, built our way.</small>
+                  </div>
+                </div>
+                <div class="shape-actions">
+                  <button type="button" class="primary">Create House line</button>
+                  <button type="button">Create Circle</button>
+                  <button type="button">Create Squad</button>
+                </div>
+                <p class="groups-legal"><strong>Legal safety:</strong> TrendUp is independent — ideas are industry-common; branding, code, and policy are ours.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="hub-account-device">
+        <h2>10. Account &amp; device (settings)</h2>
+        <p class="note">
+          In <span class="kbd">HubChatsExperience.tsx</span>, settings are <strong>not</strong> a bottom tab. They live in a collapsible
+          <strong>Account &amp; device</strong> <span class="kbd">&lt;details&gt;</span> below the conversation column (full width on large
+          viewports). Includes <strong>Sounds</strong>, <strong>Mute chat</strong> (when a thread is active), <strong>Secure Mode</strong> (copy/context lock +
+          conversation lock on tab hide), crypto status, and <strong>Approve a new device</strong> (paste code — pairs with the “new device” banner in
+          chat). Overlaps with header ⋮ mute but serves different layout contexts.
+        </p>
+        <div class="gallery">
+          <div>
+            <div class="screen-label">Hub · Account &amp; device (open)</div>
+            <div class="device device-dark">
+              <div class="status-bar">
+                <time class="status-time" datetime="2026-05-06T09:41">9:41</time>
+                <span class="status-label">Hub Chats</span>
+                <div class="status-trail" aria-hidden="true">
+                  <span class="status-signal"><span></span><span></span><span></span><span></span></span>
+                  <span class="status-battery"></span>
+                </div>
+              </div>
+              <div style="padding: 10px 14px; border-bottom: 1px solid var(--dm-border); font-size: 10px; color: #64748b; background: var(--dm-canvas)">
+                ↑ Conversation + composer live above this panel on desktop; on narrow screens this sits under the thread.
+              </div>
+              <details class="acct-details" open>
+                <summary class="acct-summary">
+                  Account &amp; device <span class="chev" aria-hidden="true">▾</span>
+                </summary>
+                <div class="acct-body">
+                  <div class="acct-row">
+                    <div class="acct-label">
+                      <strong>Sounds</strong>
+                      <span class="desc">Receive ping + send click when this tab is visible.</span>
+                    </div>
+                    <span class="acct-toggle on">ON</span>
+                  </div>
+                  <div class="acct-row">
+                    <div class="acct-label">
+                      <strong>Mute chat</strong>
+                      <span class="desc">Receive ping only for <span style="color: #94a3b8">@stevej</span> — mirrors header / row mute.</span>
+                    </div>
+                    <span class="acct-toggle">UNMUTED</span>
+                  </div>
+                  <div class="acct-row">
+                    <div class="acct-label">
+                      <strong>Secure Mode</strong>
+                      <span class="desc">Blocks copy &amp; context menu; locks thread if tab loses focus. Unlock confirms.</span>
+                    </div>
+                    <span class="acct-toggle warn">OFF</span>
+                  </div>
+                  <p class="acct-status-ok">E2EE keys ready on this device.</p>
+                  <div class="acct-device-block">
+                    <strong>Approve a new device</strong>
+                    <p>
+                      Paste the code from another browser. Requires secure session <span class="kbd">tu_secure</span> so a stolen cookie alone cannot add devices.
+                    </p>
+                    <div class="acct-device-row">
+                      <input class="acct-code-input" readonly value="" placeholder="8-character code" aria-label="Device code" />
+                      <span class="acct-approve-btn">Approve</span>
+                    </div>
+                  </div>
+                  <p class="acct-hint">
+                    Start DMs from <strong>New</strong> in the inbox toolbar — this panel is account / device / privacy, not a second inbox.
+                  </p>
+                </div>
+              </details>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="hub-edge-states">
+        <h2>11. Hub edge states (auth &amp; empty inbox)</h2>
+        <p class="note">
+          Mirrors strings and layout paths in <span class="kbd">HubChatsExperience.tsx</span> when <span class="kbd">threadsListError === &quot;unauthorized&quot;</span>, when there are zero threads, or when filters hide everything. Keeps QA from mistaking edge UI for regressions.
+        </p>
+        <div class="gallery">
+          <div>
+            <div class="screen-label">Signed out · thread list blocked</div>
+            <div class="device device-dark" style="display: flex; flex-direction: column; min-height: 420px">
+              <div class="status-bar">
+                <time class="status-time" datetime="2026-05-06T09:41">9:41</time>
+                <span class="status-label">Secure messages</span>
+                <div class="status-trail" aria-hidden="true">
+                  <span class="status-signal"><span></span><span></span><span></span><span></span></span>
+                  <span class="status-battery"></span>
+                </div>
+              </div>
+              <div class="hub-auth-banner">
+                <strong>Sign in to load and send direct messages</strong>
+                <p>Threads sync from the server after you authenticate. You can still explore the full UI here.</p>
+                <span class="hub-auth-cta">Sign in</span>
+              </div>
+              <div class="hub-toolbar-dim">
+                <div class="hub-toolbar-block">
+                  <div class="hub-toolbar-row">
+                    <button type="button" class="hub-new">New</button>
+                    <div class="hub-search-wrap">
+                      <span class="glass" aria-hidden="true">⌕</span>
+                      <input class="hub-search-input" readonly placeholder="Search name, @handle, or paste wallet" value="" aria-label="Search by handle or wallet" />
+                    </div>
+                    <button type="button" class="hub-kebab">⋮</button>
+                  </div>
+                </div>
+              </div>
+              <p class="hub-edge-note">
+                <span class="kbd">New</span> disabled when unauthorized · banner uses amber emphasis in production.
+              </p>
+            </div>
+          </div>
+          <div>
+            <div class="screen-label">Authenticated · zero threads</div>
+            <div class="device device-dark" style="display: flex; flex-direction: column; min-height: 420px">
+              <div class="status-bar">
+                <time class="status-time" datetime="2026-05-06T09:41">9:41</time>
+                <span class="status-label">Secure messages</span>
+                <div class="status-trail" aria-hidden="true">
+                  <span class="status-signal"><span></span><span></span><span></span><span></span></span>
+                  <span class="status-battery"></span>
+                </div>
+              </div>
+              <div class="hub-shell" style="flex: 1; display: flex; flex-direction: column">
+                <div class="hub-tab-strip">
+                  <button type="button" class="hub-tab on">Inbox</button>
+                  <button type="button" class="hub-tab">Groups</button>
+                </div>
+                <div class="hub-toolbar-block">
+                  <div class="hub-toolbar-row">
+                    <button type="button" class="hub-new">New</button>
+                    <div class="hub-search-wrap">
+                      <span class="glass" aria-hidden="true">⌕</span>
+                      <input class="hub-search-input" readonly placeholder="Search name, @handle, or paste wallet" value="" aria-label="Search by handle or wallet" />
+                    </div>
+                    <button type="button" class="hub-kebab">⋮</button>
+                  </div>
+                </div>
+                <div class="hub-empty-state">
+                  No threads yet — tap <strong>New</strong> above to message someone.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="note" style="margin-top: 16px">
+          Additional copy in production: <strong>No threads match your search</strong>, <strong>All chats hidden — restore from the inbox ⋮ menu</strong>, conversation <strong>Secure Mode</strong> lock overlay — wire those when tightening QA matrices.
+        </p>
+      </section>
+
+      <section class="section" id="matrix">
+        <h2>12. Logic matrix (spec)</h2>
+        <p class="note">Engineering must define exact precedence in server policy — table is UX shorthand.</p>
+        <table class="matrix">
+          <thead>
+            <tr><th>Scenario</th><th>Result</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Lifetime only</td><td>Delete after window from send.</td></tr>
+            <tr><td>Burn only</td><td>After open, delete after burn window.</td></tr>
+            <tr><td>Both set</td><td>First triggering event wins (typically whichever removes earlier).</td></tr>
+            <tr><td>Recall</td><td>Out-of-band delete request — independent of timers if policy allows.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="checklist">
+        <h2>13. Implementation checklist</h2>
+        <ul class="note" style="padding-left: 22px; margin: 0">
+          <li>
+            Parity: inbox toolbar (<span class="kbd">New</span>, <span class="kbd">threadSearch</span>, inbox ⋮), row ⋮, chat header ⋮ + Verify — match states in <span class="kbd">HubChatsExperience.tsx</span>.
+          </li>
+          <li>
+            <strong>Unified search / open DM:</strong> one field for <strong>@handle</strong>, <strong>$</strong> prefix, or pasted wallet — ship <strong>Paste</strong> affordances (Hub chats + login wallet) so users never re-type hex; wallet directory matching still when API exposes linked addresses (filter is handle-only today).
+          </li>
+          <li>
+            Auth parity with <span class="kbd">/hub/login</span>: password session + wallet signature session; surface OAuth / magic link where mobile ships web view or native equivalents.
+          </li>
+          <li>
+            <strong>Account &amp; device</strong> <span class="kbd">details</span>: Sounds, Mute chat, Secure Mode, device approval — keep in sync with overflow menus; document mobile order (panel below thread).
+          </li>
+          <li>
+            Edge states: signed-out banner, empty thread list, search-no-results — match <span class="kbd">threadsListError</span> / <span class="kbd">filteredThreads</span> branches; don’t ship dead ends without CTAs.
+          </li>
+          <li>
+            A11y: real menus must use focus trap / Escape where applicable; wireframes are static — validate roving tabindex on thread rows and <span class="kbd">aria-expanded</span> on ⋮ triggers in implementation.
+          </li>
+          <li>Groups tab: keep product copy independent; wire creation flows when API exists (currently toast-only).</li>
+          <li>Wire lifetime dropdown to <span class="kbd">EP_ORDER</span> / <span class="kbd">persistEphForThread</span>; add burn key storage when schema exists.</li>
+          <li>Placeholder + aria-label sync (<span class="kbd">ephemeralComposerPlaceholder</span> pattern).</li>
+          <li>Header <strong>i</strong> / conversation sheet → thread retention + clear (light mock); production uses header menus above.</li>
+          <li>Markdown: sanitize; no raw HTML from peers.</li>
+          <li>Dark lane: Tailwind <span class="kbd">dm.*</span>; this HTML is visual parity reference only.</li>
+          <li>QA: keyboard, screen reader labels on timer groups, contrast on red composer bar; menu dismiss on outside click (<span class="kbd">data-hub-chat-menu</span>).</li>
+        </ul>
+      </section>
+
+      <footer class="doc-footer">
+        <div>
+          <strong>TrendUp</strong> · UI specification artifact · path
+          <span class="kbd">public/mockups/trendup-secure-dm-handoff/index.html</span>
+        </div>
+        <p class="confidential">
+          Internal engineering &amp; design use. Does not replace threat model, legal copy, or production acceptance tests.
+        </p>
+      </footer>
+      </main>
+    </div>
+  </body>
+</html>
