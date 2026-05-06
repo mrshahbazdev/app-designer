@@ -29,7 +29,7 @@ import {
 
 // ─── CONFIG ────────────────────────────────────────────────────────
 const DEFAULT_MODEL = "gemini-2.5-flash-preview-09-2025";
-const apiKey = "";
+const getApiKey = () => { try { return localStorage.getItem('v2ui_gemini_key') || ''; } catch { return ''; } };
 // ───────────────────────────────────────────────────────────────────
 
 
@@ -281,6 +281,8 @@ export default function App() {
   const [multiDeviceView, setMultiDeviceView] = useState(false);
   const [screenState, setScreenState] = useState('default');
   const [showQuickEdit, setShowQuickEdit] = useState(false);
+  const [userApiKey, setUserApiKey] = useState(() => getApiKey());
+  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
 
   const { toasts, addToast } = useToasts();
   const fileInputRef = useRef(null);
@@ -326,11 +328,17 @@ export default function App() {
 
   // ── Core AI Generate ──
   const callAI = async (parts, systemPrompt, retries = 0) => {
-    const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${DEFAULT_MODEL}:generateContent?key=${apiKey}`, {
+    const key = userApiKey || getApiKey();
+    if (!key) { setShowApiKeyModal(true); throw new Error('NO_KEY'); }
+    const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${DEFAULT_MODEL}:generateContent?key=${key}`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts }], systemInstruction: { parts: [{ text: systemPrompt }] } }),
-    });
-    if (!resp.ok) { if (retries < 4) { const delay = Math.pow(2, retries) * 2000 + Math.random() * 1000; await new Promise(r => setTimeout(r, delay)); return callAI(parts, systemPrompt, retries + 1); } throw new Error(`API ${resp.status}`); }
+    }).catch(err => { throw new Error(`NETWORK_ERROR: ${err.message}`); });
+    if (!resp.ok) {
+      if (resp.status === 400 || resp.status === 403) throw new Error('INVALID_KEY');
+      if (retries < 4) { const delay = Math.pow(2, retries) * 2000 + Math.random() * 1000; await new Promise(r => setTimeout(r, delay)); return callAI(parts, systemPrompt, retries + 1); }
+      throw new Error(`API ${resp.status}`);
+    }
     const d = await resp.json();
     return (d.candidates?.[0]?.content?.parts?.[0]?.text || '').replace(/```(html|markdown)?/g, '').replace(/```/g, '').trim();
   };
@@ -348,7 +356,12 @@ export default function App() {
       setPreviewKey(k => k + 1); setActiveTab('preview');
       const s = ((Date.now() - t0) / 1000).toFixed(1); setGenStats(p => ({ count: p.count + 1, lastTime: parseFloat(s) }));
       addToast(`"${currentPage.name}" generated in ${s}s`, 'success');
-    } catch { if (retryCount < 3) { addToast(`Retrying (${retryCount + 1}/3)...`, 'info'); setTimeout(() => generatePage(retryCount + 1), 2000); return; } addToast('Generation failed.', 'error'); }
+    } catch (err) {
+      if (err.message === 'NO_KEY') { addToast('Please enter your Gemini API key first.', 'error'); }
+      else if (err.message === 'INVALID_KEY') { addToast('Invalid API key. Check your key at aistudio.google.com', 'error'); setShowApiKeyModal(true); }
+      else if (err.message?.startsWith('NETWORK_ERROR')) { addToast('Network error — Gemini Canvas blocks external API calls. Run this app locally or in CodeSandbox.', 'error'); }
+      else { if (retryCount < 3) { addToast(`Retrying (${retryCount + 1}/3)...`, 'info'); setTimeout(() => generatePage(retryCount + 1), 2000); return; } addToast('Generation failed.', 'error'); }
+    }
     finally { setIsLoading(false); }
   };
 
@@ -675,6 +688,7 @@ export default function App() {
           <button onClick={copyCode} className={`px-3 py-1 rounded text-[9px] font-bold flex items-center gap-1 ${copied ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/5 text-slate-400'}`}>
             {copied ? <Check size={10} /> : <Copy size={10} />} {copied ? 'Copied!' : 'Copy'}
           </button>
+          {!userApiKey && <button onClick={() => setShowApiKeyModal(true)} className="px-2 py-1 rounded text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1"><AlertCircle size={10} /> API Key</button>}
           <button onClick={() => setShowSettings(true)} className="p-1.5 rounded hover:bg-white/5 text-slate-500"><Settings size={14} /></button>
         </div>
       </header>
@@ -1022,8 +1036,26 @@ export default function App() {
                 <div><label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mb-1.5">Background</label><div className="flex items-center gap-2"><input type="color" value={brand.bg||'#0F1419'} onChange={e=>setBrand({...brand,bg:e.target.value})} className="w-8 h-8 rounded cursor-pointer border-0" /><input type="text" value={brand.bg||'#0F1419'} onChange={e=>setBrand({...brand,bg:e.target.value})} className="flex-1 bg-white/5 border border-white/5 rounded px-2 py-1.5 text-[10px] text-white font-mono" /></div></div>
                 <div><label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mb-1.5">Surface</label><div className="flex items-center gap-2"><input type="color" value={brand.surface||'#1A1F2E'} onChange={e=>setBrand({...brand,surface:e.target.value})} className="w-8 h-8 rounded cursor-pointer border-0" /><input type="text" value={brand.surface||'#1A1F2E'} onChange={e=>setBrand({...brand,surface:e.target.value})} className="flex-1 bg-white/5 border border-white/5 rounded px-2 py-1.5 text-[10px] text-white font-mono" /></div></div>
               </div>
+              <div><label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mb-1.5">Gemini API Key</label>
+                <input type="password" value={userApiKey} onChange={e => setUserApiKey(e.target.value)} placeholder="Enter your Gemini API key" className="w-full bg-white/5 border border-white/5 rounded-lg p-3 text-white text-sm outline-none font-mono" />
+                <p className="text-[9px] text-slate-500 mt-1">Get free key from <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" className="text-blue-400 underline">aistudio.google.com/apikey</a></p>
+              </div>
             </div>
-            <button onClick={() => { setShowSettings(false); addToast('Saved!', 'success'); }} className="w-full mt-5 py-2.5 rounded-lg text-white font-bold text-xs" style={{ background: brand.primary }}>Save</button>
+            <button onClick={() => { try { localStorage.setItem('v2ui_gemini_key', userApiKey); } catch {} setShowSettings(false); addToast('Saved!', 'success'); }} className="w-full mt-5 py-2.5 rounded-lg text-white font-bold text-xs" style={{ background: brand.primary }}>Save</button>
+          </div>
+        </div>
+      )}
+
+      {/* API Key Modal */}
+      {showApiKeyModal && (
+        <div className="fixed inset-0 z-[1001] flex items-center justify-center p-8 backdrop-blur-xl"><div className="absolute inset-0 bg-black/80" onClick={() => setShowApiKeyModal(false)} />
+          <div className="w-[420px] bg-[#0d0d12] border border-white/10 rounded-2xl p-6 relative z-10">
+            <div className="flex items-center justify-between mb-4"><h2 className="text-lg font-black text-white flex items-center gap-2"><Cpu size={18} className="text-yellow-400" /> API Key Required</h2><button onClick={() => setShowApiKeyModal(false)} className="text-slate-500 hover:text-white"><X size={16} /></button></div>
+            <p className="text-xs text-slate-400 mb-4">Screen generation requires a Gemini API key. Get one for free:</p>
+            <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" className="block w-full text-center py-2 mb-4 rounded-lg bg-blue-600/20 border border-blue-500/30 text-blue-300 text-xs font-bold hover:bg-blue-600/30">Open Google AI Studio &rarr;</a>
+            <input type="password" value={userApiKey} onChange={e => setUserApiKey(e.target.value)} placeholder="Paste your API key here..." className="w-full bg-white/5 border border-white/5 rounded-lg p-3 text-white text-sm outline-none font-mono mb-3" />
+            <p className="text-[9px] text-amber-400/80 mb-4 flex items-center gap-1"><AlertCircle size={10} /> Note: Gemini Canvas (gemini.google.com) blocks external API calls. Use CodeSandbox, StackBlitz, or local dev instead.</p>
+            <button onClick={() => { if (!userApiKey.trim()) { addToast('Please enter a key', 'error'); return; } try { localStorage.setItem('v2ui_gemini_key', userApiKey); } catch {} setShowApiKeyModal(false); addToast('API key saved!', 'success'); }} className="w-full py-2.5 rounded-lg text-white font-bold text-xs" style={{ background: brand.primary }}>Save & Continue</button>
           </div>
         </div>
       )}
