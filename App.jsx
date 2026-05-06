@@ -386,6 +386,44 @@ export default function App() {
     addToast(`Done! ${up.filter(p => p.html).length}/${up.length} screens ready.`, 'success');
   };
 
+  // ── Generate All Screens with All Variations ──
+  const generateAllWithVariations = async () => {
+    const np = PRESETS.map((p, i) => ({ id: (Date.now() + i).toString(), name: p.label, html: '' }));
+    pagesHistory.set(np); setShowAutoGen(false); setShowSuggestions(false);
+    setAutoGenRunning(true); autoGenAbortRef.current = false;
+    setAutoGenProgress({ current: 0, total: np.length, currentName: np[0].name });
+    let up = [...np]; const bs = { ...brand }; const ls = logoBase64;
+    for (let i = 0; i < up.length; i++) {
+      if (autoGenAbortRef.current) { addToast('Stopped.', 'info'); break; }
+      setActivePageIndex(i); setAutoGenProgress({ current: i + 1, total: up.length, currentName: up[i].name });
+      try {
+        const preset = PRESETS.find(p => p.label === up[i].name);
+        let html = await callAI([{ text: `Task: Create "${up[i].name}" screen.\nInstructions: ${preset?.prompt || `Design ${up[i].name} screen.`}` }], buildSystemPrompt(bs, up, up[i].name, !!ls));
+        html = injectLogo(html);
+        up = [...up]; up[i] = { ...up[i], html }; pagesHistory.set(up); setPreviewKey(k => k + 1);
+        addToast(`"${up[i].name}" done (${i + 1}/${up.length})`, 'success');
+      } catch { addToast(`"${up[i].name}" failed`, 'error'); }
+      if (i < up.length - 1) await new Promise(r => setTimeout(r, 1500));
+    }
+    setAutoGenRunning(false); setActivePageIndex(0); setPreviewKey(k => k + 1);
+    addToast(`Done! ${up.filter(p => p.html).length}/${up.length} screens with variations ready.`, 'success');
+  };
+
+  // ── Regenerate Single Page ──
+  const regenerateSinglePage = async (pageIndex) => {
+    const page = pages[pageIndex];
+    if (!page) return;
+    setActivePageIndex(pageIndex); setIsLoading(true);
+    try {
+      const preset = PRESETS.find(p => p.label === page.name);
+      let html = await callAI([{ text: `Task: Create "${page.name}" screen.\nInstructions: ${preset?.prompt || `Design ${page.name} screen.`}` }], buildSystemPrompt(brand, pages, page.name, !!logoBase64));
+      html = injectLogo(html);
+      const upd = [...pages]; upd[pageIndex] = { ...upd[pageIndex], html }; pagesHistory.set(upd); setPreviewKey(k => k + 1);
+      addToast(`"${page.name}" regenerated!`, 'success');
+    } catch { addToast(`"${page.name}" regeneration failed.`, 'error'); }
+    finally { setIsLoading(false); }
+  };
+
   // ── Batch Regenerate All ──
   const batchRegenerate = async () => {
     setAutoGenRunning(true); autoGenAbortRef.current = false;
@@ -639,7 +677,7 @@ export default function App() {
                 </button>
                 {!sidebarCollapsed && (
                   <div className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 flex items-center gap-px">
-                    {p.html && <button onClick={(e) => { e.stopPropagation(); setActivePageIndex(i); setTimeout(() => generatePage(), 50); }} className="p-0.5 text-slate-600 hover:text-amber-400" title="Regenerate"><RefreshCw size={9} /></button>}
+                    <button onClick={(e) => { e.stopPropagation(); regenerateSinglePage(i); }} className="p-0.5 text-slate-600 hover:text-amber-400" title="Regenerate this variation"><RefreshCw size={9} /></button>
                     <button onClick={() => duplicatePage(i)} className="p-0.5 text-slate-600 hover:text-blue-400" title="Duplicate"><CopyPlus size={9} /></button>
                     {pages.length > 1 && <button onClick={() => deletePage(i)} className="p-0.5 text-slate-600 hover:text-red-400" title="Delete"><Trash2 size={9} /></button>}
                   </div>
@@ -682,7 +720,7 @@ export default function App() {
               </div>
               {currentPage?.html && (
                 <>
-                  <button onClick={() => { setPrompt(''); generatePage(); }} disabled={isLoading} className="px-2 py-0.5 rounded hover:bg-amber-500/10 text-amber-400/70 hover:text-amber-400 text-[9px] font-bold flex items-center gap-1 disabled:opacity-30"><RefreshCw size={10} /> Regen</button>
+                  <button onClick={() => regenerateSinglePage(activePageIndex)} disabled={isLoading} className="px-2 py-0.5 rounded hover:bg-amber-500/10 text-amber-400/70 hover:text-amber-400 text-[9px] font-bold flex items-center gap-1 disabled:opacity-30"><RefreshCw size={10} /> Regen</button>
                   <button onClick={() => setIsFullscreen(true)} className="p-1 rounded hover:bg-white/5 text-slate-500"><Maximize2 size={12} /></button>
                 </>
               )}
@@ -883,6 +921,17 @@ export default function App() {
               </button>
               <div><p className="text-xs font-bold text-white">{logoBase64 ? 'Logo ready' : 'Upload logo'}</p><p className="text-[9px] text-slate-500">{logoBase64 ? 'On every screen' : 'Recommended'}</p></div>
             </div>
+            <button onClick={generateAllWithVariations} className="w-full p-4 rounded-xl border-2 border-dashed hover:border-solid text-left group mb-4 transition-all" style={{ borderColor: brand.primary + '50', background: brand.primary + '08' }}>
+              <div className="flex items-center justify-between mb-1.5">
+                <h3 className="text-sm font-black text-white flex items-center gap-2"><Zap size={14} style={{ color: brand.primary }} /> Generate All Screens + Variations</h3>
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] font-bold px-2 py-0.5 rounded" style={{ color: brand.primary, background: brand.primary + '15' }}>{PRESETS.length} screens</span>
+                  <span className="text-[9px] font-bold px-2 py-0.5 rounded text-white opacity-0 group-hover:opacity-100" style={{ background: brand.primary }}><Play size={8} className="inline mr-0.5" />Start All</span>
+                </div>
+              </div>
+              <p className="text-[9px] text-slate-400">All 11 screens with 3-4 variations each — {PRESETS.length} total pages generated automatically. Client picks the best variation for each screen.</p>
+            </button>
+            <p className="text-[8px] font-bold text-slate-600 uppercase tracking-widest mb-2">Or pick a template set:</p>
             <div className="space-y-2">{SUGGESTED_SETS.map((s, i) => (
               <button key={i} onClick={() => autoGenerateAll(s)} className="w-full p-3.5 rounded-xl bg-white/5 border border-white/5 hover:border-white/20 text-left group">
                 <div className="flex items-center justify-between mb-1"><h3 className="text-sm font-bold text-white">{s.name}</h3>
