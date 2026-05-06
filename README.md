@@ -1,6 +1,6 @@
 # TrendUp App Designer
 
-AI-powered mobile UI screen generator for **TrendUp Secure Messaging** — built for use in Gemini Canvas.
+AI-powered mobile UI screen generator for **TrendUp Secure Messaging** — built for use in React environments with Gemini API.
 
 ## Features
 
@@ -12,6 +12,30 @@ AI-powered mobile UI screen generator for **TrendUp Secure Messaging** — built
 - **AI Chat** for refining designs in real-time
 - **Auto-generate** full app templates in one click
 - **Export** as HTML, full prototype, or React component
+
+## Setup
+
+### 1. Get a Gemini API Key (Free)
+1. Go to [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
+2. Click "Create API Key"
+3. Copy the key
+
+### 2. Run the App
+Paste `App.jsx` into any React environment:
+- **CodeSandbox** (recommended)
+- **StackBlitz**
+- **Local React project** (`npx create-react-app` or Vite)
+
+### 3. Enter Your API Key
+- Click the **"API Key"** warning button in the toolbar, OR
+- Go to **Settings** → paste your key in the "Gemini API Key" field
+- Key is saved in localStorage for future sessions
+
+## Important: Gemini Canvas Limitation
+
+> **Gemini Canvas on gemini.google.com CANNOT make external API calls.**
+> The Canvas sandbox blocks `fetch()` requests to external services.
+> Use CodeSandbox, StackBlitz, or a local dev server instead.
 
 ## Screens
 
@@ -28,10 +52,6 @@ AI-powered mobile UI screen generator for **TrendUp Secure Messaging** — built
 | 9 | Groups | 4 (Shapes, Cards, List, Create Flow) | Groups |
 | 10 | Account & Device | 4 (Panel, Sections, Profile, Device) | Settings |
 | 11 | Edge States | 4 (Signed Out, Empty, Error, No Results) | Edge States |
-
-## Usage
-
-Single-file React app (`App.jsx`) — paste into Gemini Canvas or any React environment.
 
 ## API
 
