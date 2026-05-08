@@ -4,8 +4,8 @@ AI-powered mobile UI screen generator for **TrendUp Secure Messaging** — built
 
 ## Features
 
-- **43 screen presets** across 11 screens with 3-4 variations each
-- **7 categories**: Onboarding, Inbox, Chat, Groups, Settings, Edge States
+- **87 screen presets** across 24 screens with 2-4 variations each
+- **13 categories**: Onboarding, Inbox, Chat, Groups, Contacts, Profile, Security, Media, Notifications, Calls, Settings, Edge States
 - **Gemini AI** generates production-ready HTML screens
 - **10 theme presets** including TrendUp Light, Hub Dark, AMOLED Black
 - **4 device previews**: iPhone 15 Pro, iPhone SE, Android, iPad Mini
@@ -52,6 +52,19 @@ Paste `App.jsx` into any React environment:
 | 9 | Groups | 4 (Shapes, Cards, List, Create Flow) | Groups |
 | 10 | Account & Device | 4 (Panel, Sections, Profile, Device) | Settings |
 | 11 | Edge States | 4 (Signed Out, Empty, Error, No Results) | Edge States |
+| 12 | Contacts | 4 (Alphabetical, Card Grid, Add Contact, Requests) | Contacts |
+| 13 | User Profile | 4 (Own Profile, Peer Profile, Edit, QR Share) | Profile |
+| 14 | Safety Number | 3 (Number Display, QR Scanner, Verified) | Security |
+| 15 | Media Gallery | 4 (Photo Grid, File List, Photo Viewer, Links) | Media |
+| 16 | Notifications | 3 (Activity Feed, Preferences, Security Alerts) | Notifications |
+| 17 | Registration | 3 (Identity, Security Setup, Complete) | Onboarding |
+| 18 | Forgot Password | 3 (Enter Handle, Recovery Phrase, Reset) | Onboarding |
+| 19 | Voice & Video Calls | 4 (Incoming, Active Call, Video Call, History) | Calls |
+| 20 | Wallet Management | 3 (Connected, Connect Flow, Sign Challenge) | Security |
+| 21 | Search Results | 2 (Global Search, Message Search) | Inbox |
+| 22 | Invite Friends | 2 (Share TrendUp, Invite QR) | Contacts |
+| 23 | Disappearing Messages | 2 (Thread Timer, Global Default) | Chat / Settings |
+| 24 | Secure Mode | 2 (Lock Overlay, Enable Confirm) | Security |
 
 ## API
 
