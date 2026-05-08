@@ -388,6 +388,30 @@ export default function App() {
   const filteredPresets = useMemo(() => presetFilter === 'all' ? PRESETS : PRESETS.filter(p => p.cat === presetFilter), [presetFilter]);
   const designedCount = pages.filter(p => p.html).length;
 
+  // Smart suggestions: find missing screens
+  const smartSuggestions = useMemo(() => {
+    const existingNames = new Set(pages.map(p => p.name.toLowerCase().trim()));
+    const screenGroups = {};
+    PRESETS.forEach(preset => {
+      const match = preset.label.match(/^(.+?)\s+V\d/);
+      const screenName = match ? match[1].trim() : preset.label;
+      if (!screenGroups[screenName]) {
+        screenGroups[screenName] = { name: screenName, emoji: preset.emoji, cat: preset.cat, presets: [] };
+      }
+      screenGroups[screenName].presets.push(preset);
+    });
+    const missing = [];
+    const created = [];
+    Object.values(screenGroups).forEach(group => {
+      if (existingNames.has(group.name.toLowerCase())) {
+        created.push(group);
+      } else {
+        missing.push(group);
+      }
+    });
+    return { missing, created, total: Object.keys(screenGroups).length };
+  }, [pages]);
+
   // ── Smart Logo Injection ──
   const injectLogo = useCallback((html) => {
     if (!logoBase64 || !html) return html;
@@ -410,6 +434,10 @@ export default function App() {
   const handleAddPage = (e) => { e?.preventDefault(); if (newPageName.trim()) { const n = newPageName.trim().replace(/[^a-zA-Z0-9 ]/g, ''); pagesHistory.set([...pages, { id: Date.now().toString(), name: n, html: '' }]); setActivePageIndex(pages.length); setNewPageName(''); setShowAddPageModal(false); addToast(`"${n}" added`, 'success'); } };
 
   const addSuggestedSet = (set) => { pagesHistory.set(set.pages.map((n, i) => ({ id: (Date.now() + i).toString(), name: n, html: '' }))); setActivePageIndex(0); setShowSuggestions(false); addToast(`Added ${set.pages.length} screens`, 'success'); };
+
+  const addSuggestedPage = (screenName) => { const exists = pages.some(p => p.name.toLowerCase() === screenName.toLowerCase()); if (exists) { addToast(`"${screenName}" already exists`, 'error'); return; } pagesHistory.set([...pages, { id: Date.now().toString(), name: screenName, html: '' }]); setActivePageIndex(pages.length); addToast(`"${screenName}" added — generate it next!`, 'success'); };
+
+  const addAllMissingSuggestions = () => { if (smartSuggestions.missing.length === 0) { addToast('All screens already added!', 'info'); return; } const newPages = smartSuggestions.missing.map((g, i) => ({ id: (Date.now() + i).toString(), name: g.name, html: '' })); pagesHistory.set([...pages, ...newPages]); addToast(`Added ${newPages.length} missing screens`, 'success'); };
 
   const deletePage = (i) => { if (pages.length === 1) { addToast('Cannot delete last screen', 'error'); return; } const n = pages[i].name; pagesHistory.set(pages.filter((_, j) => j !== i)); if (activePageIndex >= i && activePageIndex > 0) setActivePageIndex(p => p - 1); addToast(`"${n}" deleted`, 'info'); };
 
@@ -1084,15 +1112,62 @@ export default function App() {
       {/* Suggestions */}
       {showSuggestions && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-8 backdrop-blur-xl"><div className="absolute inset-0 bg-black/80" onClick={() => setShowSuggestions(false)} />
-          <div className="w-[520px] bg-[#0d0d12] border border-white/10 rounded-2xl p-6 relative z-10 max-h-[80vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4"><h2 className="text-lg font-black text-white flex items-center gap-2"><Lightbulb size={18} style={{ color: brand.primary }} /> App Templates</h2><button onClick={() => setShowSuggestions(false)} className="text-slate-500 hover:text-white"><X size={16} /></button></div>
-            <p className="text-[9px] text-slate-500 mb-3">{SUGGESTED_SETS.length} templates — click to load all screens, then auto-generate</p>
-            <div className="space-y-2.5">{SUGGESTED_SETS.map((s, i) => (
-              <button key={i} onClick={() => addSuggestedSet(s)} className="w-full p-3.5 rounded-xl bg-white/5 border border-white/5 hover:border-white/15 text-left transition-colors">
-                <div className="flex items-center justify-between mb-1"><h3 className="text-sm font-bold text-white">{s.name}</h3><span className="text-[9px] font-bold px-2 py-0.5 rounded" style={{ color: brand.primary, background: brand.primary + '15' }}>{s.pages.length} screens</span></div>
-                <p className="text-[9px] text-slate-500 mb-1.5">{s.desc}</p>
-                <div className="flex flex-wrap gap-1">{s.pages.slice(0,8).map(p => <span key={p} className="px-1.5 py-0.5 bg-white/5 rounded text-[7px] text-slate-400 font-bold">{p}</span>)}{s.pages.length > 8 && <span className="px-1.5 py-0.5 bg-white/5 rounded text-[7px] text-slate-500">+{s.pages.length-8}</span>}</div>
-              </button>))}
+          <div className="w-[560px] bg-[#0d0d12] border border-white/10 rounded-2xl p-6 relative z-10 max-h-[80vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4"><h2 className="text-lg font-black text-white flex items-center gap-2"><Lightbulb size={18} style={{ color: brand.primary }} /> Suggestions</h2><button onClick={() => setShowSuggestions(false)} className="text-slate-500 hover:text-white"><X size={16} /></button></div>
+
+            {/* Smart Next Suggestions */}
+            <div className="mb-5 p-4 rounded-xl border-2 border-dashed" style={{ borderColor: brand.primary + '40', background: brand.primary + '08' }}>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-black text-white flex items-center gap-2"><Sparkles size={14} style={{ color: brand.primary }} /> Next Pages to Create</h3>
+                <span className="text-[9px] font-bold px-2 py-0.5 rounded" style={{ color: brand.primary, background: brand.primary + '15' }}>{smartSuggestions.created.length}/{smartSuggestions.total} done</span>
+              </div>
+              <div className="w-full bg-white/5 rounded-full h-1.5 mb-3 overflow-hidden"><div className="h-full rounded-full transition-all duration-500" style={{ width: `${(smartSuggestions.created.length/smartSuggestions.total)*100}%`, background: brand.primary }} /></div>
+              {smartSuggestions.missing.length > 0 ? (
+                <>
+                  <p className="text-[9px] text-slate-400 mb-2.5">{smartSuggestions.missing.length} screens not yet in your project — click to add:</p>
+                  <div className="flex flex-wrap gap-1.5 mb-3">
+                    {smartSuggestions.missing.map(g => (
+                      <button key={g.name} onClick={() => addSuggestedPage(g.name)} className="px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/5 hover:border-white/20 text-left transition-all hover:bg-white/10 group flex items-center gap-1.5">
+                        <span className="text-xs">{g.emoji}</span>
+                        <span className="text-[10px] font-bold text-slate-300 group-hover:text-white">{g.name}</span>
+                        <span className="text-[8px] text-slate-600">{g.presets.length}v</span>
+                        <Plus size={10} className="text-slate-600 group-hover:text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </button>
+                    ))}
+                  </div>
+                  <button onClick={addAllMissingSuggestions} className="w-full py-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all hover:opacity-90" style={{ background: brand.primary, color: brand.bg || '#000' }}>
+                    <CopyPlus size={12} /> Add All {smartSuggestions.missing.length} Missing Screens
+                  </button>
+                </>
+              ) : (
+                <div className="text-center py-2">
+                  <p className="text-[10px] font-bold text-emerald-400 flex items-center justify-center gap-1.5"><Check size={12} /> All {smartSuggestions.total} screens added!</p>
+                  <p className="text-[8px] text-slate-500 mt-1">Use Auto Generate to create designs for all screens</p>
+                </div>
+              )}
+            </div>
+
+            {/* Already Created */}
+            {smartSuggestions.created.length > 0 && (
+              <div className="mb-5">
+                <p className="text-[8px] font-bold text-slate-600 uppercase tracking-widest mb-2">Already in your project ({smartSuggestions.created.length})</p>
+                <div className="flex flex-wrap gap-1">{smartSuggestions.created.map(g => (
+                  <span key={g.name} className="px-2 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[9px] font-bold text-emerald-400 flex items-center gap-1"><Check size={8} /> {g.emoji} {g.name}</span>
+                ))}</div>
+              </div>
+            )}
+
+            {/* App Templates */}
+            <div className="border-t border-white/5 pt-4">
+              <p className="text-[8px] font-bold text-slate-600 uppercase tracking-widest mb-2">App Templates ({SUGGESTED_SETS.length})</p>
+              <p className="text-[9px] text-slate-500 mb-3">Click to load a full template — replaces current screens</p>
+              <div className="space-y-2.5">{SUGGESTED_SETS.map((s, i) => (
+                <button key={i} onClick={() => addSuggestedSet(s)} className="w-full p-3.5 rounded-xl bg-white/5 border border-white/5 hover:border-white/15 text-left transition-colors">
+                  <div className="flex items-center justify-between mb-1"><h3 className="text-sm font-bold text-white">{s.name}</h3><span className="text-[9px] font-bold px-2 py-0.5 rounded" style={{ color: brand.primary, background: brand.primary + '15' }}>{s.pages.length} screens</span></div>
+                  <p className="text-[9px] text-slate-500 mb-1.5">{s.desc}</p>
+                  <div className="flex flex-wrap gap-1">{s.pages.slice(0,8).map(p => <span key={p} className="px-1.5 py-0.5 bg-white/5 rounded text-[7px] text-slate-400 font-bold">{p}</span>)}{s.pages.length > 8 && <span className="px-1.5 py-0.5 bg-white/5 rounded text-[7px] text-slate-500">+{s.pages.length-8}</span>}</div>
+                </button>))}
+              </div>
             </div>
           </div>
         </div>
