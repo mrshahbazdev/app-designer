@@ -4,7 +4,7 @@ AI-powered mobile UI screen generator for **TrendUp Secure Messaging** — built
 
 ## Features
 
-- **87 screen presets** across 24 screens with 2-4 variations each
+- **82 screen presets** across 24 screens with 2-4 variations each
 - **13 categories**: Onboarding, Inbox, Chat, Groups, Contacts, Profile, Security, Media, Notifications, Calls, Settings, Edge States
 - **Gemini AI** generates production-ready HTML screens
 - **10 theme presets** including TrendUp Light, Hub Dark, AMOLED Black
