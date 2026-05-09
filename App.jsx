@@ -33,6 +33,14 @@ const getApiKey = () => { try { return localStorage.getItem('v2ui_gemini_key') |
 // ───────────────────────────────────────────────────────────────────
 
 
+// ─── VARIATION STYLES (applied to non-preset pages) ───
+const VARIATION_STYLES = [
+  { suffix: 'V1 — Clean Minimal', style: 'Use a clean, minimal layout with generous white space, simple typography, and subtle borders. Focus on clarity, readability, and simplicity. Light feel with structured spacing.' },
+  { suffix: 'V2 — Card Based', style: 'Organize all content in elevated card components with rounded corners (12-16px), subtle box shadows, and clear visual sections. Use a card-grid or stacked-card layout pattern.' },
+  { suffix: 'V3 — Bold & Vibrant', style: 'Use bold, large typography, vivid accent colors, strong visual hierarchy, and eye-catching UI elements. Make headings extra-large and sections visually striking with color blocks.' },
+  { suffix: 'V4 — Modern Glass', style: 'Apply glassmorphism effects with frosted-glass cards (backdrop-filter blur), gradient backgrounds, translucent surfaces, and modern depth layering. Premium, futuristic feel.' },
+];
+
 // ─── TRENDUP SECURE MESSAGING PRESETS (11 screens × 3-4 variations) ───
 const PRESETS = [
   // ════════ 1. LANDING ════════
@@ -431,13 +439,13 @@ export default function App() {
 
   const handleLogoUpload = (e) => { const f = e.target.files?.[0]; if (f) { if (f.size > 500000) { addToast('Logo too large. Use under 500KB.', 'error'); return; } const r = new FileReader(); r.onloadend = () => { setLogoBase64(r.result); setBrand(p => ({ ...p, logo: r.result })); addToast('Logo uploaded!', 'success'); }; r.readAsDataURL(f); } };
 
-  const handleAddPage = (e) => { e?.preventDefault(); if (newPageName.trim()) { const n = newPageName.trim().replace(/[^a-zA-Z0-9 ]/g, ''); pagesHistory.set([...pages, { id: Date.now().toString(), name: n, html: '' }]); setActivePageIndex(pages.length); setNewPageName(''); setShowAddPageModal(false); addToast(`"${n}" added`, 'success'); } };
+  const handleAddPage = (e) => { e?.preventDefault(); if (newPageName.trim()) { const n = newPageName.trim().replace(/[^a-zA-Z0-9 ]/g, ''); const variationPages = VARIATION_STYLES.map((vs, j) => ({ id: (Date.now() + j).toString(), name: `${n} ${vs.suffix}`, html: '' })); pagesHistory.set([...pages, ...variationPages]); setActivePageIndex(pages.length); setNewPageName(''); setShowAddPageModal(false); addToast(`"${n}" added with ${VARIATION_STYLES.length} variations`, 'success'); } };
 
-  const addSuggestedSet = (set) => { pagesHistory.set(set.pages.map((n, i) => ({ id: (Date.now() + i).toString(), name: n, html: '' }))); setActivePageIndex(0); setShowSuggestions(false); addToast(`Added ${set.pages.length} screens`, 'success'); };
+  const addSuggestedSet = (set) => { const expanded = []; set.pages.forEach((n, i) => { const matchingPresets = PRESETS.filter(p => { const base = p.label.replace(/\s+V\d+\s*—.*$/, ''); return base.toLowerCase() === n.toLowerCase() || p.label.toLowerCase().startsWith(n.toLowerCase() + ' v'); }); if (matchingPresets.length > 0) { matchingPresets.forEach((preset, j) => { expanded.push({ id: (Date.now() + i * 10 + j).toString(), name: preset.label, html: '' }); }); } else { VARIATION_STYLES.forEach((vs, j) => { expanded.push({ id: (Date.now() + i * 10 + j).toString(), name: `${n} ${vs.suffix}`, html: '' }); }); } }); pagesHistory.set(expanded); setActivePageIndex(0); setShowSuggestions(false); addToast(`Added ${set.pages.length} screens with ${expanded.length} total variations`, 'success'); };
 
-  const addSuggestedPage = (screenName) => { const exists = pages.some(p => p.name.toLowerCase() === screenName.toLowerCase()); if (exists) { addToast(`"${screenName}" already exists`, 'error'); return; } pagesHistory.set([...pages, { id: Date.now().toString(), name: screenName, html: '' }]); setActivePageIndex(pages.length); addToast(`"${screenName}" added — generate it next!`, 'success'); };
+  const addSuggestedPage = (screenName) => { const exists = pages.some(p => p.name.toLowerCase() === screenName.toLowerCase() || p.name.toLowerCase().startsWith(screenName.toLowerCase() + ' v')); if (exists) { addToast(`"${screenName}" already exists`, 'error'); return; } const variationPages = VARIATION_STYLES.map((vs, j) => ({ id: (Date.now() + j).toString(), name: `${screenName} ${vs.suffix}`, html: '' })); pagesHistory.set([...pages, ...variationPages]); setActivePageIndex(pages.length); addToast(`"${screenName}" added with ${VARIATION_STYLES.length} variations — generate next!`, 'success'); };
 
-  const addAllMissingSuggestions = () => { if (smartSuggestions.missing.length === 0) { addToast('All screens already added!', 'info'); return; } const newPages = smartSuggestions.missing.map((g, i) => ({ id: (Date.now() + i).toString(), name: g.name, html: '' })); pagesHistory.set([...pages, ...newPages]); addToast(`Added ${newPages.length} missing screens`, 'success'); };
+  const addAllMissingSuggestions = () => { if (smartSuggestions.missing.length === 0) { addToast('All screens already added!', 'info'); return; } const newPages = []; smartSuggestions.missing.forEach((g, i) => { VARIATION_STYLES.forEach((vs, j) => { newPages.push({ id: (Date.now() + i * 10 + j).toString(), name: `${g.name} ${vs.suffix}`, html: '' }); }); }); pagesHistory.set([...pages, ...newPages]); addToast(`Added ${smartSuggestions.missing.length} screens with ${newPages.length} total variations`, 'success'); };
 
   const deletePage = (i) => { if (pages.length === 1) { addToast('Cannot delete last screen', 'error'); return; } const n = pages[i].name; pagesHistory.set(pages.filter((_, j) => j !== i)); if (activePageIndex >= i && activePageIndex > 0) setActivePageIndex(p => p - 1); addToast(`"${n}" deleted`, 'info'); };
 
@@ -469,7 +477,11 @@ export default function App() {
     setIsLoading(true); const t0 = Date.now();
     const stateInfo = screenState !== 'default' ? SCREEN_STATES.find(s => s.id === screenState) : null;
     const extraCtx = stateInfo ? `\nSCREEN STATE: ${stateInfo.prompt}` : '';
-    const parts = [{ text: `Task: Create "${currentPage.name}" screen.\nInstructions: ${prompt || `Design a beautiful ${currentPage.name} screen.`}${extraCtx}` }];
+    const preset = PRESETS.find(p => p.label === currentPage.name);
+    const variationStyle = VARIATION_STYLES.find(vs => currentPage.name.endsWith(vs.suffix));
+    const gBaseName = variationStyle ? currentPage.name.replace(` ${variationStyle.suffix}`, '') : currentPage.name;
+    const defaultPrompt = preset?.prompt || (variationStyle ? `Design a "${gBaseName}" screen. ${variationStyle.style}` : `Design a beautiful ${currentPage.name} screen.`);
+    const parts = [{ text: `Task: Create "${currentPage.name}" screen.\nInstructions: ${prompt || defaultPrompt}${extraCtx}` }];
     if (base64Image && inputMode === 'convert') parts.push({ inlineData: { mimeType: 'image/png', data: base64Image } });
     try {
       let html = await callAI(parts, buildSystemPrompt(brand, pages, currentPage.name, !!logoBase64, extraCtx));
@@ -498,9 +510,24 @@ export default function App() {
     } catch { addToast('Refinement failed.', 'error'); } finally { setIsLoading(false); }
   };
 
-  // ── Auto Generate ──
+  // ── Auto Generate (with 3-4 variations per page) ──
   const autoGenerateAll = async (set) => {
-    const np = set.pages.map((n, i) => ({ id: (Date.now() + i).toString(), name: n, html: '' }));
+    const np = [];
+    set.pages.forEach((n, i) => {
+      const matchingPresets = PRESETS.filter(p => {
+        const base = p.label.replace(/\s+V\d+\s*—.*$/, '');
+        return base.toLowerCase() === n.toLowerCase() || p.label.toLowerCase().startsWith(n.toLowerCase() + ' v');
+      });
+      if (matchingPresets.length > 0) {
+        matchingPresets.forEach((preset, j) => {
+          np.push({ id: (Date.now() + i * 10 + j).toString(), name: preset.label, html: '' });
+        });
+      } else {
+        VARIATION_STYLES.forEach((vs, j) => {
+          np.push({ id: (Date.now() + i * 10 + j).toString(), name: `${n} ${vs.suffix}`, html: '' });
+        });
+      }
+    });
     pagesHistory.set(np); setShowAutoGen(false); setShowSuggestions(false);
     setAutoGenRunning(true); autoGenAbortRef.current = false;
     setAutoGenProgress({ current: 0, total: np.length, currentName: np[0].name });
@@ -513,7 +540,10 @@ export default function App() {
         try {
           if (attempt > 0) { addToast(`Retrying "${up[i].name}" (${attempt + 1}/3)...`, 'info'); await new Promise(r => setTimeout(r, 3000 * attempt)); }
           const preset = PRESETS.find(p => p.label === up[i].name);
-          let html = await callAI([{ text: `Task: Create "${up[i].name}" screen.\nInstructions: ${preset?.prompt || `Design ${up[i].name} screen.`}` }], buildSystemPrompt(bs, up, up[i].name, !!ls));
+          const variationStyle = VARIATION_STYLES.find(vs => up[i].name.endsWith(vs.suffix));
+          const baseName = variationStyle ? up[i].name.replace(` ${variationStyle.suffix}`, '') : up[i].name;
+          const promptText = preset?.prompt || (variationStyle ? `Design a "${baseName}" screen. ${variationStyle.style}` : `Design ${up[i].name} screen.`);
+          let html = await callAI([{ text: `Task: Create "${up[i].name}" screen.\nInstructions: ${promptText}` }], buildSystemPrompt(bs, up, up[i].name, !!ls));
           html = injectLogo(html);
           up = [...up]; up[i] = { ...up[i], html }; pagesHistory.set(up); setPreviewKey(k => k + 1);
           addToast(`"${up[i].name}" done (${i + 1}/${up.length})`, 'success'); success = true;
@@ -523,7 +553,7 @@ export default function App() {
     }
     setAutoGenRunning(false); setActivePageIndex(0); setPreviewKey(k => k + 1);
     const done = up.filter(p => p.html).length; const failed = up.length - done;
-    addToast(`Done! ${done}/${up.length} screens ready.${failed > 0 ? ` ${failed} failed — use "Retry Failed" to regenerate.` : ''}`, failed > 0 ? 'info' : 'success');
+    addToast(`Done! ${done}/${up.length} screens with variations ready.${failed > 0 ? ` ${failed} failed — use "Retry Failed" to regenerate.` : ''}`, failed > 0 ? 'info' : 'success');
   };
 
   // ── Generate All Screens with All Variations ──
@@ -570,7 +600,10 @@ export default function App() {
         try {
           if (attempt > 0) await new Promise(r => setTimeout(r, 4000 * attempt));
           const preset = PRESETS.find(p => p.label === up[i].name);
-          let html = await callAI([{ text: `Task: Create "${up[i].name}" screen.\nInstructions: ${preset?.prompt || `Design ${up[i].name} screen.`}` }], buildSystemPrompt(bs, up, up[i].name, !!ls));
+          const variationStyle = VARIATION_STYLES.find(vs => up[i].name.endsWith(vs.suffix));
+          const rBaseName = variationStyle ? up[i].name.replace(` ${variationStyle.suffix}`, '') : up[i].name;
+          const rPromptText = preset?.prompt || (variationStyle ? `Design a "${rBaseName}" screen. ${variationStyle.style}` : `Design ${up[i].name} screen.`);
+          let html = await callAI([{ text: `Task: Create "${up[i].name}" screen.\nInstructions: ${rPromptText}` }], buildSystemPrompt(bs, up, up[i].name, !!ls));
           html = injectLogo(html);
           up = [...up]; up[i] = { ...up[i], html }; pagesHistory.set(up); setPreviewKey(k => k + 1);
           addToast(`"${up[i].name}" recovered! (${idx + 1}/${failedIndices.length})`, 'success'); success = true; retried++;
@@ -589,7 +622,10 @@ export default function App() {
     setActivePageIndex(pageIndex); setIsLoading(true);
     try {
       const preset = PRESETS.find(p => p.label === page.name);
-      let html = await callAI([{ text: `Task: Create "${page.name}" screen.\nInstructions: ${preset?.prompt || `Design ${page.name} screen.`}` }], buildSystemPrompt(brand, pages, page.name, !!logoBase64));
+      const variationStyle = VARIATION_STYLES.find(vs => page.name.endsWith(vs.suffix));
+      const baseName = variationStyle ? page.name.replace(` ${variationStyle.suffix}`, '') : page.name;
+      const promptText = preset?.prompt || (variationStyle ? `Design a "${baseName}" screen. ${variationStyle.style}` : `Design ${page.name} screen.`);
+      let html = await callAI([{ text: `Task: Create "${page.name}" screen.\nInstructions: ${promptText}` }], buildSystemPrompt(brand, pages, page.name, !!logoBase64));
       html = injectLogo(html);
       const upd = [...pages]; upd[pageIndex] = { ...upd[pageIndex], html }; pagesHistory.set(upd); setPreviewKey(k => k + 1);
       addToast(`"${page.name}" regenerated!`, 'success');
@@ -609,7 +645,10 @@ export default function App() {
         try {
           if (attempt > 0) await new Promise(r => setTimeout(r, 3000 * attempt));
           const preset = PRESETS.find(p => p.label === up[i].name);
-          let html = await callAI([{ text: `Task: Create "${up[i].name}" screen.\nInstructions: ${preset?.prompt || `Design ${up[i].name} screen.`}` }], buildSystemPrompt(bs, up, up[i].name, !!logoBase64));
+          const bVariationStyle = VARIATION_STYLES.find(vs => up[i].name.endsWith(vs.suffix));
+          const bBaseName = bVariationStyle ? up[i].name.replace(` ${bVariationStyle.suffix}`, '') : up[i].name;
+          const bPromptText = preset?.prompt || (bVariationStyle ? `Design a "${bBaseName}" screen. ${bVariationStyle.style}` : `Design ${up[i].name} screen.`);
+          let html = await callAI([{ text: `Task: Create "${up[i].name}" screen.\nInstructions: ${bPromptText}` }], buildSystemPrompt(bs, up, up[i].name, !!logoBase64));
           html = injectLogo(html);
           up = [...up]; up[i] = { ...up[i], html }; pagesHistory.set(up); setPreviewKey(k => k + 1); success = true;
         } catch {}
@@ -1142,7 +1181,7 @@ export default function App() {
               ) : (
                 <div className="text-center py-2">
                   <p className="text-[10px] font-bold text-emerald-400 flex items-center justify-center gap-1.5"><Check size={12} /> All {smartSuggestions.total} screens added!</p>
-                  <p className="text-[8px] text-slate-500 mt-1">Use Auto Generate to create designs for all screens</p>
+                  <p className="text-[8px] text-slate-500 mt-1">Use Auto Generate to create designs with 3-4 variations per screen</p>
                 </div>
               )}
             </div>
@@ -1200,7 +1239,7 @@ export default function App() {
                 <div className="flex items-center justify-between mb-1"><h3 className="text-sm font-bold text-white">{s.name}</h3>
                   <div className="flex items-center gap-2"><span className="text-[9px] font-bold px-2 py-0.5 rounded" style={{ color: brand.primary, background: brand.primary + '15' }}>{s.pages.length}</span>
                   <span className="text-[9px] font-bold px-2 py-0.5 rounded text-white opacity-0 group-hover:opacity-100" style={{ background: brand.primary }}><Play size={8} className="inline mr-0.5" />Start</span></div></div>
-                <p className="text-[9px] text-slate-500">{s.desc}</p>
+                <p className="text-[9px] text-slate-500">{s.desc} — {s.pages.length * VARIATION_STYLES.length} variations</p>
               </button>))}
             </div>
           </div>
