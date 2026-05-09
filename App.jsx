@@ -172,6 +172,57 @@ const PRESETS = [
   // ════════ 24. SECURE MODE LOCK ════════
   { id: 'securemode-v1', emoji: '🔒', label: 'Secure Mode V1 — Lock Overlay', cat: 'security', prompt: 'TrendUp Secure Mode active lock overlay. Full screen dark overlay (#0A0A0A with 95% opacity) over the chat. Large lock icon centered with subtle pulse animation. "Conversation Locked" heading. "Secure Mode activated — tab lost focus" description. "Enter password to unlock" instruction. Password input field. "Unlock" red button. "Sign out instead" text link at bottom. This overlay appears when Secure Mode is ON and user switches away from the tab. Professional security lock screen.' },
   { id: 'securemode-v2', emoji: '🔒', label: 'Secure Mode V2 — Enable Confirm', cat: 'security', prompt: 'TrendUp Secure Mode enable confirmation dialog. Dark theme. Modal/dialog centered: Shield icon with lock at top. "Enable Secure Mode?" heading. Feature list with icons: "Blocks copy & paste in conversations", "Blocks right-click context menu", "Auto-locks thread when tab loses focus", "Requires password to unlock". Warning: "You\'ll need to enter your password each time you return to this tab." Two buttons: "Enable Secure Mode" (red/filled) and "Cancel" (outline). Background dimmed. Professional security confirmation.' },
+
+  // ════════ 25. POLLS / VOTING ════════
+  { id: 'polls-v1', emoji: '🗳️', label: 'Polls V1 — Create Poll', cat: 'chat', prompt: 'TrendUp create poll screen in chat. Dark theme. Header: "Create Poll" with back arrow and "Post" button. "Question" input field with placeholder "Ask a question...". "Options" section: Option 1, Option 2 text fields with drag handles, "Add Option" button with plus icon. Settings toggles: "Allow multiple answers" OFF, "Anonymous voting" OFF, "Set deadline" toggle with date/time picker. "Poll visible to" dropdown: "Everyone in chat". Preview of poll card at bottom. Red accent on Post button. Clean poll creation flow.' },
+  { id: 'polls-v2', emoji: '🗳️', label: 'Polls V2 — Active Poll', cat: 'chat', prompt: 'TrendUp active poll displayed in chat thread. Dark theme. Poll card within chat: question "Where should we meet for the team event?" posted by "@shahbaz". Options with vote bars: "Coffee House" 45% (5 votes, bar filled), "Downtown Park" 30% (3 votes), "Office Lounge" 25% (2 votes). Total: "10 votes". User has voted indicator with checkmark. "View voters" link. Timer: "Ends in 2 days". Chat messages above and below the poll. Lime/red accent on winning option bar.' },
+  { id: 'polls-v3', emoji: '🗳️', label: 'Polls V3 — Poll Results', cat: 'chat', prompt: 'TrendUp poll results screen after voting ends. Dark theme. "Poll Results" header. Question displayed large. Results as horizontal bars with percentages and vote counts. Winner highlighted with trophy icon and lime border. Voter list expandable per option showing avatars. "Poll ended May 9, 2026" timestamp. "10 total votes, 8 participants" stats. "Create New Poll" button at bottom. Share results option. Clean results visualization with dark surface cards.' },
+
+  // ════════ 26. LIVE STREAMING ════════
+  { id: 'livestream-v1', emoji: '📡', label: 'Live Stream V1 — Go Live', cat: 'media', prompt: 'TrendUp go live setup screen. Dark theme. Header: "Go Live" with close X. Camera preview area (large dark placeholder with camera icon). Stream title input: "Enter stream title...". Privacy: "Visible to" dropdown — "All contacts", "Selected groups", "Public link". Settings: "Enable chat" toggle ON, "Enable reactions" toggle ON, "Record stream" toggle OFF, "E2EE stream" badge showing encrypted. Large red "Go Live" button with pulse animation. Stream quality selector: 720p/1080p. Mic and camera toggle buttons at bottom.' },
+  { id: 'livestream-v2', emoji: '📡', label: 'Live Stream V2 — Watching', cat: 'media', prompt: 'TrendUp live stream viewer screen. Dark theme. Full-width video player area (dark placeholder with play icon). Overlay: "LIVE" red badge top-left, viewer count "127 watching" with eye icon top-right. Streamer info bar: avatar, "@shahbaz", "Live for 12m". Live chat feed on bottom half: scrolling messages from viewers with avatars and names. Chat input at bottom: emoji picker, text field "Say something...", send button. Reaction bubbles floating up (heart, fire, thumbs up). Fullscreen and PiP buttons.' },
+  { id: 'livestream-v3', emoji: '📡', label: 'Live Stream V3 — Schedule', cat: 'media', prompt: 'TrendUp schedule live stream screen. Dark theme. "Schedule Live Stream" header. Cover image upload area. Title input and description textarea. Date/time picker for scheduled start. Duration estimate dropdown. "Notify contacts" toggle ON with count "45 contacts will be notified". Reminder settings: "15 min before", "1 hour before". "Stream Type" selector: Audio Only, Video, Screen Share. Recurring stream toggle. "Schedule" lime button. Preview card showing how the scheduled stream will appear in chat.' },
+
+  // ════════ 27. PODCAST / AUDIO ════════
+  { id: 'podcast-v1', emoji: '🎙️', label: 'Podcast V1 — Channel List', cat: 'media', prompt: 'TrendUp podcast/audio channels list. Dark theme. Header: "Audio Channels" with search and create button. Featured channel card at top with cover art, title "TrendUp Security Weekly", subscriber count "2.4K", "Live Now" red badge. Channel list below: each row has cover art thumbnail, channel name, last episode title, duration "32m", subscriber count, play button. Categories filter chips: "All", "Live", "Tech", "News", "Community". "Create Channel" floating button. Dark surface cards with subtle borders.' },
+  { id: 'podcast-v2', emoji: '🎙️', label: 'Podcast V2 — Now Playing', cat: 'media', prompt: 'TrendUp audio/podcast now playing screen. Dark theme. Large cover art at top (square, rounded corners). Episode title "E2E Encryption Deep Dive" and channel name "Security Weekly". Progress bar with elapsed/remaining time (12:34 / 45:00). Playback controls: rewind 15s, play/pause (large), forward 30s. Speed selector: 1x, 1.5x, 2x. Volume slider. Bottom section: "Up Next" episode preview. Transcript toggle button. Share episode and bookmark buttons. Mini player collapses to bottom bar.' },
+  { id: 'podcast-v3', emoji: '🎙️', label: 'Podcast V3 — Record Episode', cat: 'media', prompt: 'TrendUp record podcast episode screen. Dark theme. "Record Episode" header. Large circular record button (red, pulsing when active). Waveform visualization area. Timer showing recording duration "00:03:24". Audio level meter. Controls: Pause, Stop, Add Chapter Marker. Episode details form: Title, Description, Channel selector dropdown. "Participants" section showing connected speakers with mute controls. "Publish" options: Now, Schedule, Draft. E2EE badge showing "Recording encrypted". Professional podcast recording interface.' },
+
+  // ════════ 28. STORIES / STATUS ════════
+  { id: 'stories-v1', emoji: '📸', label: 'Stories V1 — Stories Feed', cat: 'media', prompt: 'TrendUp stories/status feed. Dark theme. Top: horizontal scrollable story circles — "Your Story" with plus icon first, then contacts with colored ring (unseen) or gray ring (seen). Each circle has avatar and name below. Below stories: recent status updates as cards — text statuses with colored backgrounds, photo statuses with captions. Each shows avatar, name, time "2h ago", view count. "Seen by 12" on your own stories. Encrypted badge on each story. Dark background with vibrant story rings.' },
+  { id: 'stories-v2', emoji: '📸', label: 'Stories V2 — Story Viewer', cat: 'media', prompt: 'TrendUp story viewer full screen. Dark theme. Full-screen story content (image/text placeholder). Top: progress bars showing story segments, avatar + name + time "3h ago" + close X button. Bottom: reply input "Reply to @shahbaz..." with send button, emoji reactions row (heart, fire, laugh, sad, wow). Swipe indicators: left/right for next/previous story. "Encrypted" small badge. Tap areas: left 30% = previous, right 70% = next. View count at bottom. Premium full-screen story viewing experience.' },
+  { id: 'stories-v3', emoji: '📸', label: 'Stories V3 — Create Story', cat: 'media', prompt: 'TrendUp create story screen. Dark theme. Camera/content area at center. Bottom toolbar: Camera capture button (large circle), Gallery picker, Text mode, Sticker/GIF button. Top tools: Close X, Flash toggle, Camera flip. Text mode: background color picker strip, font selector, text alignment. Preview mode: "Your Story" label, "Post" button, privacy selector "My Contacts" / "Close Friends" / "Selected". "Story disappears after 24h" notice. E2EE badge. Creative story creation interface.' },
+
+  // ════════ 29. CHANNELS / BROADCAST ════════
+  { id: 'channels-v1', emoji: '📢', label: 'Channels V1 — Channel Feed', cat: 'groups', prompt: 'TrendUp broadcast channel feed. Dark theme. Header: channel name "TrendUp Announcements" with bell icon and subscriber count "12.5K". Admin badge on channel avatar. Broadcast messages displayed as cards: text posts with rich formatting, image posts with captions, poll cards, link previews. Each post shows timestamp and view count. No reply option (broadcast only). "Mute" and "Leave Channel" in header menu. Admin: "New Broadcast" FAB button. Dark surface with lime accents for admin elements.' },
+  { id: 'channels-v2', emoji: '📢', label: 'Channels V2 — Create Channel', cat: 'groups', prompt: 'TrendUp create broadcast channel screen. Dark theme. "Create Channel" header. Channel photo upload circle. Name input. Description textarea. Channel type: "Broadcast" (one-way, admin posts only) or "Discussion" (members can reply). Privacy: "Public" (anyone can find/join) or "Private" (invite only). "Add Admins" section with contact search. "Invite Link" auto-generated. Subscriber limit selector. "Create Channel" lime button. Preview card showing how channel appears in inbox. Professional channel creation flow.' },
+
+  // ════════ 30. STICKERS & GIFS ════════
+  { id: 'stickers-v1', emoji: '😄', label: 'Stickers V1 — Sticker Picker', cat: 'chat', prompt: 'TrendUp sticker and GIF picker in chat. Dark theme. Bottom sheet/panel overlaying chat. Tab bar: "Stickers", "GIFs", "Emoji". Sticker tab active: grid of sticker thumbnails organized by packs. Sticker pack row at top for switching. Search bar "Search stickers...". Recent stickers section. "Get More Stickers" link to sticker store. GIF tab: search-powered GIF grid via Giphy/Tenor. Tap to send. Clean picker with smooth dark UI matching chat theme.' },
+  { id: 'stickers-v2', emoji: '😄', label: 'Stickers V2 — Sticker Store', cat: 'chat', prompt: 'TrendUp sticker store screen. Dark theme. "Sticker Store" header with search. Featured pack banner at top with preview stickers. Pack list: each row shows pack preview stickers (3-4 thumbnails), pack name, artist name, "Free" or price badge, "Add" button. Categories: "Trending", "New", "Animated", "Community". "My Sticker Packs" section at top showing installed packs with remove option. Pack detail view: all stickers in grid with "Add Pack" button. Clean store layout.' },
+
+  // ════════ 31. PINNED MESSAGES ════════
+  { id: 'pinned-v1', emoji: '📌', label: 'Pinned V1 — Pinned List', cat: 'chat', prompt: 'TrendUp pinned messages screen. Dark theme. "Pinned Messages" header with back arrow and count "5 pinned". List of pinned messages as cards: each shows message text preview, sender avatar + name, pinned date, "Unpin" and "Jump to" action buttons. Messages ordered by pin date (newest first). Search within pinned messages. Empty state if no pins: "No pinned messages yet. Long-press any message and tap Pin." Pinned by info: "Pinned by @shahbaz". Clean dark surface cards.' },
+  { id: 'pinned-v2', emoji: '📌', label: 'Pinned V2 — Pin Banner', cat: 'chat', prompt: 'TrendUp chat view with pinned message banner. Dark theme. Normal chat screen with messages. At top below header: pinned message banner — compact bar showing pin icon, truncated message text "Meeting tomorrow at 3pm...", tap to expand, close/dismiss X. When expanded: shows full pinned message with sender, timestamp, "Unpin" and "Jump to original" buttons. Multiple pins: navigation arrows (1/5) to cycle between pinned messages. Subtle dark banner that doesnt obstruct chat.' },
+
+  // ════════ 32. REACTIONS ════════
+  { id: 'reactions-v1', emoji: '👍', label: 'Reactions V1 — Reaction Picker', cat: 'chat', prompt: 'TrendUp message reaction picker. Dark theme. Chat message with long-press reaction bar floating above it. Quick reactions row: thumbs up, heart, laugh, surprised, sad, angry (6 default emojis). "+" button to open full emoji picker. Existing reactions shown below message as small pills: "❤️ 3", "👍 2" with avatars of reactors on hover/tap. Full emoji picker: categorized grid with search. Recent emojis section. Custom emoji support indicator. Clean, fast reaction UX matching modern messengers.' },
+
+  // ════════ 33. FILE SHARING ════════
+  { id: 'fileshare-v1', emoji: '📁', label: 'File Share V1 — Shared Files', cat: 'media', prompt: 'TrendUp shared files in conversation screen. Dark theme. "Shared Files" header with back arrow. Tab bar: "Media", "Files", "Links", "Voice". Files tab active: list of shared files — each row shows file icon (PDF, DOC, ZIP, etc.), filename, file size, sender name, date shared. Sort options: "Recent", "Size", "Type". Select mode for bulk download. Preview for supported formats. "All files are end-to-end encrypted" footer note. Storage used indicator. Clean file management interface.' },
+
+  // ════════ 34. TWO-FACTOR AUTH ════════
+  { id: 'twofa-v1', emoji: '🔑', label: '2FA V1 — Setup', cat: 'security', prompt: 'TrendUp two-factor authentication setup. Dark theme. "Two-Factor Authentication" header. Step-by-step setup: Step 1 "Scan QR Code" with large QR code displayed, manual key shown below for copy. Step 2 "Enter Verification Code" — 6-digit input field. "Backup codes" section: list of 10 one-time use codes with "Copy All" and "Download" buttons. Warning: "Save these codes! You will need them if you lose your authenticator." "Enable 2FA" lime button. Security lock icon. Professional 2FA setup flow.' },
+  { id: 'twofa-v2', emoji: '🔑', label: '2FA V2 — Verify', cat: 'security', prompt: 'TrendUp 2FA verification screen during sign-in. Dark theme. "Two-Factor Verification" heading with shield icon. "Enter the 6-digit code from your authenticator app" instruction. 6 separate digit input boxes (large, centered). "Verify" red button. "Use backup code instead" link below. "Lost your authenticator? Contact support" link. Auto-submit on 6th digit entry. Error state: boxes shake with red border on wrong code. Timer showing "Code refreshes in 12s". Clean, focused verification screen.' },
+
+  // ════════ 35. DEVICE MANAGEMENT ════════
+  { id: 'devices-v1', emoji: '📱', label: 'Devices V1 — Linked Devices', cat: 'security', prompt: 'TrendUp linked devices management screen. Dark theme. "Linked Devices" header. Current device card highlighted: device icon, "iPhone 15 Pro" name, "This device" badge, "Active now" green dot. Other linked devices list: "MacBook Pro" (Last active 2h ago), "iPad Mini" (Last active 1d ago), each with "Remove" button. "Link New Device" button with QR code icon. Security info: "Each device has its own encryption keys. Removing a device revokes its access immediately." "Remove All Other Devices" danger button at bottom.' },
+
+  // ════════ 36. BLOCKED USERS ════════
+  { id: 'blocked-v1', emoji: '🚫', label: 'Blocked V1 — Block List', cat: 'contacts', prompt: 'TrendUp blocked users list screen. Dark theme. "Blocked Users" header with back arrow. Blocked users list: each row shows avatar, name, @handle, date blocked, "Unblock" button. Empty state: shield icon, "No blocked users" heading, "Users you block wont be able to send you messages or see your profile" description. Block info section: "Blocked users cannot: send you messages, see your online status, see your stories, add you to groups." "Add to Block List" button with search. Clean management screen.' },
+
+  // ════════ 37. GROUP ADMIN ════════
+  { id: 'groupadmin-v1', emoji: '👥', label: 'Group Admin V1 — Settings', cat: 'groups', prompt: 'TrendUp group admin settings screen. Dark theme. "Group Settings" header. Group photo with edit icon. Group name editable. Description textarea. Admin controls: "Who can send messages" (All / Admins only), "Who can edit group info" (All / Admins only), "Who can add members" (All / Admins only), "Approval required for new members" toggle. "Members" section: list with role badges (Admin, Member), promote/demote/remove actions. "Group link" copyable. "Delete Group" danger button. Professional admin panel.' },
 ];
 
 const PRESET_CATEGORIES = [
@@ -188,17 +239,20 @@ const PRESET_CATEGORIES = [
   { id: 'calls', label: 'Calls', icon: Phone },
   { id: 'settings', label: 'Settings', icon: Settings },
   { id: 'edge', label: 'Edge States', icon: AlertCircle },
+  { id: 'social', label: 'Social', icon: Heart },
 ];
 
 const SUGGESTED_SETS = [
   { name: '🔐 TrendUp Full App', desc: 'All 11 core screens — secure messaging app', pages: ['Landing','Sign In','Session Locked','Securing Device','Secure Inbox','Chat Light','Chat Dark Hub','Hub Inbox Chrome','Groups','Account & Device','Edge States'] },
-  { name: '🚀 TrendUp Complete App', desc: 'All 24 screens — full secure messaging experience', pages: ['Landing','Sign In','Registration','Forgot Password','Session Locked','Securing Device','Secure Inbox','Chat Light','Chat Dark Hub','Hub Inbox Chrome','Groups','Contacts','Profile','Safety Number','Media Gallery','Notifications','Voice & Video Calls','Wallet Management','Search Results','Invite Friends','Disappearing Messages','Secure Mode','Account & Device','Edge States'] },
+  { name: '🚀 TrendUp Complete App', desc: 'All 37 screens — full secure messaging experience', pages: ['Landing','Sign In','Registration','Forgot Password','Session Locked','Securing Device','Secure Inbox','Chat Light','Chat Dark Hub','Hub Inbox Chrome','Groups','Contacts','Profile','Safety Number','Media Gallery','Notifications','Voice & Video Calls','Wallet Management','Search Results','Invite Friends','Disappearing Messages','Secure Mode','Account & Device','Edge States','Polls','Live Stream','Podcast','Stories','Channels','Stickers','Pinned Messages','Reactions','File Sharing','2FA','Devices','Blocked Users','Group Admin'] },
   { name: '📱 Onboarding Flow', desc: 'Landing to first message', pages: ['Landing','Sign In','Registration','Forgot Password','Securing Device','Session Locked','Secure Inbox'] },
-  { name: '💬 Chat Experience', desc: 'Inbox + chat + media in both themes', pages: ['Secure Inbox','Hub Inbox Chrome','Chat Light','Chat Dark Hub','Groups','Media Gallery','Disappearing Messages','Search Results'] },
-  { name: '🛡️ Security Screens', desc: 'Auth, lock, keys, wallet & secure mode', pages: ['Sign In','Session Locked','Securing Device','Safety Number','Wallet Management','Secure Mode','Account & Device','Edge States'] },
+  { name: '💬 Chat Experience', desc: 'Inbox + chat + media + polls + stickers', pages: ['Secure Inbox','Hub Inbox Chrome','Chat Light','Chat Dark Hub','Groups','Media Gallery','Disappearing Messages','Search Results','Polls','Stickers','Pinned Messages','Reactions'] },
+  { name: '🛡️ Security Screens', desc: 'Auth, lock, keys, wallet, 2FA & secure mode', pages: ['Sign In','Session Locked','Securing Device','Safety Number','Wallet Management','Secure Mode','2FA','Devices','Blocked Users','Account & Device','Edge States'] },
   { name: '🌙 Dark Hub Complete', desc: 'All Hub dark theme screens', pages: ['Hub Inbox Chrome','Chat Dark Hub','Groups','Account & Device','Edge States','Contacts','Notifications','Search Results'] },
-  { name: '👥 Social & Contacts', desc: 'Profile, contacts, invite & calls', pages: ['Contacts','Profile','Invite Friends','Voice & Video Calls','Safety Number','Search Results'] },
-  { name: '🔒 Privacy & Encryption', desc: 'All privacy and security screens', pages: ['Safety Number','Wallet Management','Secure Mode','Disappearing Messages','Session Locked','Account & Device'] },
+  { name: '👥 Social & Contacts', desc: 'Profile, contacts, invite, stories & calls', pages: ['Contacts','Profile','Invite Friends','Voice & Video Calls','Safety Number','Search Results','Stories','Channels'] },
+  { name: '🔒 Privacy & Encryption', desc: 'All privacy and security screens', pages: ['Safety Number','Wallet Management','Secure Mode','Disappearing Messages','Session Locked','Account & Device','2FA','Devices','Blocked Users'] },
+  { name: '📡 Live & Media', desc: 'Streaming, podcasts, stories & media', pages: ['Live Stream','Podcast','Stories','Media Gallery','File Sharing','Channels'] },
+  { name: '🗳️ Interactive Features', desc: 'Polls, reactions, stickers & pinned', pages: ['Polls','Reactions','Stickers','Pinned Messages','File Sharing','Group Admin'] },
   { name: '🛒 E-Commerce App', desc: 'Full shopping experience with cart & checkout', pages: ['Home Feed','Product Detail','Categories','Cart','Checkout','Order Confirmation','My Orders','Wishlist','Search Results','Profile'] },
   { name: '🍔 Food Delivery App', desc: 'Restaurant ordering & delivery tracking', pages: ['Home','Restaurant List','Restaurant Detail','Menu','Cart','Checkout','Order Tracking','Delivery Status','Reviews','Profile'] },
   { name: '📚 Education / LMS App', desc: 'Course learning platform screens', pages: ['Dashboard','Course List','Course Detail','Lesson Player','Quiz','Progress','Certificates','Notes','Discussion','Profile'] },
@@ -396,9 +450,15 @@ export default function App() {
   const filteredPresets = useMemo(() => presetFilter === 'all' ? PRESETS : PRESETS.filter(p => p.cat === presetFilter), [presetFilter]);
   const designedCount = pages.filter(p => p.html).length;
 
-  // Smart suggestions: find missing screens
+  // Smart suggestions: find missing screens + AI-style page recommendations
   const smartSuggestions = useMemo(() => {
-    const existingNames = new Set(pages.map(p => p.name.toLowerCase().trim()));
+    const existingNames = new Set(pages.map(p => {
+      const base = p.name.replace(/\s+V\d+\s*—.*$/, '').toLowerCase().trim();
+      return base;
+    }));
+    const existingNamesRaw = new Set(pages.map(p => p.name.toLowerCase().trim()));
+
+    // Group PRESETS by base screen name
     const screenGroups = {};
     PRESETS.forEach(preset => {
       const match = preset.label.match(/^(.+?)\s+V\d/);
@@ -408,16 +468,54 @@ export default function App() {
       }
       screenGroups[screenName].presets.push(preset);
     });
+
     const missing = [];
     const created = [];
     Object.values(screenGroups).forEach(group => {
-      if (existingNames.has(group.name.toLowerCase())) {
+      if (existingNames.has(group.name.toLowerCase()) || existingNamesRaw.has(group.name.toLowerCase())) {
         created.push(group);
       } else {
         missing.push(group);
       }
     });
-    return { missing, created, total: Object.keys(screenGroups).length };
+
+    // Contextual recommendations based on existing pages
+    const PAGE_RECOMMENDATIONS = {
+      chat: { keywords: ['chat','message','inbox','conversation','dm','thread'], suggest: ['Polls','Stickers','Pinned Messages','Reactions','Disappearing Messages','File Sharing','Search Results'], reason: 'chat app ke liye useful pages' },
+      social: { keywords: ['feed','profile','stories','post','follow','like','comment','social','story'], suggest: ['Stories','Live Stream','Channels','Notifications','Reactions','Search Results','Invite Friends'], reason: 'social features ke liye' },
+      security: { keywords: ['sign in','login','auth','lock','secure','password','wallet','encrypt','2fa'], suggest: ['2FA','Devices','Blocked Users','Safety Number','Secure Mode','Session Locked'], reason: 'security features complete karne ke liye' },
+      media: { keywords: ['media','gallery','photo','video','camera','stream','podcast','audio','music'], suggest: ['Live Stream','Podcast','Stories','File Sharing','Media Gallery'], reason: 'media features ke liye' },
+      groups: { keywords: ['group','team','channel','community','members','admin'], suggest: ['Group Admin','Channels','Polls','Pinned Messages','Invite Friends'], reason: 'group management ke liye' },
+      ecommerce: { keywords: ['cart','product','shop','order','checkout','payment','wishlist','store'], suggest: ['Order Tracking','Reviews','Coupons','Payment Methods','Address Book','Notifications'], reason: 'e-commerce app ke liye' },
+      calls: { keywords: ['call','voice','video','phone','dial','ring'], suggest: ['Voice & Video Calls','Contacts','Live Stream'], reason: 'calling features ke liye' },
+      onboarding: { keywords: ['landing','sign up','register','welcome','onboard','splash'], suggest: ['Registration','Forgot Password','Securing Device','2FA'], reason: 'onboarding flow complete karne ke liye' },
+    };
+
+    const contextualSuggestions = [];
+    const addedContextual = new Set();
+    const pageNamesLower = pages.map(p => p.name.toLowerCase());
+
+    Object.values(PAGE_RECOMMENDATIONS).forEach(rec => {
+      const hasMatch = rec.keywords.some(kw => pageNamesLower.some(pn => pn.includes(kw)));
+      if (hasMatch) {
+        rec.suggest.forEach(s => {
+          const sLower = s.toLowerCase();
+          if (!existingNames.has(sLower) && !existingNamesRaw.has(sLower) && !addedContextual.has(sLower)) {
+            addedContextual.add(sLower);
+            const presetGroup = screenGroups[s];
+            contextualSuggestions.push({
+              name: s,
+              emoji: presetGroup?.emoji || '✨',
+              cat: presetGroup?.cat || 'chat',
+              presets: presetGroup?.presets || [],
+              reason: rec.reason,
+            });
+          }
+        });
+      }
+    });
+
+    return { missing, created, total: Object.keys(screenGroups).length, contextualSuggestions };
   }, [pages]);
 
   // ── Smart Logo Injection ──
@@ -1185,6 +1283,23 @@ export default function App() {
                 </div>
               )}
             </div>
+
+            {/* Contextual Recommendations */}
+            {smartSuggestions.contextualSuggestions.length > 0 && (
+              <div className="mb-5 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
+                <h3 className="text-sm font-black text-white flex items-center gap-2 mb-2"><Wand2 size={14} className="text-amber-400" /> Recommended for Your App</h3>
+                <p className="text-[9px] text-amber-400/70 mb-3">Aapke existing pages ke hisaab se ye pages banao to acha hoga:</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {smartSuggestions.contextualSuggestions.map(g => (
+                    <button key={g.name} onClick={() => addSuggestedPage(g.name)} className="px-2.5 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 hover:border-amber-400/40 text-left transition-all hover:bg-amber-500/15 group flex items-center gap-1.5">
+                      <span className="text-xs">{g.emoji}</span>
+                      <span className="text-[10px] font-bold text-amber-200 group-hover:text-white">{g.name}</span>
+                      <Plus size={10} className="text-amber-500/50 group-hover:text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Already Created */}
             {smartSuggestions.created.length > 0 && (
