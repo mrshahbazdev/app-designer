@@ -1,0 +1,1770 @@
+<!doctype html>
+<html lang="en" data-theme="midnight">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#07080c" />
+    <meta name="robots" content="noindex" />
+    <title>TrendUp Today Hub — mobile mockup</title>
+    <link rel="icon" href="assets/trendup-mark.png" type="image/png" />
+    <style>
+      :root {
+        --bg: #07080c;
+        --surface: #0d1018;
+        --text: #eaf0ff;
+        --muted: #9aa6c3;
+        --line: rgba(234, 240, 255, 0.08);
+        --cyan: #00e5ff;
+        --chrome-text: rgba(234, 240, 255, 0.92);
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: radial-gradient(1200px 500px at 50% -8%, rgba(0, 229, 255, 0.07), transparent 55%), var(--bg);
+        color: var(--text);
+        min-height: 100dvh;
+      }
+      .mm-shell {
+        max-width: 430px;
+        margin: 0 auto;
+        min-height: 100dvh;
+        background: var(--bg);
+        position: relative;
+        padding-bottom: 88px;
+      }
+      .mm-desktopLink {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 12px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+        border-bottom: 1px solid var(--line);
+        background: rgba(7, 8, 12, 0.92);
+      }
+      .mm-desktopLink a {
+        color: rgba(0, 229, 255, 0.9);
+        text-decoration: none;
+      }
+      .mm-desktopLink a:hover {
+        text-decoration: underline;
+      }
+      .mHeader {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        padding: 12px 12px 10px;
+        border-bottom: 1px solid rgba(234, 240, 255, 0.08);
+        background: radial-gradient(900px 320px at 50% -30%, rgba(0, 229, 255, 0.12), transparent 55%), rgba(7, 8, 12, 0.92);
+        backdrop-filter: blur(10px);
+      }
+      .mTop {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .mTop .left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .mTitle {
+        font-weight: 900;
+        letter-spacing: 0.04em;
+      }
+      .mIcons {
+        display: flex;
+        gap: 8px;
+      }
+      .iconBtn {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: rgba(13, 16, 24, 0.55);
+        display: grid;
+        place-items: center;
+        font-size: 16px;
+        cursor: default;
+      }
+      .mSeg {
+        margin-top: 10px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        border: 1px solid rgba(234, 240, 255, 0.1);
+        border-radius: 999px;
+        overflow: hidden;
+        background: rgba(13, 16, 24, 0.55);
+      }
+      .mSeg button {
+        appearance: none;
+        border: 0;
+        margin: 0;
+        background: transparent;
+        font: inherit;
+        cursor: pointer;
+        padding: 9px 8px;
+        font-size: 12px;
+        font-weight: 900;
+        color: var(--muted);
+      }
+      .mSeg button.active {
+        color: var(--text);
+        background: radial-gradient(140% 160% at 50% -10%, rgba(0, 229, 255, 0.24), transparent 55%),
+          linear-gradient(180deg, rgba(0, 229, 255, 0.12), rgba(0, 0, 0, 0));
+        box-shadow: inset 0 0 0 1px rgba(0, 229, 255, 0.2);
+      }
+      .feedSubBar {
+        padding: 8px 0 0;
+        margin-top: 8px;
+        border-top: 1px solid rgba(234, 240, 255, 0.06);
+      }
+      .feedSubBarInner {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 8px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .feedSubBarInner::-webkit-scrollbar {
+        display: none;
+      }
+      .feedSubStrip[hidden] {
+        display: none !important;
+      }
+      .feedSubStrip {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 8px;
+      }
+      .feedSubLabel {
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        flex-shrink: 0;
+      }
+      .feedSubChip {
+        appearance: none;
+        border: 1px solid var(--line);
+        background: rgba(7, 8, 12, 0.45);
+        color: var(--muted);
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 800;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+      .feedSubChip.is-on {
+        color: var(--chrome-text);
+        border-color: rgba(0, 229, 255, 0.38);
+        background: rgba(0, 229, 255, 0.08);
+      }
+      .feedSubChip--voteDesk {
+        border-color: rgba(34, 197, 94, 0.45) !important;
+        color: rgba(187, 247, 208, 0.98) !important;
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.18), rgba(0, 229, 255, 0.1)) !important;
+        font-weight: 900;
+      }
+      .m-stack[hidden] {
+        display: none !important;
+      }
+      .mSection {
+        margin: 12px;
+        border: 1px solid rgba(234, 240, 255, 0.08);
+        border-radius: 22px;
+        background: rgba(13, 16, 24, 0.55);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+        overflow: hidden;
+      }
+      .panelHeader {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(234, 240, 255, 0.08);
+        font-size: 13px;
+        font-weight: 800;
+      }
+      .panelHeader a {
+        font-size: 11px;
+        color: rgba(0, 229, 255, 0.85);
+        text-decoration: none;
+      }
+      .hintSm {
+        font-size: 10px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+      .breaking {
+        padding: 12px;
+      }
+      .bigNews {
+        display: grid;
+        grid-template-columns: 72px 1fr;
+        gap: 10px;
+      }
+      .thumb {
+        border-radius: 14px;
+        background: rgba(234, 240, 255, 0.08);
+        min-height: 72px;
+      }
+      .thumb--a {
+        background: linear-gradient(145deg, rgba(0, 229, 255, 0.35), rgba(99, 102, 241, 0.25), rgba(7, 8, 12, 0.4));
+        box-shadow: inset 0 0 0 1px rgba(234, 240, 255, 0.1);
+      }
+      .thumb--b {
+        background: linear-gradient(160deg, rgba(34, 197, 94, 0.28), rgba(0, 229, 255, 0.15), rgba(7, 8, 12, 0.5));
+        box-shadow: inset 0 0 0 1px rgba(234, 240, 255, 0.08);
+      }
+      .thumbSm {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(0, 229, 255, 0.25), rgba(139, 92, 246, 0.2));
+        flex-shrink: 0;
+      }
+      .headline b {
+        font-size: 13px;
+        line-height: 1.35;
+      }
+      .headline small {
+        display: block;
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .rows .row,
+      .newsStreamScroll .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 8px 0;
+        border-top: 1px solid rgba(234, 240, 255, 0.06);
+        font-size: 12px;
+      }
+      .rows small,
+      .newsStreamScroll .row small {
+        color: var(--muted);
+        flex-shrink: 0;
+      }
+      .topicPills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 0 12px 12px;
+      }
+      .topic {
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        font-size: 11px;
+        color: var(--muted);
+        appearance: none;
+        background: rgba(7, 8, 12, 0.35);
+        cursor: pointer;
+        font: inherit;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .topic:focus-visible {
+        outline: 2px solid rgba(0, 229, 255, 0.45);
+        outline-offset: 2px;
+      }
+      .topic:active {
+        transform: scale(0.97);
+      }
+      .topic.active {
+        border-color: rgba(0, 229, 255, 0.35);
+        color: var(--text);
+      }
+      .feed {
+        padding: 12px;
+      }
+      .post {
+        padding-bottom: 14px;
+        margin-bottom: 14px;
+        border-bottom: 1px solid rgba(234, 240, 255, 0.06);
+      }
+      .post:last-child {
+        border-bottom: 0;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+      .postTop {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        background: rgba(234, 240, 255, 0.1);
+        flex-shrink: 0;
+      }
+      .avatarPhoto {
+        background-image: var(--av);
+        background-size: cover;
+        background-position: center;
+        border: 1px solid rgba(234, 240, 255, 0.12);
+      }
+      .meta b {
+        font-size: 13px;
+      }
+      .meta small {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+        margin-top: 2px;
+      }
+      .postText {
+        margin-top: 8px;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+      .postStats {
+        margin-top: 6px;
+        font-size: 10px;
+        color: var(--muted);
+        display: flex;
+        gap: 12px;
+      }
+      .pulseStrip {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 12px 12px 2px;
+        margin: 0 0 4px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .pulseStrip::-webkit-scrollbar {
+        display: none;
+      }
+      .pulseChip {
+        flex-shrink: 0;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 800;
+        border: 1px solid rgba(234, 240, 255, 0.12);
+        background: rgba(7, 8, 12, 0.65);
+        color: var(--chrome-text);
+        cursor: pointer;
+        appearance: none;
+        font: inherit;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .pulseChip:focus-visible {
+        outline: 2px solid rgba(0, 229, 255, 0.45);
+        outline-offset: 2px;
+      }
+      .pulseChip--hot {
+        border-color: rgba(34, 197, 94, 0.35);
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(7, 8, 12, 0.8));
+      }
+      .pulseChip--cyan {
+        border-color: rgba(0, 229, 255, 0.35);
+        color: rgba(165, 243, 252, 0.98);
+      }
+      .storyRailOuter .panelHeader {
+        border-bottom: 0;
+        padding-bottom: 4px;
+      }
+      .storyRail {
+        display: flex;
+        gap: 14px;
+        overflow-x: auto;
+        padding: 4px 12px 14px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .storyRail::-webkit-scrollbar {
+        display: none;
+      }
+      .storyItem {
+        flex-shrink: 0;
+        width: 64px;
+        text-align: center;
+      }
+      .storyItem small {
+        display: block;
+        margin-top: 6px;
+        font-size: 10px;
+        color: var(--muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .storyRing {
+        width: 56px;
+        height: 56px;
+        margin: 0 auto;
+        border-radius: 999px;
+        padding: 3px;
+        background: linear-gradient(135deg, rgba(0, 229, 255, 0.65), rgba(168, 85, 247, 0.55), rgba(34, 197, 94, 0.45));
+      }
+      .storyRing.muted {
+        background: rgba(234, 240, 255, 0.12);
+      }
+      .storyAv {
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(145deg, rgba(234, 240, 255, 0.14), rgba(7, 8, 12, 0.6));
+        border: 2px solid rgba(7, 8, 12, 0.9);
+      }
+      .newsStreamScroll {
+        max-height: 240px;
+        overflow-y: auto;
+        padding: 0 12px 12px;
+        -webkit-overflow-scrolling: touch;
+      }
+      .newsLine {
+        display: grid;
+        grid-template-columns: 44px 1fr;
+        gap: 10px;
+        align-items: center;
+        padding-bottom: 12px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid rgba(234, 240, 255, 0.06);
+      }
+      .postMedia {
+        margin-top: 10px;
+        border-radius: 16px;
+        overflow: hidden;
+        position: relative;
+        border: 1px solid rgba(234, 240, 255, 0.1);
+        background: #0a0c12;
+      }
+      .postMedia--video {
+        aspect-ratio: 16 / 9;
+      }
+      .postMedia--video video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .postMedia .mmBadge--tl {
+        left: 10px;
+        top: 10px;
+        right: auto;
+        bottom: auto;
+      }
+      .postMedia .mmBadge {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        font-size: 10px;
+        font-weight: 900;
+        padding: 4px 8px;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.55);
+        border: 1px solid rgba(234, 240, 255, 0.15);
+      }
+      .postMedia img {
+        width: 100%;
+        height: auto;
+        vertical-align: middle;
+        display: block;
+      }
+      .mmActions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(234, 240, 255, 0.06);
+      }
+      .mmAct {
+        appearance: none;
+        border: 1px solid rgba(234, 240, 255, 0.12);
+        background: rgba(13, 16, 24, 0.75);
+        color: rgba(220, 228, 248, 0.92);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 11px;
+        font-weight: 800;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: default;
+      }
+      .feedGovEmbed {
+        margin-top: 10px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(0, 229, 255, 0.22);
+        background: rgba(5, 10, 16, 0.72);
+      }
+      .feedGovK {
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(0, 229, 255, 0.72);
+        margin-bottom: 6px;
+      }
+      .postCommentsMini {
+        margin-top: 10px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(7, 8, 12, 0.55);
+        border: 1px solid rgba(234, 240, 255, 0.06);
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .postCommentsMini b {
+        color: var(--text);
+      }
+      .deskCenterBanner {
+        margin: 0 12px 12px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        border: 1px solid rgba(34, 197, 94, 0.35);
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(0, 229, 255, 0.06), rgba(7, 8, 12, 0.85));
+      }
+      .deskCenterBanner h3 {
+        margin: 0 0 6px;
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: 0.02em;
+      }
+      .deskCenterBanner p {
+        margin: 0;
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+      .spark {
+        width: 48px;
+        height: 22px;
+        border-radius: 6px;
+        background: linear-gradient(90deg, rgba(234, 240, 255, 0.06) 0%, rgba(34, 197, 94, 0.35) 100%);
+        position: relative;
+        overflow: hidden;
+      }
+      .spark.neg {
+        background: linear-gradient(90deg, rgba(234, 240, 255, 0.06) 0%, rgba(248, 113, 113, 0.35) 100%);
+      }
+      .deskQueue {
+        display: grid;
+        gap: 10px;
+        padding: 0 12px 14px;
+      }
+      .deskQueueItem {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: center;
+        padding: 12px;
+        border-radius: 14px;
+        border: 1px solid rgba(234, 240, 255, 0.08);
+        background: rgba(7, 8, 12, 0.45);
+      }
+      .deskQueueItem b {
+        font-size: 12px;
+      }
+      .deskQueueItem small {
+        display: block;
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 10px;
+        line-height: 1.35;
+      }
+      .mktVoteDestBar {
+        margin: 0 12px 12px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        border: 1px solid rgba(34, 197, 94, 0.28);
+        background: linear-gradient(145deg, rgba(34, 197, 94, 0.1), rgba(0, 229, 255, 0.06));
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .mktVoteDestBar b {
+        display: block;
+        font-size: 13px;
+      }
+      .mktVoteDestBar small {
+        display: block;
+        margin-top: 3px;
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+      .mktVoteMegaRow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 0 12px 10px;
+      }
+      .mktVoteRow {
+        display: grid;
+        grid-template-columns: 40px 1fr auto;
+        gap: 8px;
+        align-items: center;
+        margin: 0 12px 8px;
+        padding: 10px;
+        border-radius: 14px;
+        border: 1px solid rgba(234, 240, 255, 0.08);
+        background: rgba(7, 8, 12, 0.45);
+        text-align: left;
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+        width: calc(100% - 24px);
+      }
+      .mktVoteRow.is-selected {
+        border-color: rgba(0, 229, 255, 0.45);
+        box-shadow: 0 0 18px rgba(0, 229, 255, 0.1);
+      }
+      .mktVoteRowIcon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+        font-size: 11px;
+        border: 1px solid rgba(234, 240, 255, 0.1);
+        background: rgba(234, 240, 255, 0.06);
+      }
+      .mktVoteRowMeta b {
+        font-size: 12px;
+      }
+      .mktVoteRowMeta small {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+        margin-top: 2px;
+      }
+      .mktVotePill {
+        font-size: 9px;
+        font-weight: 900;
+        padding: 4px 8px;
+        border-radius: 999px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        background: rgba(34, 197, 94, 0.15);
+        color: rgba(187, 247, 208, 0.95);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+      }
+      .recoveryMini {
+        margin: 0 12px 12px;
+        padding: 14px;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 140, 90, 0.35);
+        background: linear-gradient(165deg, rgba(255, 120, 60, 0.1), rgba(7, 8, 12, 0.5));
+      }
+      .recoveryMini h4 {
+        margin: 0 0 6px;
+        font-size: 11px;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        color: rgba(255, 180, 120, 0.95);
+      }
+      .recoveryMini p {
+        margin: 0;
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+      .mktBar {
+        height: 8px;
+        border-radius: 999px;
+        background: rgba(234, 240, 255, 0.08);
+        overflow: hidden;
+        margin-top: 10px;
+      }
+      .mktBar > div {
+        height: 100%;
+        width: 56%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, rgba(34, 211, 238, 0.95), rgba(34, 197, 94, 0.85));
+      }
+      .govSplitBar {
+        display: flex;
+        height: 10px;
+        border-radius: 999px;
+        overflow: hidden;
+        margin: 10px 0 8px;
+        background: rgba(234, 240, 255, 0.06);
+      }
+      .govSplitBar .govSplitYes {
+        width: 54%;
+        background: linear-gradient(90deg, rgba(34, 211, 238, 0.95), rgba(16, 185, 129, 0.88));
+      }
+      .govSplitBar .govSplitNo {
+        flex: 1;
+        min-width: 0;
+        background: linear-gradient(90deg, rgba(59, 130, 246, 0.55), rgba(30, 64, 175, 0.72));
+      }
+      .govSplitBar--pct .govSplitYes,
+      .govSplitBar--pct .govSplitNo {
+        flex: none;
+        min-width: 0;
+      }
+      .chipRow {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .chip {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 800;
+        border: 1px solid var(--line);
+      }
+      .chip.pos {
+        border-color: rgba(34, 197, 94, 0.35);
+        color: #86efac;
+        background: rgba(34, 197, 94, 0.1);
+      }
+      .chip.neg {
+        color: var(--muted);
+      }
+      .widgetBody {
+        padding: 14px 16px 16px;
+        display: grid;
+        gap: 12px;
+      }
+      .wRow {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .wRow .left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .coinIcon {
+        width: 28px;
+        height: 28px;
+        border-radius: 10px;
+        background: rgba(234, 240, 255, 0.08);
+      }
+      .wRow b {
+        font-size: 12px;
+      }
+      .wRow small {
+        display: block;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .chg {
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .chg.pos {
+        color: #86efac;
+      }
+      .chg.neg {
+        color: #fca5a5;
+      }
+      .liveCard {
+        display: grid;
+        grid-template-columns: 56px 1fr;
+        gap: 12px;
+        padding: 10px;
+        border: 1px solid rgba(234, 240, 255, 0.08);
+        border-radius: 16px;
+        background: rgba(7, 8, 12, 0.35);
+      }
+      .liveThumb {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        background: radial-gradient(90px 70px at 50% 30%, rgba(255, 59, 59, 0.12), transparent 60%), rgba(234, 240, 255, 0.05);
+        position: relative;
+      }
+      .liveBadge {
+        position: absolute;
+        left: 6px;
+        top: 6px;
+        font-size: 9px;
+        font-weight: 1000;
+        padding: 3px 6px;
+        border-radius: 999px;
+        background: rgba(255, 59, 59, 0.2);
+        border: 1px solid rgba(255, 59, 59, 0.3);
+      }
+      .btn {
+        border: 1px solid var(--line);
+        background: rgba(13, 16, 24, 0.7);
+        color: var(--text);
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 12px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+      }
+      .btn.primary {
+        border-color: rgba(0, 229, 255, 0.35);
+        background: radial-gradient(120% 140% at 30% -10%, rgba(0, 229, 255, 0.35), transparent 60%), rgba(13, 16, 24, 0.7);
+        width: 100%;
+      }
+      .mNav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        max-width: 430px;
+        margin: 0 auto;
+        height: 78px;
+        border-top: 1px solid rgba(234, 240, 255, 0.08);
+        background: rgba(7, 8, 12, 0.92);
+        backdrop-filter: blur(10px);
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        padding: 8px 10px 14px;
+        gap: 6px;
+      }
+      .mTab {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        color: rgba(154, 166, 195, 0.9);
+        font-size: 10px;
+        font-weight: 900;
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        gap: 4px;
+        padding: 4px 2px;
+        border-radius: 12px;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .mTab:focus-visible {
+        outline: 2px solid rgba(0, 229, 255, 0.55);
+        outline-offset: 2px;
+      }
+      .mTab i.mTabIcon {
+        width: 22px;
+        height: 22px;
+        border-radius: 8px;
+        background: rgba(154, 166, 195, 0.35);
+      }
+      .mTabLogo {
+        width: 22px;
+        height: 22px;
+        border-radius: 8px;
+        display: block;
+        object-fit: cover;
+        box-shadow: 0 0 0 1px rgba(234, 240, 255, 0.12);
+      }
+      .mTab.active {
+        color: rgba(234, 240, 255, 0.96);
+      }
+      .mTab.active .mTabIcon {
+        background: rgba(0, 229, 255, 0.22);
+        border: 1px solid rgba(0, 229, 255, 0.25);
+      }
+      .mTab.active .mTabLogo {
+        box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.35);
+      }
+      .mmTabArea[hidden] {
+        display: none !important;
+      }
+      .mmAltHeaderLine {
+        padding: 10px 12px 12px;
+        text-align: center;
+        border-bottom: 1px solid rgba(234, 240, 255, 0.06);
+        background: rgba(7, 8, 12, 0.55);
+      }
+      .mmAltHeaderLine span {
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: rgba(0, 229, 255, 0.88);
+      }
+      .mmAltHeaderLine[hidden] {
+        display: none !important;
+      }
+      .mmToast {
+        position: fixed;
+        left: 50%;
+        bottom: 96px;
+        transform: translateX(-50%) translateY(12px);
+        max-width: min(360px, calc(100vw - 32px));
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text);
+        background: rgba(13, 16, 24, 0.96);
+        border: 1px solid rgba(0, 229, 255, 0.28);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+        z-index: 50;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+      .mmToast.is-on {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      .mmAltPanel {
+        min-height: 48vh;
+      }
+      .chatRow {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(234, 240, 255, 0.06);
+        cursor: pointer;
+        text-align: left;
+        width: 100%;
+        font: inherit;
+        color: inherit;
+        background: transparent;
+        border-left: 0;
+        border-right: 0;
+        border-top: 0;
+      }
+      .chatRow:active {
+        background: rgba(0, 229, 255, 0.06);
+      }
+      .chatAv {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, rgba(0, 229, 255, 0.3), rgba(168, 85, 247, 0.25));
+      }
+      .chatAv--g {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.35), rgba(16, 185, 129, 0.2));
+      }
+      .profHead {
+        padding: 20px 16px;
+        text-align: center;
+        border-bottom: 1px solid rgba(234, 240, 255, 0.08);
+      }
+      .profHead img {
+        width: 72px;
+        height: 72px;
+        border-radius: 22px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      }
+    </style>
+  </head>
+  <body data-mm-bottom="home">
+    <div class="mm-shell" id="mmShell">
+      <div class="mm-desktopLink">
+        <a href="today-hub.html">← Open desktop prototype</a>
+        <span style="margin: 0 8px; opacity: 0.4">·</span>
+        <span>Mobile layout mockup</span>
+      </div>
+
+      <header class="mHeader">
+        <div class="mTop">
+          <div class="left">
+            <img src="assets/trendup-mark.png" width="28" height="28" alt="" style="width: 28px; height: 28px; border-radius: 10px" />
+            <div class="mTitle">Today</div>
+          </div>
+          <div class="mIcons">
+            <div class="iconBtn" aria-hidden="true">⌕</div>
+            <div class="iconBtn" aria-hidden="true">🔔</div>
+          </div>
+        </div>
+        <div class="mmAltHeaderLine" id="mmAltHeaderLine" hidden>
+          <span id="mmAltHeaderLineText">Chats</span>
+        </div>
+        <div class="mmTabArea" id="mmTabArea">
+          <div class="mSeg" role="tablist" aria-label="Main tabs">
+            <button type="button" data-mview="news">News</button>
+            <button type="button" class="active" data-mview="forYou">For You</button>
+            <button type="button" data-mview="marketTrend">Market</button>
+          </div>
+          <div class="feedSubBar" data-feed-sub-root>
+            <div class="feedSubBarInner">
+              <div class="feedSubStrip" data-feed-strip="news" hidden>
+                <span class="feedSubLabel">News</span>
+                <button type="button" class="feedSubChip is-on">Breaking</button>
+                <button type="button" class="feedSubChip">World</button>
+                <button type="button" class="feedSubChip">Tech</button>
+              </div>
+              <div class="feedSubStrip" data-feed-strip="forYou">
+                <span class="feedSubLabel">For you</span>
+                <button type="button" class="feedSubChip is-on">All</button>
+                <button type="button" class="feedSubChip">Following</button>
+                <button type="button" class="feedSubChip">Topics</button>
+              </div>
+              <div class="feedSubStrip" data-feed-strip="marketTrend" hidden>
+                <span class="feedSubLabel">Market</span>
+                <button type="button" class="feedSubChip is-on" data-mktmega="crypto">Crypto</button>
+                <button type="button" class="feedSubChip" data-mktmega="categories">Categories</button>
+                <button type="button" class="feedSubChip" data-mktmega="chains">Chains</button>
+                <button type="button" class="feedSubChip" data-mktmega="exchanges">Venues</button>
+                <a class="feedSubChip feedSubChip--voteDesk" href="today-hub.html" style="text-decoration: none">Voting desk</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- For You: dense parity with desktop center column + right widgets -->
+      <div class="m-stack" data-stack="forYou" data-mm-main="1">
+        <div class="pulseStrip" aria-label="At a glance">
+          <button type="button" class="pulseChip pulseChip--hot" data-mm-pulse>BTC +2.1%</button>
+          <button type="button" class="pulseChip pulseChip--cyan" data-mm-pulse>ETH +1.3%</button>
+          <button type="button" class="pulseChip" data-mm-pulse>$TUP desk</button>
+          <button type="button" class="pulseChip pulseChip--hot" data-mm-pulse>Truth desk live</button>
+          <button type="button" class="pulseChip" data-mm-pulse>Quorum 72%</button>
+        </div>
+
+        <div class="mSection storyRailOuter">
+          <div class="panelHeader"><b>Stories</b><span class="hintSm">Desks · creators</span><a href="#">All</a></div>
+          <div class="storyRail" aria-label="Story avatars">
+            <div class="storyItem">
+              <div class="storyRing muted"><div class="storyAv"></div></div>
+              <small>You</small>
+            </div>
+            <div class="storyItem">
+              <div class="storyRing"><div class="storyAv" style="background: linear-gradient(135deg, #6366f1, #22d3ee)"></div></div>
+              <small>Truth desk</small>
+            </div>
+            <div class="storyItem">
+              <div class="storyRing"><div class="storyAv" style="background: linear-gradient(135deg, #f97316, #ef4444)"></div></div>
+              <small>$creator</small>
+            </div>
+            <div class="storyItem">
+              <div class="storyRing muted"><div class="storyAv"></div></div>
+              <small>Markets</small>
+            </div>
+            <div class="storyItem">
+              <div class="storyRing"><div class="storyAv" style="background: linear-gradient(135deg, #a855f7, #ec4899)"></div></div>
+              <small>Live</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="mSection">
+          <div class="panelHeader"><b>Breaking</b><a href="#">See all</a></div>
+          <div class="breaking">
+            <div class="bigNews">
+              <div class="thumb thumb--a" aria-hidden="true"></div>
+              <div class="headline">
+                <b>Editors confirm primary sources for bridge closure timeline; city posts match field reports</b>
+                <small>Truth desk · 23m</small>
+              </div>
+            </div>
+            <div class="rows">
+              <div class="row"><span>School board vote: live tally + citation links</span><small>1h</small></div>
+              <div class="row"><span>Weather service corrects surge map after reader photos</span><small>2h</small></div>
+              <div class="row"><span>Community picks new moderation council</span><small>3h</small></div>
+            </div>
+          </div>
+          <div class="topicPills" data-topic-group="fy-breaking" role="tablist" aria-label="Breaking topics">
+            <button type="button" class="topic active" data-topic="news">News</button>
+            <button type="button" class="topic" data-topic="world">World</button>
+            <button type="button" class="topic" data-topic="communities">My Communities</button>
+            <button type="button" class="topic" data-topic="markets">Markets</button>
+          </div>
+          <p class="hintSm" data-topic-hint="fy-breaking" style="margin: 0; padding: 4px 12px 12px; font-size: 10px; color: rgba(0, 229, 255, 0.65)">
+            <span data-topic-hint-text>Showing: News — tap a topic (mock filter).</span>
+          </p>
+        </div>
+
+        <div class="mSection">
+          <div class="panelHeader"><b>News stream</b><a href="#">Wire</a></div>
+          <p class="hintSm" style="margin: 0; padding: 0 14px 10px; line-height: 1.45">
+            Scrolls on its own — same pattern as desktop <b>For You → News stream</b>; main social feed is below.
+          </p>
+          <div class="newsStreamScroll" tabindex="0" aria-label="News stream">
+            <div class="newsLine">
+              <div class="thumbSm" aria-hidden="true"></div>
+              <div>
+                <b style="font-size: 12px">Truth desk</b><small style="display: block; color: var(--muted); margin-top: 3px">Bridge docs + field video aligned · 23m</small>
+              </div>
+            </div>
+            <div class="row"><span>Agency PDF vs on-site video — thread with receipts</span><small>31m</small></div>
+            <div class="row"><span>County posts cooling-center map; volunteers verify hours</span><small>48m</small></div>
+            <div class="row"><span>Science desk: study preprint + lab notes linked</span><small>1h</small></div>
+            <div class="row"><span>Local alert: river gauge crossed; NWS + reader photos</span><small>1h</small></div>
+            <div class="row"><span>Election board publishes scanner logs for audit window</span><small>2h</small></div>
+            <div class="row"><span>World: ceasefire line map updated with third-party sat</span><small>3h</small></div>
+          </div>
+        </div>
+
+        <div class="mSection">
+          <div class="panelHeader"><b>Feed</b><span class="hintSm">Muted clip first</span><a href="#">Filter</a></div>
+          <div class="feed">
+            <div class="post">
+              <div class="postTop">
+                <div class="avatar" aria-hidden="true"></div>
+                <div class="meta">
+                  <b>$creator</b>
+                  <small>9m · $FridayVibes · $Music · Live recap</small>
+                </div>
+              </div>
+              <div class="postText">
+                Quick highlight for <b>$FridayVibes</b> — market psychology in 60 seconds. Clip is muted by default; tap the video or speaker to listen.
+              </div>
+              <div class="postMedia postMedia--video" aria-label="Video — muted until tap">
+                <video
+                  class="feedVideo"
+                  src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+                  muted
+                  playsinline
+                  loop
+                  autoplay
+                ></video>
+                <span class="mmBadge">00:42</span>
+              </div>
+              <div class="mmActions" role="group" aria-label="Post actions">
+                <button type="button" class="mmAct" aria-label="Love">♥ <span>18</span></button>
+                <button type="button" class="mmAct" aria-label="Like">👍 <span>161</span></button>
+                <button type="button" class="mmAct" aria-label="Dislike">👎 <span>8</span></button>
+                <button type="button" class="mmAct" aria-label="Share">↗ Share</button>
+                <button type="button" class="mmAct" aria-label="Save">⌁ <span>31</span></button>
+              </div>
+            </div>
+
+            <div class="post">
+              <div class="postTop">
+                <div class="avatar avatarPhoto" style="--av: url(https://i.pravatar.cc/128?img=32)" aria-hidden="true"></div>
+                <div class="meta">
+                  <b>Julia</b>
+                  <small>2h · $LongTerm · discussion</small>
+                </div>
+              </div>
+              <div class="postText">
+                Bitcoin or Ethereum for long-term investing? — Opinions here are <b>not</b> protocol votes; fee and sell-limit ballots stay in
+                <b>Governance</b>.
+              </div>
+              <div class="postStats"><span><b>204</b> likes</span><span><b>37</b> comments</span></div>
+              <div class="feedGovEmbed">
+                <div class="feedGovK">Feed pulse (non-binding)</div>
+                <div style="font-size: 11px; color: var(--muted); line-height: 1.4">Quick temperature check — does not change on-chain params.</div>
+                <div class="govSplitBar govSplitBar--pct" style="margin-top: 8px" aria-hidden="true">
+                  <span class="govSplitYes" style="width: 58%"></span>
+                  <span class="govSplitNo" style="width: 42%"></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 6px">
+                  <span>BTC lean</span>
+                  <span>ETH lean</span>
+                </div>
+              </div>
+              <div class="mmActions">
+                <button type="button" class="mmAct">♥ <span>204</span></button>
+                <button type="button" class="mmAct">👍 <span>37</span></button>
+                <a class="mmAct" href="today-hub.html" style="text-decoration: none; color: inherit">Governance →</a>
+              </div>
+            </div>
+
+            <div class="post">
+              <div class="postTop">
+                <div class="avatar avatarPhoto" style="--av: url(https://i.pravatar.cc/128?img=60)" aria-hidden="true"></div>
+                <div class="meta">
+                  <b>Mark Phillips</b>
+                  <small>4d · $Governance · proposal</small>
+                </div>
+              </div>
+              <div class="postText">
+                Should we increase the proposal threshold? Discussion thread — <b>wallet vote</b> with quorum lands on the governance desk; this post is for
+                sentiment and links.
+              </div>
+              <div class="postStats"><span><b>325</b> likes</span><span><b>58</b> comments</span><span><b>Chart</b> attached</span></div>
+              <div class="postMedia" style="min-height: 120px">
+                <img src="https://picsum.photos/seed/gov-threshold-spark/880/360" width="880" height="360" alt="" loading="lazy" />
+                <span class="mmBadge mmBadge--tl">GOV</span>
+              </div>
+              <a class="btn" href="today-hub.html" style="width: 100%; margin-top: 8px; text-align: center; display: block; text-decoration: none">Open sell limits &amp; fee votes</a>
+            </div>
+
+            <div class="post">
+              <div class="postTop">
+                <div class="avatar" aria-hidden="true"></div>
+                <div class="meta">
+                  <b>$nickname</b>
+                  <small>2m · $CityHall · verification requested</small>
+                </div>
+              </div>
+              <div class="postText">
+                On-site video matches the agency PDF timeline. Primary sources in the thread — happy to be wrong, show your receipts. (Charts stay in my
+                <b>Markets</b> pin.)
+              </div>
+              <div class="postMedia" style="min-height: 140px">
+                <img src="https://picsum.photos/seed/cityhall-verify/900/500" width="900" height="500" alt="" loading="lazy" />
+                <span class="mmBadge">IMAGE</span>
+              </div>
+              <div class="mmActions">
+                <button type="button" class="mmAct">♥ <span>24</span></button>
+                <button type="button" class="mmAct">👍 <span>112</span></button>
+                <button type="button" class="mmAct">👎 <span>4</span></button>
+                <button type="button" class="mmAct">↗ Share</button>
+              </div>
+              <div class="postCommentsMini">
+                <b>Thread</b> · $hannah.verify · 1m — “Timestamp on the PDF matches the field clip; linking raw files.”
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mSection">
+          <div class="panelHeader"><b>Governance</b><span class="hintSm">Binding votes</span><a href="today-hub.html">Full desk</a></div>
+          <div class="widgetBody" style="padding-top: 0">
+            <p class="hintSm" style="margin: 0 0 10px; line-height: 1.45">
+              Same sell-limits + fee cards as desktop <b>right column</b> — connect wallet on the full prototype for the complete flow.
+            </p>
+            <div><b>Sell limits poll</b><br /><small style="color: var(--muted)">10% / holdings · 6d 23h · quorum 72%</small></div>
+            <div class="govSplitBar" aria-hidden="true"><span class="govSplitYes"></span><span class="govSplitNo"></span></div>
+            <div class="chipRow">
+              <div class="chip pos">Yes 54%</div>
+              <div class="chip neg">No 46%</div>
+            </div>
+            <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(234, 240, 255, 0.06)">
+              <b style="font-size: 12px">Fee tier (next)</b><br /><small style="color: var(--muted)">Maker 0.08% → 0.06% · closes in 4d</small>
+              <div class="govSplitBar govSplitBar--pct" style="margin-top: 8px" aria-hidden="true">
+                <span class="govSplitYes" style="width: 61%; background: linear-gradient(90deg, rgba(168, 85, 247, 0.95), rgba(99, 102, 241, 0.85))"></span>
+                <span class="govSplitNo" style="width: 39%"></span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-top: 4px">
+                <span>For 61%</span><span>Against 39%</span>
+              </div>
+            </div>
+            <p style="margin: 12px 0 0; font-size: 11px; color: rgba(0, 229, 255, 0.72); text-align: center">Connect wallet to vote</p>
+            <a class="btn primary" href="today-hub.html" style="margin-top: 12px">Open governance in full app</a>
+          </div>
+        </div>
+
+        <div class="mSection">
+          <div class="panelHeader"><b>Tickers (opt-in)</b><a href="#">Manage</a></div>
+          <div class="widgetBody" style="padding-top: 0">
+            <p class="hintSm" style="margin: 0 0 10px">Same opt-in rhythm as desktop — surfaces when you follow symbols or open Markets.</p>
+            <div class="wRow">
+              <div class="left"><span class="coinIcon"></span><div><b>BTC</b><small>$67,812</small></div></div>
+              <div style="display: flex; align-items: center; gap: 8px"><div class="spark"></div><div class="chg pos">+2.1%</div></div>
+            </div>
+            <div class="wRow">
+              <div class="left"><span class="coinIcon"></span><div><b>ETH</b><small>$3,057</small></div></div>
+              <div style="display: flex; align-items: center; gap: 8px"><div class="spark"></div><div class="chg pos">+1.3%</div></div>
+            </div>
+            <div class="wRow">
+              <div class="left"><span class="coinIcon"></span><div><b>SOL</b><small>$142.18</small></div></div>
+              <div style="display: flex; align-items: center; gap: 8px"><div class="spark neg"></div><div class="chg neg">−0.6%</div></div>
+            </div>
+            <div class="wRow">
+              <div class="left"><span class="coinIcon"></span><div><b>$TUP</b><small>Project</small></div></div>
+              <div style="display: flex; align-items: center; gap: 8px"><div class="spark"></div><div class="chg pos">+4.2%</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mSection">
+          <div class="panelHeader"><b>Desk queue</b><span class="hintSm">Binding</span></div>
+          <div class="deskQueue">
+            <div class="deskQueueItem">
+              <div>
+                <b>Recovery mode ballot</b>
+                <small>$TUP · YES leading · stronger sell protections</small>
+              </div>
+              <span class="mktVotePill">Active</span>
+            </div>
+            <div class="deskQueueItem">
+              <div>
+                <b>Cap change review</b>
+                <small>PENGU · quorum building · 34% turnout</small>
+              </div>
+              <span class="mktVotePill">Active</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mSection">
+          <div class="panelHeader"><b>Live now</b><a href="#">See all</a></div>
+          <div class="widgetBody" style="padding-top: 0">
+            <div class="liveCard">
+              <div class="liveThumb"><span class="liveBadge">LIVE</span></div>
+              <div><b style="font-size: 13px">Morning newsroom</b><br /><small style="color: var(--muted)">Hosted by Truth desk · 2.4k watching</small></div>
+            </div>
+            <div class="liveCard">
+              <div class="liveThumb"><span class="liveBadge">LIVE</span></div>
+              <div><b style="font-size: 13px">Community AMA</b><br /><small style="color: var(--muted)">Governance Q&amp;A · 418 watching</small></div>
+            </div>
+            <div class="liveCard">
+              <div class="liveThumb"><span class="liveBadge">LIVE</span></div>
+              <div><b style="font-size: 13px">Markets after the print</b><br /><small style="color: var(--muted)">Tickers + desk · 1.1k watching</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- News: full desk slice (parity with desktop News mode) -->
+      <div class="m-stack" data-stack="news" data-mm-main="1" hidden>
+        <div class="pulseStrip" aria-label="News desk pulse">
+          <button type="button" class="pulseChip pulseChip--cyan" data-mm-pulse>Wire · fast</button>
+          <button type="button" class="pulseChip" data-mm-pulse>Fact checks</button>
+          <button type="button" class="pulseChip pulseChip--hot" data-mm-pulse>Live briefings</button>
+        </div>
+        <div class="mSection">
+          <div class="panelHeader"><b>Breaking</b><a href="#">Wire</a></div>
+          <div class="breaking">
+            <div class="bigNews">
+              <div class="thumb thumb--b" aria-hidden="true"></div>
+              <div class="headline">
+                <b>Agency publishes raw data; newsrooms cross-check video line-by-line</b>
+                <small>World · 8m</small>
+              </div>
+            </div>
+            <div class="rows">
+              <div class="row"><span>Science: preprint updated after peer notes</span><small>22m</small></div>
+              <div class="row"><span>Tech: source links on every alert card</span><small>35m</small></div>
+              <div class="row"><span>Markets digest after data print</span><small>28m</small></div>
+              <div class="row"><span>Local: cooling centers verified by volunteers</span><small>51m</small></div>
+            </div>
+          </div>
+          <div class="topicPills" data-topic-group="news-desk" role="tablist" aria-label="News desk topics">
+            <button type="button" class="topic active" data-topic="breaking">Breaking</button>
+            <button type="button" class="topic" data-topic="world">World</button>
+            <button type="button" class="topic" data-topic="science">Science</button>
+            <button type="button" class="topic" data-topic="tech">Tech</button>
+          </div>
+          <p class="hintSm" data-topic-hint="news-desk" style="margin: 0; padding: 4px 12px 12px; font-size: 10px; color: rgba(0, 229, 255, 0.65)">
+            <span data-topic-hint-text>Desk focus: Breaking — tap World, Science, or Tech (mock).</span>
+          </p>
+        </div>
+        <div class="mSection">
+          <div class="panelHeader"><b>Verify &amp; analysis</b><span class="hintSm">Truth desk</span></div>
+          <div class="newsStreamScroll" style="max-height: none; padding: 12px 12px 14px">
+            <div class="newsLine">
+              <div class="thumbSm" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.35), rgba(0, 229, 255, 0.2))"></div>
+              <div>
+                <b style="font-size: 12px">Bridge timeline</b><small style="display: block; color: var(--muted); margin-top: 3px">PDF vs field video — both pinned · 14m</small>
+              </div>
+            </div>
+            <p class="hintSm" style="margin: 0 0 10px; line-height: 1.45">
+              Same verification lane as desktop <b>News</b> — receipts, not vibes. Social reactions stay in <b>For You</b>.
+            </p>
+            <div class="row"><span>Election scanners: hash logs published for audit window</span><small>2h</small></div>
+            <div class="row"><span>Weather: surge map corrected after crowd-sourced photos</span><small>2h</small></div>
+            <div class="row"><span>World: third-party sat confirms line map update</span><small>3h</small></div>
+          </div>
+        </div>
+        <div class="mSection">
+          <div class="panelHeader"><b>Wire list</b><a href="#">All</a></div>
+          <div class="newsStreamScroll" tabindex="0" aria-label="Wire headlines">
+            <div class="row"><span>Regulator opens comment period on venue risk labels</span><small>12m</small></div>
+            <div class="row"><span>Hospitals publish surge capacity; readers add bedside notes</span><small>19m</small></div>
+            <div class="row"><span>Open-source tool maps shelter hours vs official PDF</span><small>24m</small></div>
+            <div class="row"><span>School district posts raw vote logs; newsroom annotates</span><small>40m</small></div>
+            <div class="row"><span>Macro: desk holds chart links to primary releases only</span><small>55m</small></div>
+            <div class="row"><span>On-chain: proposal queue frozen during recovery drill (mock)</span><small>1h</small></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Market: left rail + ballots + liquidity (desktop patterns) -->
+      <div class="m-stack" data-stack="marketTrend" data-mm-main="1" hidden>
+        <div class="mktVoteDestBar">
+          <div>
+            <b>Project votes → full desk</b>
+            <small>Pick a project, then vote with wallet on the desktop prototype — same desk as <b>Voting desk</b> in the main app.</small>
+          </div>
+          <a class="btn primary" href="today-hub.html" style="width: auto; padding: 10px 14px">Open desk</a>
+        </div>
+        <div class="deskCenterBanner">
+          <h3>Voting desk</h3>
+          <p>
+            Binding ballots: sell limits, fee tiers, recovery, cap changes. This strip is the on-ramp; the full layout with left rail + center card lives in
+            <b>today-hub.html</b>.
+          </p>
+        </div>
+        <div class="mktVoteMegaRow">
+          <button type="button" class="feedSubChip is-on" data-mktmega="crypto">Cryptocurrencies</button>
+          <button type="button" class="feedSubChip" data-mktmega="categories">Categories</button>
+          <button type="button" class="feedSubChip" data-mktmega="chains">Chains</button>
+          <button type="button" class="feedSubChip" data-mktmega="exchanges">Venues</button>
+        </div>
+        <button type="button" class="mktVoteRow is-selected">
+          <span class="mktVoteRowIcon" style="background: linear-gradient(145deg, rgba(251, 146, 60, 0.35), rgba(239, 68, 68, 0.2))">$T</span>
+          <span class="mktVoteRowMeta"><b>$TUP · TrendUp</b><small>Recovery mode · YES leading · quorum 68%</small></span>
+          <span class="mktVotePill">Active</span>
+        </button>
+        <button type="button" class="mktVoteRow">
+          <span class="mktVoteRowIcon">PG</span>
+          <span class="mktVoteRowMeta"><b>PENGU</b><small>Sell-cap proposal · turnout 34%</small></span>
+          <span class="mktVotePill">Active</span>
+        </button>
+        <button type="button" class="mktVoteRow">
+          <span class="mktVoteRowIcon" style="background: linear-gradient(145deg, rgba(56, 189, 248, 0.35), rgba(37, 99, 235, 0.25))">Ξ</span>
+          <span class="mktVoteRowMeta"><b>ETH ecosystem</b><small>Fee tier pilot · review stage</small></span>
+          <span class="mktVotePill">Review</span>
+        </button>
+        <button type="button" class="mktVoteRow">
+          <span class="mktVoteRowIcon" style="font-size: 10px">SOL</span>
+          <span class="mktVoteRowMeta"><b>SOL L1</b><small>Validator set notice · informational</small></span>
+          <span class="mktVotePill">Info</span>
+        </button>
+        <div class="recoveryMini">
+          <h4>RECOVERY MODE</h4>
+          <p>Stronger sell protections while markets stabilize — same YES / NO pattern as the desktop selected ballot card.</p>
+          <div class="mktBar"><div></div></div>
+          <div style="display: flex; gap: 8px; margin-top: 12px">
+            <button type="button" class="btn" style="flex: 1; background: linear-gradient(145deg, #f97316, #ea580c); border: 0; color: #0a0a0a; font-weight: 900">
+              YES
+            </button>
+            <button type="button" class="btn" style="flex: 1; font-weight: 900">NO</button>
+          </div>
+        </div>
+        <div class="recoveryMini" style="border-color: rgba(99, 102, 241, 0.35); background: linear-gradient(165deg, rgba(99, 102, 241, 0.12), rgba(7, 8, 12, 0.5))">
+          <h4 style="color: rgba(196, 181, 253, 0.98)">CAP CHANGE</h4>
+          <p style="color: var(--muted)">Raise circulating cap for liquidity program — requires supermajority + timelock in production.</p>
+          <div class="govSplitBar govSplitBar--pct" style="margin-top: 10px" aria-hidden="true">
+            <span class="govSplitYes" style="width: 47%"></span>
+            <span class="govSplitNo" style="width: 53%"></span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-top: 6px">
+            <span>For 47%</span><span>Against 53%</span>
+          </div>
+        </div>
+        <div class="mSection" style="margin-top: 8px">
+          <div class="panelHeader"><b>Liquidity snapshot</b><span class="hintSm">Read-only</span></div>
+          <div class="widgetBody" style="padding-top: 0">
+            <div class="wRow">
+              <div class="left"><span class="coinIcon"></span><div><b>Global cap</b><small>$3.12T</small></div></div>
+              <div style="display: flex; align-items: center; gap: 8px"><div class="spark"></div><div class="chg pos">+1.8%</div></div>
+            </div>
+            <div class="wRow">
+              <div class="left"><span class="coinIcon"></span><div><b>24h volume</b><small>$118B</small></div></div>
+              <div class="chg neg">−3.1%</div>
+            </div>
+            <div class="wRow">
+              <div class="left"><span class="coinIcon"></span><div><b>DEX share</b><small>All chains</small></div></div>
+              <div class="chg pos">+0.4%</div>
+            </div>
+            <div class="wRow">
+              <div class="left"><span class="coinIcon"></span><div><b>Stable TVL</b><small>Tracked venues</small></div></div>
+              <div class="chg pos">+0.9%</div>
+            </div>
+            <p class="hintSm" style="margin: 10px 0 0; line-height: 1.45">
+              Desktop <b>Market trend</b> keeps full tables; here you get the same numbers in a compact stack. Open the prototype for width.
+            </p>
+          </div>
+        </div>
+        <div class="mSection">
+          <div class="panelHeader"><b>Fee schedule (mock)</b><span class="hintSm">Desk</span></div>
+          <div class="widgetBody" style="padding-top: 0; font-size: 11px">
+            <div class="wRow" style="border-bottom: 1px solid rgba(234, 240, 255, 0.06); padding-bottom: 10px; margin-bottom: 4px">
+              <span style="color: var(--muted)">Tier</span><span style="font-weight: 800">Maker / Taker</span>
+            </div>
+            <div class="wRow"><span>Standard</span><span>0.10% / 0.12%</span></div>
+            <div class="wRow"><span>Proposed</span><span style="color: #86efac">0.08% / 0.10%</span></div>
+            <div class="wRow"><span>Volume tier A</span><span>0.06% / 0.08%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom-nav full screens (Chats / Live / Profile) -->
+      <div class="m-stack mmAltPanel" id="mmPanelChats" data-mm-alt="chats" hidden>
+        <div class="mSection">
+          <div class="panelHeader"><b>Chats</b><span class="hintSm">Mock</span></div>
+          <div style="padding: 0">
+            <button type="button" class="chatRow" data-mm-chat="1">
+              <span class="chatAv chatAv--g" aria-hidden="true"></span>
+              <span><b>Truth desk</b><small style="display: block; color: var(--muted); margin-top: 3px">Bridge timeline · 2 unread</small></span>
+            </button>
+            <button type="button" class="chatRow" data-mm-chat="1">
+              <span class="chatAv" aria-hidden="true"></span>
+              <span><b>$creator</b><small style="display: block; color: var(--muted); margin-top: 3px">Clip recap · 9m ago</small></span>
+            </button>
+            <button type="button" class="chatRow" data-mm-chat="1">
+              <span class="chatAv" style="background: linear-gradient(135deg, #a855f7, #ec4899)" aria-hidden="true"></span>
+              <span><b>Governance bot</b><small style="display: block; color: var(--muted); margin-top: 3px">Quorum reminder · desk</small></span>
+            </button>
+            <button type="button" class="chatRow" data-mm-chat="1">
+              <span class="chatAv" style="background: linear-gradient(135deg, #64748b, #334155)" aria-hidden="true"></span>
+              <span><b>Markets room</b><small style="display: block; color: var(--muted); margin-top: 3px">Muted until you join</small></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="m-stack mmAltPanel" id="mmPanelLive" data-mm-alt="live" hidden>
+        <div class="mSection">
+          <div class="panelHeader"><b>Live</b><span class="hintSm">Now</span></div>
+          <div class="widgetBody" style="padding-top: 0">
+            <div class="liveCard">
+              <div class="liveThumb"><span class="liveBadge">LIVE</span></div>
+              <div><b style="font-size: 13px">Morning newsroom</b><br /><small style="color: var(--muted)">Truth desk · 2.4k watching</small></div>
+            </div>
+            <div class="liveCard">
+              <div class="liveThumb"><span class="liveBadge">LIVE</span></div>
+              <div><b style="font-size: 13px">Ticker + desk walkthrough</b><br /><small style="color: var(--muted)">Markets · 1.1k watching</small></div>
+            </div>
+            <p class="hintSm" style="margin: 10px 0 0">Tap <b>Home</b> for the full feed; this tab is live-only (mock).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="m-stack mmAltPanel" id="mmPanelProfile" data-mm-alt="profile" hidden>
+        <div class="mSection" style="overflow: hidden">
+          <div class="profHead">
+            <img src="assets/trendup-mark.png" width="72" height="72" alt="" />
+            <p style="margin: 12px 0 4px; font-weight: 900; font-size: 1.1rem">You</p>
+            <p class="hintSm" style="margin: 0">Wallet · settings · Me drawer on desktop prototype</p>
+          </div>
+          <div class="widgetBody">
+            <a class="btn primary" href="today-hub.html" style="text-decoration: none">Open full app (Me)</a>
+            <button type="button" class="btn" data-mm-profile-row style="width: 100%; margin-top: 10px">Notifications (mock)</button>
+            <button type="button" class="btn" data-mm-profile-row style="width: 100%; margin-top: 8px">Saved posts (mock)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mmToast" id="mmToast" role="status" aria-live="polite"></div>
+
+      <nav class="mNav" aria-label="Bottom navigation">
+        <button type="button" class="mTab active" data-mm-bottom="home" aria-label="Home" aria-current="page">
+          <img class="mTabLogo" src="assets/trendup-mark.png" width="22" height="22" alt="" />
+          <span>Home</span>
+        </button>
+        <button type="button" class="mTab" data-mm-bottom="chats" aria-label="Chats">
+          <i class="mTabIcon" aria-hidden="true"></i>
+          <span>Chats</span>
+        </button>
+        <button type="button" class="mTab" data-mm-bottom="live" aria-label="Live">
+          <i class="mTabIcon" aria-hidden="true"></i>
+          <span>Live</span>
+        </button>
+        <button type="button" class="mTab" data-mm-bottom="markets" aria-label="Markets">
+          <i class="mTabIcon" aria-hidden="true"></i>
+          <span>Markets</span>
+        </button>
+        <button type="button" class="mTab" data-mm-bottom="profile" aria-label="Profile">
+          <i class="mTabIcon" aria-hidden="true"></i>
+          <span>Profile</span>
+        </button>
+      </nav>
+    </div>
+
+    <script>
+      (function () {
+        var tabs = document.querySelectorAll(".mSeg [data-mview]");
+        var stacks = document.querySelectorAll(".m-stack[data-mm-main]");
+        var strips = document.querySelectorAll("[data-feed-strip]");
+        var altPanels = document.querySelectorAll("[data-mm-alt]");
+        var bottomBtns = document.querySelectorAll(".mNav [data-mm-bottom]");
+        var tabArea = document.getElementById("mmTabArea");
+        var altHeader = document.getElementById("mmAltHeaderLine");
+        var altHeaderText = document.getElementById("mmAltHeaderLineText");
+        var toastEl = document.getElementById("mmToast");
+        var toastTimer;
+        var lastMainView = "forYou";
+
+        function showToast(msg) {
+          toastEl.textContent = msg;
+          toastEl.classList.add("is-on");
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(function () {
+            toastEl.classList.remove("is-on");
+          }, 2200);
+        }
+
+        function updateMainStacks(v) {
+          lastMainView = v;
+          tabs.forEach(function (b) {
+            b.classList.toggle("active", b.getAttribute("data-mview") === v);
+          });
+          stacks.forEach(function (s) {
+            var on = s.getAttribute("data-stack") === v;
+            s.hidden = !on;
+          });
+          strips.forEach(function (strip) {
+            var key = strip.getAttribute("data-feed-strip");
+            var show =
+              (v === "news" && key === "news") ||
+              (v === "forYou" && key === "forYou") ||
+              (v === "marketTrend" && key === "marketTrend");
+            strip.hidden = !show;
+          });
+        }
+
+        function hideAllMain() {
+          stacks.forEach(function (s) {
+            s.hidden = true;
+          });
+        }
+
+        function hideAllAlt() {
+          altPanels.forEach(function (p) {
+            p.hidden = true;
+          });
+        }
+
+        function applyBottomNav(mode) {
+          document.body.setAttribute("data-mm-bottom", mode);
+          bottomBtns.forEach(function (b) {
+            var on = b.getAttribute("data-mm-bottom") === mode;
+            b.classList.toggle("active", on);
+            b.setAttribute("aria-current", on ? "page" : "false");
+          });
+
+          if (mode === "home") {
+            tabArea.hidden = false;
+            altHeader.hidden = true;
+            hideAllAlt();
+            updateMainStacks("forYou");
+            lastMainView = "forYou";
+            var shell = document.getElementById("mmShell");
+            if (shell) shell.scrollTo(0, 0);
+            else window.scrollTo(0, 0);
+            return;
+          }
+          if (mode === "markets") {
+            tabArea.hidden = false;
+            altHeader.hidden = true;
+            hideAllAlt();
+            updateMainStacks("marketTrend");
+            lastMainView = "marketTrend";
+            var shellM = document.getElementById("mmShell");
+            if (shellM) shellM.scrollTo(0, 0);
+            else window.scrollTo(0, 0);
+            return;
+          }
+          tabArea.hidden = true;
+          altHeader.hidden = false;
+          var titles = { chats: "Chats", live: "Live", profile: "Profile" };
+          altHeaderText.textContent = titles[mode] || "";
+          hideAllMain();
+          hideAllAlt();
+          var panel = document.querySelector('[data-mm-alt="' + mode + '"]');
+          if (panel) panel.hidden = false;
+          var shellA = document.getElementById("mmShell");
+          if (shellA) shellA.scrollTo(0, 0);
+          else window.scrollTo(0, 0);
+        }
+
+        tabs.forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            tabArea.hidden = false;
+            altHeader.hidden = true;
+            hideAllAlt();
+            updateMainStacks(btn.getAttribute("data-mview"));
+            bottomBtns.forEach(function (b) {
+              var isHome = b.getAttribute("data-mm-bottom") === "home";
+              b.classList.toggle("active", isHome);
+              b.setAttribute("aria-current", isHome ? "page" : "false");
+            });
+            document.body.setAttribute("data-mm-bottom", "home");
+            var shellT = document.getElementById("mmShell");
+            if (shellT) shellT.scrollTo(0, 0);
+            else window.scrollTo(0, 0);
+          });
+        });
+
+        bottomBtns.forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            applyBottomNav(btn.getAttribute("data-mm-bottom"));
+          });
+        });
+
+        document.querySelectorAll(".topicPills").forEach(function (group) {
+          group.querySelectorAll(".topic").forEach(function (pill) {
+            pill.addEventListener("click", function () {
+              group.querySelectorAll(".topic").forEach(function (p) {
+                p.classList.toggle("active", p === pill);
+              });
+              var label = pill.textContent.trim();
+              var gid = group.getAttribute("data-topic-group");
+              var hint = document.querySelector('[data-topic-hint="' + gid + '"] [data-topic-hint-text]');
+              if (hint) {
+                hint.textContent = "Showing: " + label + " — mock topic filter (static prototype).";
+              }
+              showToast("Topic: " + label);
+            });
+          });
+        });
+
+        document.querySelectorAll("[data-mm-pulse]").forEach(function (chip) {
+          chip.addEventListener("click", function () {
+            showToast(chip.textContent.trim());
+          });
+        });
+
+        document.querySelectorAll(".feedSubStrip").forEach(function (strip) {
+          strip.querySelectorAll(".feedSubChip").forEach(function (chip) {
+            if (chip.tagName !== "BUTTON") return;
+            chip.addEventListener("click", function () {
+              strip.querySelectorAll(".feedSubChip").forEach(function (c) {
+                if (c.tagName !== "BUTTON") return;
+                c.classList.toggle("is-on", c === chip);
+              });
+              showToast(chip.textContent.trim());
+            });
+          });
+        });
+
+        document.querySelectorAll(".mktVoteMegaRow [data-mktmega]").forEach(function (chip) {
+          chip.addEventListener("click", function () {
+            var mega = chip.closest(".mktVoteMegaRow");
+            if (!mega) return;
+            mega.querySelectorAll("[data-mktmega]").forEach(function (c) {
+              c.classList.toggle("is-on", c === chip);
+            });
+            showToast("Mega: " + chip.textContent.trim());
+          });
+        });
+
+        document.querySelectorAll(".mktVoteRow").forEach(function (row) {
+          row.addEventListener("click", function () {
+            document.querySelectorAll(".mktVoteRow").forEach(function (r) {
+              r.classList.toggle("is-selected", r === row);
+            });
+            var t = row.querySelector(".mktVoteRowMeta b");
+            showToast("Selected: " + (t ? t.textContent.trim() : "Project"));
+          });
+        });
+
+        document.querySelectorAll("[data-mm-chat]").forEach(function (row) {
+          row.addEventListener("click", function () {
+            showToast("Chat thread (mock) — " + row.textContent.replace(/\s+/g, " ").trim().slice(0, 42) + "…");
+          });
+        });
+
+        document.querySelectorAll("[data-mm-profile-row]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            showToast(btn.textContent.trim() + " — use desktop Me drawer for full UI.");
+          });
+        });
+
+        document.querySelectorAll(".recoveryMini button.btn").forEach(function (ballotBtn) {
+          ballotBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            showToast(ballotBtn.textContent.trim() + " — mock ballot (prototype)");
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

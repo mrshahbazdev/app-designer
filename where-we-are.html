@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en" data-theme="midnight">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>TrendUp Today Hub — where we are</title>
+    <link rel="icon" href="assets/trendup-mark.png" type="image/png" />
+    <style>
+      :root {
+        --bg: #07080c;
+        --surface: #0d1018;
+        --text: #eaf0ff;
+        --muted: #9aa6c3;
+        --cyan: #00e5ff;
+        --line: rgba(234, 240, 255, 0.1);
+        --green: #22c55e;
+        --r: 16px;
+        --max: 920px;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.55;
+      }
+      .wrap {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 32px 20px 48px;
+      }
+      @media (max-width: 560px) {
+        .wrap {
+          padding: 22px 16px 40px;
+        }
+        h1 {
+          font-size: 1.25rem;
+        }
+      }
+      header {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 28px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--line);
+      }
+      @media (max-width: 560px) {
+        header {
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+        header .cta {
+          justify-content: center;
+        }
+      }
+      header img {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        flex-shrink: 0;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 1.45rem;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+      }
+      .sub {
+        margin: 0;
+        font-size: 0.95rem;
+        color: var(--muted);
+      }
+      .cta {
+        margin-top: 18px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      a.btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 18px;
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: 0.88rem;
+        text-decoration: none;
+        border: 1px solid rgba(0, 229, 255, 0.35);
+        background: radial-gradient(120% 140% at 30% -10%, rgba(0, 229, 255, 0.28), transparent 60%), rgba(13, 16, 24, 0.85);
+        color: var(--text);
+        box-shadow: 0 12px 40px rgba(0, 229, 255, 0.12);
+      }
+      a.btn:hover {
+        border-color: rgba(0, 229, 255, 0.55);
+      }
+      a.btn--ghost {
+        background: rgba(13, 16, 24, 0.6);
+        border-color: var(--line);
+        box-shadow: none;
+        font-weight: 700;
+      }
+      .grid {
+        display: grid;
+        gap: 14px;
+      }
+      @media (min-width: 720px) {
+        .grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      section {
+        margin-bottom: 22px;
+      }
+      h2 {
+        margin: 0 0 12px;
+        font-size: 0.72rem;
+        font-weight: 900;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--cyan);
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--r);
+        padding: 16px 18px;
+        height: 100%;
+      }
+      .card h3 {
+        margin: 0 0 10px;
+        font-size: 1.05rem;
+        font-weight: 800;
+      }
+      .card ul {
+        margin: 0;
+        padding-left: 1.15rem;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .card ul li {
+        margin-bottom: 6px;
+      }
+      .card ul strong {
+        color: var(--text);
+      }
+      .pill {
+        display: inline-block;
+        margin-top: 10px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(34, 197, 94, 0.15);
+        color: rgba(187, 247, 208, 0.95);
+        border: 1px solid rgba(34, 197, 94, 0.25);
+      }
+      .files {
+        font-size: 0.82rem;
+        color: var(--muted);
+        margin-top: 8px;
+        word-break: break-all;
+      }
+      .files code {
+        color: rgba(0, 229, 255, 0.85);
+        font-size: 0.8rem;
+      }
+      footer {
+        margin-top: 32px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <img src="assets/trendup-mark.png" width="56" height="56" alt="" />
+        <div>
+          <h1>Where we are</h1>
+          <p class="sub">
+            Snapshot of the <strong>TrendUp Today Hub</strong> static prototype — what’s built, what’s in the handoff zips, and how to open the full mockup.
+          </p>
+          <div class="cta">
+            <a class="btn" href="today-hub.html">Desktop mockup →</a>
+            <a class="btn" href="today-hub-mobile.html">Mobile mockup →</a>
+            <a class="btn btn--ghost" href="dev-upload/README.md">Handoff README (deploy)</a>
+          </div>
+          <p class="files">
+            This page: <code>mockups/where-we-are.html</code> · Desktop: <code>mockups/today-hub.html</code> · Mobile:
+            <code>mockups/today-hub-mobile.html</code>
+          </p>
+        </div>
+      </header>
+
+      <section>
+        <h2>Prototype (single HTML)</h2>
+        <div class="grid">
+          <div class="card">
+            <h3>Product surface</h3>
+            <ul>
+              <li><strong>News / For You / Market trend</strong> — main feed modes, sub-filters (e.g. mega tabs + <strong>Voting desk</strong> → full governance).</li>
+              <li><strong>Governance &amp; voting</strong> — binding desk: sell limits, fee tiers, cap change, recovery, YES/NO patterns.</li>
+              <li><strong>Market trend rail</strong> — project list + selected ballot card (Recovery, cap, sector, chain…).</li>
+              <li><strong>Me drawer</strong> — profile, wallet, settings, auth gate mock.</li>
+              <li>
+                <strong>Mobile mockup</strong> — standalone <code>today-hub-mobile.html</code> (phone-width shell, bottom nav, same tabs + governance widgets as practical).
+              </li>
+            </ul>
+            <span class="pill">Interactive · no backend</span>
+          </div>
+          <div class="card">
+            <h3>Brand &amp; SEO</h3>
+            <ul>
+              <li><strong>Logo</strong> — <code>assets/trendup-mark.png</code> (official raster) + SVG wrappers.</li>
+              <li><strong>OG / Twitter / JSON-LD</strong> — patched when served over <code>https://</code>.</li>
+              <li><strong>Theme</strong> — midnight + token variables (see design tokens doc).</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Handoff (same folder: mockups)</h2>
+        <div class="grid">
+          <div class="card">
+            <h3>Developers → GitHub Pages</h3>
+            <ul>
+              <li>Zip: <code>trendup-today-hub-github-handoff.zip</code></li>
+              <li>
+                Folder <code>dev-upload/</code> — <code>today-hub.html</code>, <code>today-hub-mobile.html</code>, <code>index.html</code>, <code>.nojekyll</code>,
+                <code>assets/</code>, README.
+              </li>
+              <li>Push to repo root → enable Pages → share <code>https://…github.io/…/</code></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Designers → Figma</h3>
+            <ul>
+              <li>Zip: <code>trendup-figma-handoff.zip</code></li>
+              <li><code>FIGMA.md</code>, <code>FIGMA_FOR_DEVS.md</code>, <code>DESIGN_TOKENS_FOR_FIGMA.md</code>, logo assets.</li>
+              <li>Use the <strong>deployed URL</strong> for screenshots or URL→Figma plugins.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Local preview</h2>
+        <div class="card">
+          <h3>Static server (recommended)</h3>
+          <p style="margin: 0 0 10px; color: var(--muted); font-size: 0.9rem">
+            From the <code>mockups</code> folder:
+          </p>
+          <pre style="margin: 0; padding: 12px 14px; background: rgba(0,0,0,0.35); border-radius: 12px; border: 1px solid var(--line); font-size: 0.82rem; overflow-x: auto; color: rgba(234,240,255,0.88)">npx --yes serve -l 3000 .</pre>
+          <p style="margin: 10px 0 0; font-size: 0.85rem; color: var(--muted)">
+            Then open <code>http://localhost:3000/today-hub.html</code>, <code>today-hub-mobile.html</code>, or <code>where-we-are.html</code>.
+          </p>
+        </div>
+      </section>
+
+      <footer>
+        This page is a <strong>read-only orientation</strong> — it does not replace the prototype. Refresh the zips in <code>mockups/</code> after big changes to <code>today-hub.html</code> or assets.
+      </footer>
+    </div>
+  </body>
+</html>
