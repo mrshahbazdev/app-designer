@@ -4,8 +4,8 @@ AI-powered mobile UI screen generator for **TrendUp Secure Messaging** — built
 
 ## Features
 
-- **82 screen presets** across 24 screens with 2-4 variations each
-- **13 categories**: Onboarding, Inbox, Chat, Groups, Contacts, Profile, Security, Media, Notifications, Calls, Settings, Edge States
+- **181 screen presets** across 52 screens with 2-4 variations each
+- **14 categories**: Onboarding, Inbox, Chat, Groups, Contacts, Profile, Security, Media, Notifications, Calls, Settings, Edge States, SEO Tools
 - **Gemini AI** generates production-ready HTML screens
 - **10 theme presets** including TrendUp Light, Hub Dark, AMOLED Black
 - **4 device previews**: iPhone 15 Pro, iPhone SE, Android, iPad Mini
@@ -37,7 +37,7 @@ Paste `App.jsx` into any React environment:
 > The Canvas sandbox blocks `fetch()` requests to external services.
 > Use CodeSandbox, StackBlitz, or a local dev server instead.
 
-## Screens
+## TrendUp Screens
 
 | # | Screen | Variations | Category |
 |---|--------|-----------|----------|
@@ -65,6 +65,26 @@ Paste `App.jsx` into any React environment:
 | 22 | Invite Friends | 2 (Share TrendUp, Invite QR) | Contacts |
 | 23 | Disappearing Messages | 2 (Thread Timer, Global Default) | Chat / Settings |
 | 24 | Secure Mode | 2 (Lock Overlay, Enable Confirm) | Security |
+
+## AI SEO Master Engine Screens
+
+| # | Screen | Variations | Category |
+|---|--------|-----------|----------|
+| 1 | SEO Dashboard | 4 (Full Overview, Dark Mode, Compact, Stats Header) | SEO Tools |
+| 2 | Scraper Control | 3 (Control Panel, Running State, Completed Results) | SEO Tools |
+| 3 | Scraper Queue | 3 (Management Panel, Auto Processing, Empty State) | SEO Tools |
+| 4 | Content Generator | 4 (Input Form, Processing, Image Preview, Quick Mode) | SEO Tools |
+| 5 | SEO Audit | 3 (Full Report, Score Focus, Competitor Table) | SEO Tools |
+| 6 | OCR Scanner | 3 (Scan Results, Processing, Multi-Image) | SEO Tools |
+| 7 | Meta Editor | 3 (Full Editor, Preview Focus, Bulk Editor) | SEO Tools |
+| 8 | Keyword Analysis | 3 (Density Check, LSI Coverage, Tags & Entities) | SEO Tools |
+| 9 | Article View | 3 (Full Preview, FAQ Section, MCQ Quiz) | SEO Tools |
+| 10 | Schema Validator | 2 (Validation, Code Preview) | SEO Tools |
+| 11 | Auto Publisher | 3 (Post Panel, Metadata Review, Success State) | SEO Tools |
+| 12 | Draft History | 2 (Side Panel, Full Page) | SEO Tools |
+| 13 | Watermark Detector | 1 (Alert) | SEO Tools |
+| 14 | Countdown Timer | 1 (Deadline Timer) | SEO Tools |
+| 15 | Settings | 2 (Preferences, API Status) | SEO Tools |
 
 ## API
 
