@@ -1,11 +1,11 @@
 # TrendUp App Designer
 
-AI-powered mobile UI screen generator for **TrendUp Secure Messaging** — built for use in React environments with Gemini API.
+AI-powered mobile UI screen generator for **TrendUp Secure Messaging** and **TrendUp Today Hub** — built for use in React environments with Gemini API.
 
 ## Features
 
-- **82 screen presets** across 24 screens with 2-4 variations each
-- **13 categories**: Onboarding, Inbox, Chat, Groups, Contacts, Profile, Security, Media, Notifications, Calls, Settings, Edge States
+- **184 screen presets** across 54 screens with 2-4 variations each
+- **17 categories**: Onboarding, Inbox, Chat, Groups, Contacts, Profile, Security, Media, Notifications, Calls, Settings, Edge States, Social, Today Hub, News, Market & Gov
 - **Gemini AI** generates production-ready HTML screens
 - **10 theme presets** including TrendUp Light, Hub Dark, AMOLED Black
 - **4 device previews**: iPhone 15 Pro, iPhone SE, Android, iPad Mini
@@ -39,6 +39,8 @@ Paste `App.jsx` into any React environment:
 
 ## Screens
 
+### Secure Messaging (37 screens, 143 presets)
+
 | # | Screen | Variations | Category |
 |---|--------|-----------|----------|
 | 1 | Landing | 4 (Centered, Hero, Split, Glass) | Onboarding |
@@ -65,6 +67,28 @@ Paste `App.jsx` into any React environment:
 | 22 | Invite Friends | 2 (Share TrendUp, Invite QR) | Contacts |
 | 23 | Disappearing Messages | 2 (Thread Timer, Global Default) | Chat / Settings |
 | 24 | Secure Mode | 2 (Lock Overlay, Enable Confirm) | Security |
+
+### Today Hub — Social Platform (17 screens, 41 presets)
+
+| # | Screen | Variations | Category |
+|---|--------|-----------|----------|
+| HUB-1 | Home / For You Feed | 4 (Desktop, Mobile, Light, Purple) | Today Hub |
+| HUB-2 | News Tab | 3 (Breaking, Truth Desk, Mobile) | News |
+| HUB-3 | Market Trend | 3 (Crypto Table, Liquidity, Mobile) | Market & Gov |
+| HUB-4 | Voting Desk / Governance | 4 (Ballots, Proposal, Cap Change, Results) | Market & Gov |
+| HUB-5 | Stories | 2 (Story Rail, Create Story) | Social |
+| HUB-6 | Social Feed | 3 (Post Cards, Following, Thread) | Social |
+| HUB-7 | Compose Post | 2 (New Post, With Media) | Social |
+| HUB-8 | Search | 2 (Panel, Results) | Today Hub |
+| HUB-9 | Notifications | 2 (Bell Panel, Activity Feed) | Today Hub |
+| HUB-10 | Me Drawer / Profile | 3 (Menu, Profile, Wallet) | Today Hub |
+| HUB-11 | Chat Panel | 2 (Chat List, Conversation) | Today Hub |
+| HUB-12 | Live Streams | 3 (Directory, Now Playing, Mobile) | Social |
+| HUB-13 | Trends & Tickers | 2 (Panel, Explore) | Social |
+| HUB-14 | Navigation | 2 (Left Rail, Mobile Bottom) | Today Hub |
+| HUB-15 | Breaking News | 2 (Hero Card, Wire Headlines) | News |
+| HUB-16 | Governance Sidebar | 1 (Right Rail) | Market & Gov |
+| HUB-17 | Theme Switcher | 1 (Color Picker) | Today Hub |
 
 ## API
 
